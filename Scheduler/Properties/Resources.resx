@@ -1,0 +1,826 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Add_16xMD" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Assets\Add_16xMD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Edit_16xMD" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Assets\Edit_16xMD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Folder_open_32xMD_exp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Assets\Folder open_32xMD_exp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Remove_16xMD" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Assets\Remove_16xMD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ValidateDocument_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Assets\ValidateDocument_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Connected_to" xml:space="preserve">
+    <value>Connected to {0}</value>
+  </data>
+  <data name="Unable_to_connect_to_scheduler" xml:space="preserve">
+    <value>Unable to connect to scheduler {0} on {1}:{2}</value>
+  </data>
+  <data name="Connected_to_standalone_scheduler" xml:space="preserve">
+    <value>Connected to standalone scheduler</value>
+  </data>
+  <data name="Unable_to_create_standalone_scheduler" xml:space="preserve">
+    <value>Unable to create standalone scheduler</value>
+  </data>
+  <data name="Jobs_are_still_running_Are_you_sure_You_want_to_exit_Jobs_will_be_terminated" xml:space="preserve">
+    <value>Jobs are still running. Are you sure You want to exit? Jobs will be terminated.</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="Recurring_Integrations_Schedule_xml" xml:space="preserve">
+    <value>Recurring Integrations Schedule|*.xml</value>
+  </data>
+  <data name="Unexpected_error" xml:space="preserve">
+    <value>Unexpected error</value>
+  </data>
+  <data name="You_have_changed_the_schedule" xml:space="preserve">
+    <value>You have changed the schedule of running Recurring Integrations Scheduler service. You should save schedule file in scheduler service working folder to ensure that this schedule persist after service is shutdown.{0}Press OK to save the schedule or Cancel to continue without saving.</value>
+  </data>
+  <data name="Processing_monitoring_job_is_not_supported" xml:space="preserve">
+    <value>Processing monitoring job is not supported for direct editing. Please edit related upload job.</value>
+  </data>
+  <data name="This_type_of_job_is_not_supported_for_direct_editing" xml:space="preserve">
+    <value>This type of job is not supported for direct editing.</value>
+  </data>
+  <data name="Connection_error" xml:space="preserve">
+    <value>Connection error</value>
+  </data>
+  <data name="Select_user_first" xml:space="preserve">
+    <value>Select user first!</value>
+  </data>
+  <data name="Select_AAD_client_first" xml:space="preserve">
+    <value>Select AAD client first!</value>
+  </data>
+  <data name="Edit_user" xml:space="preserve">
+    <value>Edit user</value>
+  </data>
+  <data name="Add_user" xml:space="preserve">
+    <value>Add user</value>
+  </data>
+  <data name="User_login_is_required" xml:space="preserve">
+    <value>User login is required</value>
+  </data>
+  <data name="User_password_is_required" xml:space="preserve">
+    <value>User password is required</value>
+  </data>
+  <data name="Validation_error" xml:space="preserve">
+    <value>Validation error(s)</value>
+  </data>
+  <data name="Edit_job_0" xml:space="preserve">
+    <value>Edit job {0}</value>
+  </data>
+  <data name="Add_to_schedule" xml:space="preserve">
+    <value>Add to schedule</value>
+  </data>
+  <data name="IMPORTED_CHANGE_THIS" xml:space="preserve">
+    <value>IMPORTED - CHANGE THIS!</value>
+  </data>
+  <data name="Job_already_exists" xml:space="preserve">
+    <value>Job already exists!</value>
+  </data>
+  <data name="Job_0_in_group_1_already_exists" xml:space="preserve">
+    <value>Job {0} in group {1} already exists in current schedule. Do you want to overwrite it?</value>
+  </data>
+  <data name="Job_name_is_missing" xml:space="preserve">
+    <value>Job name is missing.</value>
+  </data>
+  <data name="Job_group_is_not_selected" xml:space="preserve">
+    <value>Job group is not selected.</value>
+  </data>
+  <data name="Top_uploads_folder_is_not_selected" xml:space="preserve">
+    <value>Top uploads folder is not selected.</value>
+  </data>
+  <data name="Input_folder_is_not_selected" xml:space="preserve">
+    <value>Input folder is not selected.</value>
+  </data>
+  <data name="Upload_success_folder_is_not_selected" xml:space="preserve">
+    <value>Upload success folder is not selected.</value>
+  </data>
+  <data name="Upload_errors_folder_is_not_selected" xml:space="preserve">
+    <value>Upload errors folder is not selected.</value>
+  </data>
+  <data name="Processing_success_folder_is_not_selected" xml:space="preserve">
+    <value>Processing success folder is not selected.</value>
+  </data>
+  <data name="Processing_errors_folder_is_not_selected" xml:space="preserve">
+    <value>Processing errors folder is not selected.</value>
+  </data>
+  <data name="Dynamics_instance_is_not_selected" xml:space="preserve">
+    <value>Dynamics instance is not selected.</value>
+  </data>
+  <data name="User_is_not_selected" xml:space="preserve">
+    <value>User is not selected.</value>
+  </data>
+  <data name="AAD_client_application_is_not_selected" xml:space="preserve">
+    <value>AAD client application is not selected.</value>
+  </data>
+  <data name="Data_job_is_not_selected" xml:space="preserve">
+    <value>Data job is not selected.</value>
+  </data>
+  <data name="Status_file_extension_is_not_specified" xml:space="preserve">
+    <value>Status file extension is not specified.</value>
+  </data>
+  <data name="Job_configuration_is_not_valid" xml:space="preserve">
+    <value>Job configuration is not valid</value>
+  </data>
+  <data name="Processing_monitor_job_for_upload_job_0_1" xml:space="preserve">
+    <value>Processing monitor job for upload job {0}.{1}</value>
+  </data>
+  <data name="Trigger_for_job_0_1" xml:space="preserve">
+    <value>Trigger for job {0}.{1}</value>
+  </data>
+  <data name="Cron_expression_is_invalid" xml:space="preserve">
+    <value>Cron expression is invalid</value>
+  </data>
+  <data name="Existing_application_secret_could_not_be_decrypted" xml:space="preserve">
+    <value>Existing application secret could not be decrypted! It was reset to empty value.</value>
+  </data>
+  <data name="Existing_password_could_not_be_decrypted" xml:space="preserve">
+    <value>Existing password could not be decrypted! It was reset to empty value.</value>
+  </data>
+  <data name="Existing_password_could_not_be_encrypted" xml:space="preserve">
+    <value>Existing password could not be encrypted! It was reset to empty value.</value>
+  </data>
+  <data name="Existing_application_secret_could_not_be_encrypted" xml:space="preserve">
+    <value>Existing application secret could not be encrypted! It was reset to empty value.</value>
+  </data>
+  <data name="Edit_job_group" xml:space="preserve">
+    <value>Edit job group</value>
+  </data>
+  <data name="Add_job_group" xml:space="preserve">
+    <value>Add job group</value>
+  </data>
+  <data name="Job_group_name_is_required" xml:space="preserve">
+    <value>Job group name is required</value>
+  </data>
+  <data name="Edit_instance" xml:space="preserve">
+    <value>Edit instance</value>
+  </data>
+  <data name="Add_instance" xml:space="preserve">
+    <value>Add instance</value>
+  </data>
+  <data name="Friendly_name_is_required" xml:space="preserve">
+    <value>Friendly name is required</value>
+  </data>
+  <data name="AOS_URL_is_required" xml:space="preserve">
+    <value>AOS URL is required</value>
+  </data>
+  <data name="AOS_URL_is_invalid" xml:space="preserve">
+    <value>AOS URL is invalid</value>
+  </data>
+  <data name="Authentication_endpoint_is_required" xml:space="preserve">
+    <value>Authentication endpoint is required</value>
+  </data>
+  <data name="Authentication_endpoint_URL_is_invalid" xml:space="preserve">
+    <value>Authentication endpoint URL is invalid</value>
+  </data>
+  <data name="Tenant_Id_is_required" xml:space="preserve">
+    <value>Tenant Id is required</value>
+  </data>
+  <data name="IMPORTED" xml:space="preserve">
+    <value>IMPORTED</value>
+  </data>
+  <data name="Download_folder_is_not_selected" xml:space="preserve">
+    <value>Download folder is not selected.</value>
+  </data>
+  <data name="Download_errors_folder_is_not_selected" xml:space="preserve">
+    <value>Download errors folder is not selected.</value>
+  </data>
+  <data name="About_0" xml:space="preserve">
+    <value>About {0}</value>
+  </data>
+  <data name="Version_0" xml:space="preserve">
+    <value>Version {0}</value>
+  </data>
+  <data name="Edit_Azure_AD_application" xml:space="preserve">
+    <value>Edit Azure AD application</value>
+  </data>
+  <data name="Add_Azure_AD_application" xml:space="preserve">
+    <value>Add Azure AD application</value>
+  </data>
+  <data name="Client_Id_is_required" xml:space="preserve">
+    <value>Client Id is required</value>
+  </data>
+  <data name="Client_Id_is_invalid" xml:space="preserve">
+    <value>Client Id is invalid</value>
+  </data>
+  <data name="Client_secret_is_required" xml:space="preserve">
+    <value>Client secret is required</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Application_type" xml:space="preserve">
+    <value>Application type</value>
+  </data>
+  <data name="Client_secret" xml:space="preserve">
+    <value>Client secret</value>
+  </data>
+  <data name="Client_Id" xml:space="preserve">
+    <value>Client Id</value>
+  </data>
+  <data name="Friendly_name" xml:space="preserve">
+    <value>Friendly name</value>
+  </data>
+  <data name="Recurring_Integrations_App" xml:space="preserve">
+    <value>Recurring Integrations App</value>
+  </data>
+  <data name="About_Recurring_Integrations_App" xml:space="preserve">
+    <value>About Recurring Integrations Scheduler</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Connect</value>
+  </data>
+  <data name="Hostname" xml:space="preserve">
+    <value>Hostname:</value>
+  </data>
+  <data name="Port" xml:space="preserve">
+    <value>Port:</value>
+  </data>
+  <data name="Scheduler" xml:space="preserve">
+    <value>Scheduler</value>
+  </data>
+  <data name="Connect_to_scheduler_service" xml:space="preserve">
+    <value>Connect to scheduler service</value>
+  </data>
+  <data name="Cron_examples" xml:space="preserve">
+    <value>Cron examples</value>
+  </data>
+  <data name="Data_job_type" xml:space="preserve">
+    <value>Data job type</value>
+  </data>
+  <data name="Entity_name" xml:space="preserve">
+    <value>Entity name</value>
+  </data>
+  <data name="Activity_Id" xml:space="preserve">
+    <value>Activity Id</value>
+  </data>
+  <data name="Job_details" xml:space="preserve">
+    <value>Job details</value>
+  </data>
+  <data name="Delete_package_file" xml:space="preserve">
+    <value>Delete package file</value>
+  </data>
+  <data name="Make_exported_file_name_unique" xml:space="preserve">
+    <value>Make exported file name unique</value>
+  </data>
+  <data name="Unzip_package_file" xml:space="preserve">
+    <value>Unzip package file</value>
+  </data>
+  <data name="Edit_data_job" xml:space="preserve">
+    <value>Edit data job</value>
+  </data>
+  <data name="Use_default_folder_names" xml:space="preserve">
+    <value>Use default folder names</value>
+  </data>
+  <data name="Errors_folder" xml:space="preserve">
+    <value>Errors folder</value>
+  </data>
+  <data name="Download_folder" xml:space="preserve">
+    <value>Download folder</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Dynamics_details" xml:space="preserve">
+    <value>Dynamics details</value>
+  </data>
+  <data name="Service_auth" xml:space="preserve">
+    <value>Service auth</value>
+  </data>
+  <data name="User_auth" xml:space="preserve">
+    <value>User auth</value>
+  </data>
+  <data name="Data_job" xml:space="preserve">
+    <value>Data job</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="Instance" xml:space="preserve">
+    <value>Instance</value>
+  </data>
+  <data name="Recurrence" xml:space="preserve">
+    <value>Recurrence</value>
+  </data>
+  <data name="More_examples" xml:space="preserve">
+    <value>More examples</value>
+  </data>
+  <data name="Calculate_next_100_runs_of_cron_trigger" xml:space="preserve">
+    <value>Calculate next 100 runs of cron trigger</value>
+  </data>
+  <data name="Quartz_cron_triggers_documentation" xml:space="preserve">
+    <value>Quartz cron triggers documentation</value>
+  </data>
+  <data name="Cron_trigger" xml:space="preserve">
+    <value>Cron trigger</value>
+  </data>
+  <data name="Simple_trigger" xml:space="preserve">
+    <value>Simple trigger</value>
+  </data>
+  <data name="Build_cron_expression_at" xml:space="preserve">
+    <value>Build cron expression at</value>
+  </data>
+  <data name="Cron_expression" xml:space="preserve">
+    <value>Cron expression</value>
+  </data>
+  <data name="start_at" xml:space="preserve">
+    <value>start at</value>
+  </data>
+  <data name="Add_data_job" xml:space="preserve">
+    <value>Add data job</value>
+  </data>
+  <data name="Activity_Id_is_required" xml:space="preserve">
+    <value>Activity Id is required</value>
+  </data>
+  <data name="Activity_Id_is_invalid" xml:space="preserve">
+    <value>Activity Id is invalid</value>
+  </data>
+  <data name="Tenant" xml:space="preserve">
+    <value>Tenant</value>
+  </data>
+  <data name="Auth_endpoint" xml:space="preserve">
+    <value>Auth endpoint</value>
+  </data>
+  <data name="AOS_URL" xml:space="preserve">
+    <value>AOS URL</value>
+  </data>
+  <data name="Job_group_name" xml:space="preserve">
+    <value>Job group name</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Login_UPN" xml:space="preserve">
+    <value>Login (UPN)</value>
+  </data>
+  <data name="Choose_user" xml:space="preserve">
+    <value>Choose user</value>
+  </data>
+  <data name="Choose_AAD_Client_app" xml:space="preserve">
+    <value>Choose AAD Client app</value>
+  </data>
+  <data name="Authentication_method" xml:space="preserve">
+    <value>Authentication method</value>
+  </data>
+  <data name="Service_authentication" xml:space="preserve">
+    <value>Service authentication</value>
+  </data>
+  <data name="User_authentication" xml:space="preserve">
+    <value>User authentication</value>
+  </data>
+  <data name="Validate" xml:space="preserve">
+    <value>Validate</value>
+  </data>
+  <data name="Tenant_Id" xml:space="preserve">
+    <value>Tenant Id :</value>
+  </data>
+  <data name="Authentication_endpoint" xml:space="preserve">
+    <value>Authentication endpoint :</value>
+  </data>
+  <data name="AOS_URL_" xml:space="preserve">
+    <value>AOS URL :</value>
+  </data>
+  <data name="Instance_name_" xml:space="preserve">
+    <value>Instance name :</value>
+  </data>
+  <data name="Validate_instance_settings" xml:space="preserve">
+    <value>Validate instance settings</value>
+  </data>
+  <data name="Processing_errors_folder" xml:space="preserve">
+    <value>Processing errors folder</value>
+  </data>
+  <data name="Status_file_extension" xml:space="preserve">
+    <value>Status file extension</value>
+  </data>
+  <data name="Uploading_data_packages" xml:space="preserve">
+    <value>Uploading data packages</value>
+  </data>
+  <data name="Legal_entity_optional" xml:space="preserve">
+    <value>Legal entity (optional)</value>
+  </data>
+  <data name="Input_subfolder" xml:space="preserve">
+    <value>Input subfolder</value>
+  </data>
+  <data name="Processing_success_folder" xml:space="preserve">
+    <value>Processing success folder</value>
+  </data>
+  <data name="Upload_success_folder" xml:space="preserve">
+    <value>Upload success folder</value>
+  </data>
+  <data name="Use_default_subfolders_names" xml:space="preserve">
+    <value>Use default subfolders names</value>
+  </data>
+  <data name="Upload_errors_folder" xml:space="preserve">
+    <value>Upload errors folder</value>
+  </data>
+  <data name="Top_upload_folder" xml:space="preserve">
+    <value>Top upload folder</value>
+  </data>
+  <data name="AAD_client" xml:space="preserve">
+    <value>AAD application</value>
+  </data>
+  <data name="Get_cron_schedule_for_monitor_job" xml:space="preserve">
+    <value>Get cron schedule for monitor job </value>
+  </data>
+  <data name="Get_cron_schedule_for_upload_job" xml:space="preserve">
+    <value>Get cron schedule for upload job </value>
+  </data>
+  <data name="Processing_monitor_job" xml:space="preserve">
+    <value>Processing monitor job</value>
+  </data>
+  <data name="Add_monitoring_job" xml:space="preserve">
+    <value>Add monitoring job</value>
+  </data>
+  <data name="Files_filter_and_order" xml:space="preserve">
+    <value>Files filter and order</value>
+  </data>
+  <data name="Descending" xml:space="preserve">
+    <value>Descending</value>
+  </data>
+  <data name="Ascending" xml:space="preserve">
+    <value>Ascending</value>
+  </data>
+  <data name="Order" xml:space="preserve">
+    <value>Order</value>
+  </data>
+  <data name="Order_by" xml:space="preserve">
+    <value>Order by</value>
+  </data>
+  <data name="Search_pattern" xml:space="preserve">
+    <value>Search pattern</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Dynamics_365_for_Operations_instances" xml:space="preserve">
+    <value>Dynamics 365 for Finance and Operations instances</value>
+  </data>
+  <data name="Friendly_name_used_only_in_Recurring_Integrations_App" xml:space="preserve">
+    <value>Friendly name used only in Recurring Integrations App</value>
+  </data>
+  <data name="Uri_or_Guid" xml:space="preserve">
+    <value>Uri or Guid</value>
+  </data>
+  <data name="User_credentials" xml:space="preserve">
+    <value>User credentials</value>
+  </data>
+  <data name="User_login_UPN" xml:space="preserve">
+    <value>User login (UPN)</value>
+  </data>
+  <data name="User_login_like_admin_contoso_com" xml:space="preserve">
+    <value>User login like: admin@contoso.com</value>
+  </data>
+  <data name="Data_jobs" xml:space="preserve">
+    <value>Data jobs</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Activity_Id_Guid_of_this_data_job_configured_in_Dynamics" xml:space="preserve">
+    <value>Activity Id (Guid) of this data job configured in Dynamics</value>
+  </data>
+  <data name="Entity_name_for_this_data_job_configured_in_Dynamics" xml:space="preserve">
+    <value>Entity name for this data job configured in Dynamics</value>
+  </data>
+  <data name="Download_jobs_folders_names" xml:space="preserve">
+    <value>Download jobs folders names</value>
+  </data>
+  <data name="Monitoring_jobs_folders_names" xml:space="preserve">
+    <value>Monitoring jobs folders names</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Errors</value>
+  </data>
+  <data name="Upload_jobs_folders_names" xml:space="preserve">
+    <value>Upload jobs folders names</value>
+  </data>
+  <data name="Input_folder" xml:space="preserve">
+    <value>Input folder</value>
+  </data>
+  <data name="Job_groups" xml:space="preserve">
+    <value>Job groups</value>
+  </data>
+  <data name="Group_name" xml:space="preserve">
+    <value>Group name</value>
+  </data>
+  <data name="Default_folder_names" xml:space="preserve">
+    <value>Default folder names</value>
+  </data>
+  <data name="Azure_AD_applications" xml:space="preserve">
+    <value>Azure AD applications</value>
+  </data>
+  <data name="Application_client_Id_GUID" xml:space="preserve">
+    <value>Application client Id (GUID)</value>
+  </data>
+  <data name="Secret" xml:space="preserve">
+    <value>Secret</value>
+  </data>
+  <data name="Web_application_client_secret" xml:space="preserve">
+    <value>Web application client secret</value>
+  </data>
+  <data name="Add_Azure_application" xml:space="preserve">
+    <value>Add Azure application</value>
+  </data>
+  <data name="Delete_Azure_application" xml:space="preserve">
+    <value>Delete Azure application</value>
+  </data>
+  <data name="Edit_Azure_application" xml:space="preserve">
+    <value>Edit Azure application</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parameters</value>
+  </data>
+  <data name="Connect_to_service" xml:space="preserve">
+    <value>Connect to service</value>
+  </data>
+  <data name="Start_standalone_scheduler" xml:space="preserve">
+    <value>Start standalone scheduler</value>
+  </data>
+  <data name="Save_schedule_file" xml:space="preserve">
+    <value>Save schedule file</value>
+  </data>
+  <data name="A_bout" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="Not_connected" xml:space="preserve">
+    <value>Not connected</value>
+  </data>
+  <data name="Job_name" xml:space="preserve">
+    <value>Job name</value>
+  </data>
+  <data name="Job_group" xml:space="preserve">
+    <value>Job group</value>
+  </data>
+  <data name="Job_type" xml:space="preserve">
+    <value>Job type</value>
+  </data>
+  <data name="Next_run" xml:space="preserve">
+    <value>Next run</value>
+  </data>
+  <data name="Last_run" xml:space="preserve">
+    <value>Last run</value>
+  </data>
+  <data name="Trigger_status" xml:space="preserve">
+    <value>Trigger status</value>
+  </data>
+  <data name="Add_upload_job" xml:space="preserve">
+    <value>Add upload job</value>
+  </data>
+  <data name="Add_download_job" xml:space="preserve">
+    <value>Add download job</value>
+  </data>
+  <data name="Delete_job" xml:space="preserve">
+    <value>Delete job</value>
+  </data>
+  <data name="Edit_job" xml:space="preserve">
+    <value>Edit job</value>
+  </data>
+  <data name="Pause_job" xml:space="preserve">
+    <value>Pause job</value>
+  </data>
+  <data name="Pause_all_jobs" xml:space="preserve">
+    <value>Pause all jobs</value>
+  </data>
+  <data name="Resume_job" xml:space="preserve">
+    <value>Resume job</value>
+  </data>
+  <data name="Resume_all_jobs" xml:space="preserve">
+    <value>Resume all jobs</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Missing_scheduler" xml:space="preserve">
+    <value>Missing scheduler</value>
+  </data>
+  <data name="No_active_scheduler" xml:space="preserve">
+    <value>No active scheduler</value>
+  </data>
+  <data name="Check_if_path" xml:space="preserve">
+    <value>Check if path does not contain illegal characters and if it exists and is accesible.</value>
+  </data>
+  <data name="Add_import_job" xml:space="preserve">
+    <value>Add import job (recommended)</value>
+  </data>
+  <data name="Execution_monitor_job_for_import_job_0_1" xml:space="preserve">
+    <value>Execution monitor job for import job {0}.{1}</value>
+  </data>
+  <data name="Data_project_is_missing" xml:space="preserve">
+    <value>Data project is missing</value>
+  </data>
+  <data name="Legal_entity_is_missing" xml:space="preserve">
+    <value>Legal entity is missing</value>
+  </data>
+  <data name="Add_export_job" xml:space="preserve">
+    <value>Add export job (recommended)</value>
+  </data>
+  <data name="Legal_entity" xml:space="preserve">
+    <value>Legal entity</value>
+  </data>
+  <data name="Add_job" xml:space="preserve">
+    <value>Add job</value>
+  </data>
+  <data name="Filter_instances" xml:space="preserve">
+    <value>Filter instances</value>
+  </data>
+  <data name="Filter_job_names" xml:space="preserve">
+    <value>Filter job names</value>
+  </data>
+  <data name="Open_failed_processing_folder" xml:space="preserve">
+    <value>Open failed processing folder</value>
+  </data>
+  <data name="Open_failed_uploads_folder" xml:space="preserve">
+    <value>Open failed uploads folder</value>
+  </data>
+  <data name="Open_input_folder" xml:space="preserve">
+    <value>Open input folder</value>
+  </data>
+  <data name="Open_successful_downloads_folder" xml:space="preserve">
+    <value>Open successful downloads folder</value>
+  </data>
+  <data name="Open_successful_processing_folder" xml:space="preserve">
+    <value>Open successful processing folder</value>
+  </data>
+  <data name="Open_successful_uploads_folder" xml:space="preserve">
+    <value>Open successful uploads folder</value>
+  </data>
+  <data name="Pause_Resume" xml:space="preserve">
+    <value>Pause/Resume</value>
+  </data>
+  <data name="Recurring_Integrations_Scheduler" xml:space="preserve">
+    <value>Recurring Integrations Scheduler</value>
+  </data>
+  <data name="Refresh_grid" xml:space="preserve">
+    <value>Refresh grid (F5)</value>
+  </data>
+  <data name="Authentication_type" xml:space="preserve">
+    <value>Authentication type</value>
+  </data>
+  <data name="Auth_type" xml:space="preserve">
+    <value>Auth type</value>
+  </data>
+  <data name="Data_project" xml:space="preserve">
+    <value>Data project</value>
+  </data>
+  <data name="Execute_import" xml:space="preserve">
+    <value>Execute import</value>
+  </data>
+  <data name="Execution_monitoring_job" xml:space="preserve">
+    <value>Execution monitoring job</value>
+  </data>
+  <data name="Import_details" xml:space="preserve">
+    <value>Import details</value>
+  </data>
+  <data name="Overwrite_data_project_definition" xml:space="preserve">
+    <value>Overwrite data project definition</value>
+  </data>
+  <data name="Package_template" xml:space="preserve">
+    <value>Package template</value>
+  </data>
+  <data name="Status_check_interval" xml:space="preserve">
+    <value>Status check interval (sec.)</value>
+  </data>
+</root>

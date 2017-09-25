@@ -1,0 +1,772 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="logoPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+</value>
+  </data>
+  <data name="textBoxDescription.Text" xml:space="preserve">
+    <value>Recurring Integrations Scheduler
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE
+
+THIRD-PARTY SOFTWARE NOTICES AND INFORMATION
+
+Do Not Translate or Localize
+
+This file provides information regarding components that are being relicensed to
+you by Microsoft under the MIT license. Microsoft reserves all rights not
+expressly granted herein, whether by implication, estoppel or otherwise.
+
+Microsoft is offering you a license to use the following components with
+Recurring Integrations Scheduler subject to the terms of the MIT license.
+
+PROVIDED FOR INFORMATIONAL PURPOSE ONLY
+
+------------------------------- START OF LICENSE -------------------------------
+Newtonsoft.JSON
+Copyright (c) 2007 James Newton-King
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE
+-------------------------------- END OF LICENSE --------------------------------
+
+------------------------------- START OF LICENSE -------------------------------
+Topshelf / 4.0.3 / https://www.nuget.org/packages/Topshelf/4.0.3
+Copyright 2007-2016 Travis Smith, Chris Patterson, Dru Sellers, Henrik Feldtet al. All rights reserved
+
+Apache Log4Net versions 2.0.3 and 2.0.5
+Copyright 2004-2017 The Apache Software Foundation
+
+Quartz / 2.4.1 / https://www.nuget.org/packages/Quartz/2.4.1
+Copyright (c) Marko Lahma
+
+Common.Logging.Log4Net1215. / 3.3.1 / https://www.nuget.org/packages/Common.Logging.Log4Net1215/3.3.1
+Copyright (c) Aleksandar Seovic, Mark Pollack, Erich Eichinger, Stephen Bohlen, G. Stoyne
+
+Common.Logging.Core / 3.3.1 / https://www.nuget.org/packages/Common.Logging.Core/3.3.1
+Copyright (c) Aleksandar Seovic, Mark Pollack, Erich Eichinger, Stephen Bohlen, G. Stoynev
+
+Common.Logging / 3.3.1 / https://www.nuget.org/packages/Common.Logging/3.3.1
+Copyright (c) Aleksandar Seovic, Mark Pollack, Erich Eichinger, Stephen Bohlen, G. Stoynev
+
+Apache 2.0 License 
+
+PROVIDED FOR INFORMATIONAL PURPOSE ONLY
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR   CONDITIONS
+OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY
+IMPLIED WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+-------------------------------- END OF LICENSE --------------------------------
+
+------------------------------- START OF LICENSE -------------------------------
+System.Linq.Dymamic, ver. / 1.0.7 / https://www.nuget.org/packages/System.Linq.Dynamic/1.0.7
+Copyright (c) Microsoft Corporation. All Rights Reserved
+
+MS-PL License
+
+PROVIDED FOR INFORMATIONAL PURPOSE ONLY
+
+This license governs use of the accompanying software. If you use the
+software, you accept this license. If you do not accept the license, do not
+use the software.
+
+1. Definitions
+
+The terms reproduce, reproduction, derivative works, and distribution have
+the same meaning here as under U.S. copyright law. A contribution is
+the original software, or any additions or changes to the software.
+A contributor is any person that distributes its contribution under this
+license. Licensed patents are a contributor's patent claims that read directly
+on its contribution.
+
+2. Grant of Rights
+
+(A) Copyright Grant - Subject to the terms of this license, including
+the license conditions and limitations in section 3, each contributor grants
+you a non-exclusive, worldwide, royalty-free copyright license to reproduce
+its contribution, prepare derivative works of its contribution, and distribute
+its contribution or any derivative works that you create.
+(B) Patent Grant - Subject to the terms of this license, including the license
+conditions and limitations in section 3, each contributor grants you
+a non-exclusive, worldwide, royalty-free license under its licensed patents
+to make, have made, use, sell, offer for sale, import, and/or otherwise
+dispose of its contribution in the software or derivative works of
+the contribution in the software.
+
+3. Conditions and Limitations
+
+(A) No Trademark License - This license does not grant you rights to use any
+contributors' name, logo, or trademarks.
+(B) If you bring a patent claim against any contributor over patents that you
+claim are infringed by the software, your patent license from such contributor
+to the software ends automatically.
+(C) If you distribute any portion of the software, you must retain all
+copyright, patent, trademark, and attribution notices that are present in
+the software.
+(D) If you distribute any portion of the software in source code form, you may
+do so only under this license by including a complete copy of this license
+with your distribution. If you distribute any portion of the software in
+compiled or object code form, you may only do so under a license that complies
+with this license.
+(E) The software is licensed as-is. You bear the risk of using it.
+The contributors give no express warranties, guarantees or conditions. You may
+have additional consumer rights under your local laws which this license
+cannot change. To the extent permitted under your local laws, the contributors
+exclude the implied warranties of merchantability, fitness for a particular
+purpose and non-infringement.
+-------------------------------- END OF LICENSE --------------------------------
+
+------------------------------- START OF LICENSE -------------------------------
+MICROSOFT SOFTWARE LICENSE TERMS
+
+MICROSOFT IDENTITY MODEL CLIENTS ACTIVE DIRECTORY
+
+THIRD PARTY OPEN SOURCE APACHE RELICENSED DEPENDENCIES IDENTIFIED IN THIRD PARTY
+NOTICES FILE
+These license terms are an agreement between Microsoft Corporation (or based on
+where you live, one of its affiliates) and you. They apply to the software named
+above. The terms also apply to any Microsoft services or updates for
+the software, except to the extent those have different terms.
+
+IF YOU COMPLY WITH THESE LICENSE TERMS, YOU HAVE THE RIGHTS BELOW.
+
+1. INSTALLATION AND USE RIGHTS.
+  a. General. You may use copies of the software to develop and test your
+    applications.
+
+2. DISTRIBUTABLE CODE.
+The software is comprised of "Distributable Code" that you are permitted to
+distribute without modification (except as expressly permitted below) in
+applications you develop as described in this Section. 
+(For this Section the term "distribution" also means deployment of your
+applications for third parties to access over the Internet.)
+  a. Distribution Rights.
+    * You may copy and distribute the object code form of the software.
+    * Third Party Distribution. You may permit distributors of your programs
+      to copy and distribute the Distributable Code as part of those
+      applications.
+  b. Distribution Requirements. For any Distributable Code you distribute, you
+    must:
+    * add significant primary functionality to it in your applications;
+    * require distributors and external end users to agree to terms that
+      protect the Distributable Code at least as much as this agreement; and
+    * indemnify, defend, and hold harmless Microsoft from any claims,
+      including attorneys’ fees, related to the distribution or use of your
+      applications, except to the extent that any claim is based solely on
+      the Distributable Code.
+  c. Distribution Restrictions. You may not
+    * extend the software by, among other things, loading or injecting into
+      the software any non-Microsoft add-ins, macros, or packages; modifying
+      the software registry settings; or adding features or functionality
+      equivalent to that found in other Visual Studio products;
+    * use Microsoft’s trademarks in your applications’ names or in a way that
+      suggests your applications come from or are endorsed by Microsoft; or
+    * modify or distribute the source code of any Distributable Code so that
+      any part of it becomes subject to an Excluded License. An "Excluded
+      License" is one that requires, as a condition of use, modification or
+      distribution, that (i) the code be disclosed or distributed in source
+      code form; or (ii) others have the right to modify it.
+
+3. SCOPE OF LICENSE. The software is licensed, not sold. This agreement only
+gives you some rights to use the software. Microsoft reserves all other
+rights. Unless applicable law gives you more rights despite this limitation,
+you may use the software only as expressly permitted in this agreement.
+In doing so, you must comply with any technical limitations in the software
+that only allow you to use it in certain ways. You may not
+  * work around any technical limitations in the software;
+  * reverse engineer, decompile or disassemble the software, except and only to
+    the extent that applicable law expressly permits, despite this limitation;
+  * remove, minimize, block or modify any notices of Microsoft or its suppliers
+    in the software;
+  * use the software in any way that is against the law;
+  * share, publish, rent or lease the software, or provide the software as
+    a stand-alone hosted solution for others to use, or transfer the software or
+    this agreement to any third party.
+
+4. SUPPORT SERVICES. Because this software is "as is" we may not provide
+support services for it.
+
+5. ENTIRE AGREEMENT. This agreement, and the terms for supplements, updates,
+Internet-based services and support services that you use, are the entire
+agreement for the software and support services.
+
+6. EXPORT RESTRICTIONS. You must comply with all domestic and international
+export laws and regulations that apply to the software, which include
+restrictions on destinations, end users, and end use.
+For further information on export restrictions, visit
+www.microsoft.com/exporting.
+
+7. APPLICABLE LAW. If you acquired the software in the United States,
+Washington law applies to interpretation of and claims for breach of this
+agreement, and the laws of the state where you live apply to all other claims.
+If you acquired the software in any other country, its laws apply.
+
+8. CONSUMER RIGHTS; REGIONAL VARIATIONS. This agreement describes certain
+legal rights. You may have other rights, including consumer rights, under
+the laws of your state or country. Separate and apart from your relationship
+with Microsoft, you may also have rights with respect to the party from which
+you acquired the software. This agreement does not change those other rights
+if the laws of your state or country do not permit it to do so. For example,
+if you acquired the software in one of the below regions, or mandatory country
+law applies, then the following provisions apply to you:
+  a. Australia. You have statutory guarantees under the Australian Consumer Law
+     and nothing in this agreement is intended to affect those rights.
+  b. Canada. If you acquired this software in Canada, you may stop receiving
+     updates by turning off the automatic update feature, disconnecting your
+     device from the Internet (if and when you re-connect to the Internet,
+     however, the software will resume checking for and installing updates), or
+     uninstalling the software. The product documentation, if any, may also
+     specify how to turn off updates for your specific device or software.
+  c. Germany and Austria.
+    (i) Warranty. The properly licensed software will perform substantially as
+    described in any Microsoft materials that accompany the software. However,
+    Microsoft gives no contractual guarantee in relation to the licensed
+    software.
+    (ii) Limitation of Liability. In case of intentional conduct, gross
+    negligence, claims based on the Product Liability Act, as well as, in case
+    of death or personal or physical injury, Microsoft is liable according to
+    the statutory law. Subject to the foregoing clause (ii), Microsoft will only
+    be liable for slight negligence if Microsoft is in breach of such material
+    contractual obligations, the fulfillment of which facilitate the due
+    performance of this agreement, the breach of which would endanger
+    the purpose of this agreement and the compliance with which a party may
+    constantly trust in (so-called "cardinal obligations"). In other cases of
+    slight negligence, Microsoft will not be liable for slight negligence.
+
+9. DISCLAIMER OF WARRANTY. THE SOFTWARE IS LICENSED "AS-IS."  YOU BEAR THE
+RISK OF USING IT. MICROSOFT GIVES NO EXPRESS WARRANTIES, GUARANTEES OR
+CONDITIONS. TO THE EXTENT PERMITTED UNDER YOUR LOCAL LAWS, MICROSOFT EXCLUDES
+THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+AND NON-INFRINGEMENT.
+
+10. LIMITATION ON AND EXCLUSION OF DAMAGES. YOU CAN RECOVER FROM MICROSOFT AND
+ITS SUPPLIERS ONLY DIRECT DAMAGES UP TO U.S. $5.00. YOU CANNOT RECOVER ANY
+OTHER DAMAGES, INCLUDING CONSEQUENTIAL, LOST PROFITS, SPECIAL, INDIRECT OR
+INCIDENTAL DAMAGES.
+This limitation applies to (a) anything related to the software, services,
+content (including code) on third party Internet sites, or third party
+applications; and (b) claims for breach of contract, breach of warranty,
+guarantee or condition, strict liability, negligence, or other tort to
+the extent permitted by applicable law. It also applies even if Microsoft knew
+or should have known about the possibility of the damages. The above
+limitation or exclusion may not apply to you because your state or country may
+not allow the exclusion or limitation of incidental, consequential or other
+damages.
+
+Please note: As this software is distributed in Canada, some of the clauses in
+this agreement are provided below in French.
+Remarque: Ce logiciel étant distribué au Canada, certaines des clauses dans ce
+contrat sont fournies ci-dessous en français.
+
+EXONÉRATION DE GARANTIE. Le logiciel visé par une licence est offert
+«tel quel». Toute utilisation de ce logiciel est a votre seule risque
+et péril. Microsoft n’accorde aucune autre garantie expresse. Vous pouvez
+bénéficier de droits additionnels en vertu du droit local sur la protection
+des consommateurs, que ce contrat ne peut modifier. La ou elles sont permises
+par le droit locale, les garanties implicites de qualité marchande,
+d’adéquation a un usage particulier et d’absence de contrefaçon sont exclues.
+LIMITATION DES DOMMAGES-INTÉRETS ET EXCLUSION DE RESPONSABILITÉ POUR LES
+DOMMAGES. Vous pouvez obtenir de Microsoft et de ses fournisseurs une
+indemnisation en cas de dommages directs uniquement a hauteur de 5,00 $ US.
+Vous ne pouvez prétendre a aucune indemnisation pour les autres dommages,
+y compris les dommages spéciaux, indirects ou accessoires et pertes
+de bénéfices.
+Cette limitation concerne:
+* tout ce qui est relié au logiciel, aux services ou au contenu (y compris
+le code) figurant sur des sites Internet tiers ou dans des programmes tiers;
+et
+* les réclamations au titre de violation de contrat ou de garantie, ou au
+titre de responsabilité stricte, de négligence ou d’une autre faute dans
+la limite autorisée par la loi en vigueur. Elle s’applique également, meme si
+Microsoft connaissait ou devrait connaître l’éventualité d’un tel dommage.
+Si votre pays n’autorise pas l’exclusion ou la limitation de responsabilité
+pour les dommages indirects, accessoires ou de quelque nature que ce soit, il
+se peut que la limitation ou l’exclusion ci-dessus ne s’appliquera pas a votre
+égard.
+EFFET JURIDIQUE. Le présent contrat décrit certains droits juridiques. Vous
+pourriez avoir d’autres droits prévus par les lois de votre pays. Le présent
+contrat ne modifie pas les droits que vous conferent les lois de votre pays si
+celles-ci ne le permettent pas.</value>
+  </data>
+</root>
