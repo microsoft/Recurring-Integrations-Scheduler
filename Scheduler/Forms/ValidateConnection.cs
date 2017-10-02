@@ -71,7 +71,7 @@ namespace RecurringIntegrationsScheduler.Forms
             if (Instance != null)
             {
                 settings.AadTenant = Instance.AadTenant;
-                settings.AosUri = Instance.AosUri;
+                settings.AosUri = Instance.AosUri.TrimEnd('/'); ;
                 settings.AzureAuthEndpoint = Instance.AzureAuthEndpoint;
             }
             if (user != null)
@@ -87,7 +87,7 @@ namespace RecurringIntegrationsScheduler.Forms
             {
                 var response = Task.Run(async () =>
                 {
-                    var result = await httpClientHelper.GetRequestAsync(new Uri(Instance.AosUri));
+                    var result = await httpClientHelper.GetRequestAsync(new Uri(settings.AosUri));
                     return result;
                 });
                 response.Wait();

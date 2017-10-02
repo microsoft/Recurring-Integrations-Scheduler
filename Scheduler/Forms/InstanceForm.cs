@@ -31,7 +31,7 @@ namespace RecurringIntegrationsScheduler.Forms
             else
             {
                 Text = Resources.Add_instance;
-                textBox3.Text = @"https://login.windows.net";
+                textBox3.Text = @"https://login.microsoftonline.com";
             }
         }
 
@@ -71,8 +71,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 Instance = new Instance
                 {
                     Name = textBox1.Text,
-                    AosUri = textBox2.Text,
-                    AzureAuthEndpoint = textBox3.Text,
+                    AosUri = textBox2.Text.TrimEnd('/'),
+                    AzureAuthEndpoint = textBox3.Text.TrimEnd('/'),
                     AadTenant = textBox4.Text
                 };
             else
