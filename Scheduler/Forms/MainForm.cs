@@ -761,42 +761,132 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             var scheduler = Scheduler.Instance.GetScheduler();
             var jobDetail = scheduler.GetJobDetail(selectedJobKey);
-            Process.Start(jobDetail.JobDataMap[SettingsConstants.DownloadSuccessDir]?.ToString());
+            var path = jobDetail.JobDataMap[SettingsConstants.DownloadSuccessDir]?.ToString();
+            if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
+            {
+                try
+                {
+                    Process.Start(path);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, Resources.Unexpected_error);
+                }
+            }
+            else
+            {
+                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error); ;
+            }
         }
 
         private void OpenFailedProcessingFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var scheduler = Scheduler.Instance.GetScheduler();
             var jobDetail = scheduler.GetJobDetail(selectedJobKey);
-            Process.Start(jobDetail.JobDataMap[SettingsConstants.ProcessingErrorsDir]?.ToString());
+            var path = jobDetail.JobDataMap[SettingsConstants.ProcessingErrorsDir]?.ToString();
+            if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
+            {
+                try
+                {
+                    Process.Start(path);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, Resources.Unexpected_error);
+                }
+            }
+            else
+            {
+                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error); ;
+            }
         }
 
         private void OpenSuccessfulProcessingFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var scheduler = Scheduler.Instance.GetScheduler();
             var jobDetail = scheduler.GetJobDetail(selectedJobKey);
-            Process.Start(jobDetail.JobDataMap[SettingsConstants.ProcessingSuccessDir]?.ToString());
+            var path = jobDetail.JobDataMap[SettingsConstants.ProcessingSuccessDir]?.ToString();
+            if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
+            {
+                try
+                {
+                    Process.Start(path);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, Resources.Unexpected_error);
+                }
+            }
+            else
+            {
+                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error); ;
+            }
         }
 
         private void OpenFailedUploadsFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var scheduler = Scheduler.Instance.GetScheduler();
             var jobDetail = scheduler.GetJobDetail(selectedJobKey);
-            Process.Start(jobDetail.JobDataMap[SettingsConstants.UploadErrorsDir]?.ToString());
+            var path = jobDetail.JobDataMap[SettingsConstants.UploadErrorsDir]?.ToString();
+            if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
+            {
+                try
+                {
+                    Process.Start(path);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, Resources.Unexpected_error);
+                }
+            }
+            else
+            {
+                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error); ;
+            }
         }
 
         private void OpenSuccessfulUploadsFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var scheduler = Scheduler.Instance.GetScheduler();
             var jobDetail = scheduler.GetJobDetail(selectedJobKey);
-            Process.Start(jobDetail.JobDataMap[SettingsConstants.UploadSuccessDir]?.ToString());
+            var path = jobDetail.JobDataMap[SettingsConstants.UploadSuccessDir]?.ToString();
+            if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
+            {
+                try
+                {
+                    Process.Start(path);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, Resources.Unexpected_error);
+                }
+            }
+            else
+            {
+                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error); ;
+            }
         }
 
         private void OpenInputFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var scheduler = Scheduler.Instance.GetScheduler();
             var jobDetail = scheduler.GetJobDetail(selectedJobKey);
-            Process.Start(jobDetail.JobDataMap[SettingsConstants.InputDir]?.ToString());
+            var path = jobDetail.JobDataMap[SettingsConstants.InputDir]?.ToString();
+            if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
+            {
+                try
+                {
+                    Process.Start(path);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, Resources.Unexpected_error);
+                }
+            }
+            else
+            {
+                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error); ;
+            }
         }
 
         private void AddUploadJobMenuItem_Click(object sender, EventArgs e)

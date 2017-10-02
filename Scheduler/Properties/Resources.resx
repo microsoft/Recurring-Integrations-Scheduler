@@ -823,4 +823,7 @@
   <data name="Status_check_interval" xml:space="preserve">
     <value>Status check interval (sec.)</value>
   </data>
+  <data name="Path_doesnot_exist_or_is_unaccessible" xml:space="preserve">
+    <value>Path does not exist or is unaccessible</value>
+  </data>
 </root>
