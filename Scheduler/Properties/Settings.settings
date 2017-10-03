@@ -17,8 +17,11 @@
     <Setting Name="UploadInputFolder" Roaming="true" Type="System.String" Scope="User">
       <Value Profile="(Default)">Input</Value>
     </Setting>
-    <Setting Name="ProcessingErrorsFolder" Type="System.String" Scope="User">
+    <Setting Name="ProcessingErrorsFolder" Roaming="true" Type="System.String" Scope="User">
       <Value Profile="(Default)">ProcessingErrors</Value>
+    </Setting>
+	<Setting Name="UpdateSettings" Roaming="true" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="DataJobs" Roaming="true" Type="RecurringIntegrationsScheduler.Settings.DataJobs" Scope="User">
       <Value Profile="(Default)">
@@ -88,9 +91,6 @@
         &lt;/AadApplication&gt;
         &lt;/ArrayOfAadApplication&gt;
       </Value>
-    </Setting>
-    <Setting Name="UpdateSettings" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -91,6 +91,7 @@ namespace RecurringIntegrationsScheduler.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("ProcessingErrors")]
+        [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
         public string ProcessingErrorsFolder {
             get {
                 return ((string)(this["ProcessingErrorsFolder"]));
@@ -100,6 +101,19 @@ namespace RecurringIntegrationsScheduler.Properties {
             }
         }
         
+		[global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
+        public bool UpdateSettings {
+            get {
+                return ((bool)(this["UpdateSettings"]));
+            }
+            set {
+                this["UpdateSettings"] = value;
+            }
+        }
+		
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"
@@ -216,18 +230,6 @@ namespace RecurringIntegrationsScheduler.Properties {
             }
             set {
                 this["AadApplications"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool UpdateSettings {
-            get {
-                return ((bool)(this["UpdateSettings"]));
-            }
-            set {
-                this["UpdateSettings"] = value;
             }
         }
     }

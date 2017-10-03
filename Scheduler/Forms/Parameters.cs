@@ -23,11 +23,23 @@ namespace RecurringIntegrationsScheduler.Forms
             Properties.Settings.Default.Instances = (Instances) instancesGrid.DataSource;
             Properties.Settings.Default.DataJobs = (DataJobs) dataJobsGrid.DataSource;
             Properties.Settings.Default.AadApplications = (AadApplications) applicationsGrid.DataSource;
+            Properties.Settings.Default.ProcessingErrorsFolder = processingErrorsFolder.Text;
+            Properties.Settings.Default.ProcessingSuccessFolder = processingSuccessFolder.Text;
+            Properties.Settings.Default.DownloadErrorsFolder = downloadErrorsFolder.Text;
+            Properties.Settings.Default.UploadErrorsFolder = uploadErrorsFolder.Text;
+            Properties.Settings.Default.UploadInputFolder = uploadInputFolder.Text;
+            Properties.Settings.Default.UploadSuccessFolder = uploadSuccessFolder.Text;
             Properties.Settings.Default.Save();
         }
 
         private void Settings_Load(object sender, EventArgs e)
         {
+            if (Properties.Settings.Default.UpdateSettings)
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.UpdateSettings = false;
+                Properties.Settings.Default.Save();
+            }
             jobGroupsGrid.DataSource = Properties.Settings.Default.JobGroups;
             dataJobsGrid.DataSource = Properties.Settings.Default.DataJobs;
             instancesGrid.DataSource = Properties.Settings.Default.Instances;
