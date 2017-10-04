@@ -1,6 +1,6 @@
 #define MyAppName "Recurring Integrations Scheduler - solution for file-based integrations with Dynamics 365 for Finance and Operations, Enterprise Edition"
 #define MyAppShortName "Recurring Integrations Scheduler"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion GetFileVersion("..\Output\Release\RecurringIntegrationsScheduler.exe")
                                                                                       
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
