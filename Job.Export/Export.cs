@@ -129,7 +129,7 @@ namespace RecurringIntegrationsScheduler.Job
 
                     using (Stream downloadedStream = await response.Content.ReadAsStreamAsync())
                     {
-                        var fileName = Guid.NewGuid().ToString() + ".zip";
+                        var fileName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-ffff}.zip";
                         var successPath = Path.Combine(_settings.DownloadSuccessDir, fileName);
                         var dataMessage = new DataMessage()
                         {

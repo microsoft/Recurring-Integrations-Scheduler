@@ -190,7 +190,7 @@ namespace RecurringIntegrationsScheduler.Job
                     fileCount++;
                     //Downloaded file has no file name. We need to create it.
                     //It will be timestamp followed by number in this download batch.
-                    var fileName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}-{fileCount:D6}";
+                    var fileName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-ffff}-{fileCount:D6}";
                     fileName = Path.ChangeExtension(fileName, "zip");
 
                     dataMessage.FullPath = Path.Combine(_settings.DownloadSuccessDir, fileName);
