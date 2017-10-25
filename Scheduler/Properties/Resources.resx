@@ -826,4 +826,28 @@
   <data name="Path_doesnot_exist_or_is_unaccessible" xml:space="preserve">
     <value>Path does not exist or is unaccessible</value>
   </data>
+  <data name="AAD_application_is_not_mapped" xml:space="preserve">
+    <value>AAD application is not mapped to a user or mapped user has insufficient privileges assigned.</value>
+  </data>
+  <data name="AAD_authentication_was_successful" xml:space="preserve">
+    <value>AAD authentication was successful</value>
+  </data>
+  <data name="Access_to_D365FO_instance_was_successful" xml:space="preserve">
+    <value>Access to D365FO instance was successful.</value>
+  </data>
+  <data name="D365FO_instance_seems_to_be_up_and_running" xml:space="preserve">
+    <value>D365FO instance seems to be up and running.</value>
+  </data>
+  <data name="D365FO_instance_seems_to_not_support_package_API" xml:space="preserve">
+    <value>D365FO instance seems to not support package API. Use only download and upload jobs.</value>
+  </data>
+  <data name="D365FO_instance_seems_to_support_package_API" xml:space="preserve">
+    <value>D365FO instance seems to support package API. You can use export and import jobs.</value>
+  </data>
+  <data name="User_is_not_enabled" xml:space="preserve">
+    <value>User is not enabled or has insufficient privileges assigned.</value>
+  </data>
+  <data name="Warning_HTTP_response_status_for_D365FO_instance_is" xml:space="preserve">
+    <value>Warning! HTTP response status for D365FO instance is</value>
+  </data>
 </root>

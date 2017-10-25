@@ -1,6 +1,8 @@
 ﻿/* Copyright (c) Microsoft Corporation. All rights reserved.
    Licensed under the MIT License. */
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RecurringIntegrationsScheduler.Common.Helpers;
 using RecurringIntegrationsScheduler.Properties;
 using RecurringIntegrationsScheduler.Settings;
@@ -62,11 +64,12 @@ namespace RecurringIntegrationsScheduler.Forms
                 return;
             }
 
-            var settings = new Common.JobSettings.Settings();
+            var settings = new Common.JobSettings.DownloadJobSettings();
 
             Guid.TryParse(application.ClientId, out Guid aadClientGuid);
             settings.AadClientId = aadClientGuid;
             settings.AadClientSecret = EncryptDecrypt.Decrypt(application.Secret);
+            settings.ActivityId = Guid.Empty;
 
             if (Instance != null)
             {
@@ -92,19 +95,71 @@ namespace RecurringIntegrationsScheduler.Forms
                 });
                 response.Wait();
 
+                messagesTextBox.Text += Resources.AAD_authentication_was_successful + Environment.NewLine;
+
                 if (response.Result.StatusCode == HttpStatusCode.OK)
-                    messagesTextBox.Text = response.Result.ReasonPhrase;
+                {
+                    messagesTextBox.Text += Resources.D365FO_instance_seems_to_be_up_and_running + Environment.NewLine;
+                }
+                else
+                {
+                    messagesTextBox.Text += $"{Resources.Warning_HTTP_response_status_for_D365FO_instance_is} {response.Result.StatusCode.ToString()} {response.Result.ReasonPhrase}." + Environment.NewLine;
+                }
+
+                var checkAccess = httpClientHelper.GetDequeueUri();
+                var checkAccessResponse = Task.Run(async () =>
+                {
+                    var result = await httpClientHelper.GetRequestAsync(checkAccess);
+                    return result;
+                });
+                checkAccessResponse.Wait();
+                if (checkAccessResponse.Result.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    if (settings.UseServiceAuthentication)
+                    {
+                        messagesTextBox.Text += Resources.AAD_application_is_not_mapped + Environment.NewLine;
+                    }
+                    else
+                    {
+                        messagesTextBox.Text += Resources.User_is_not_enabled + Environment.NewLine;
+                    }
+                }
+                else if(checkAccessResponse.Result.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    //Internal error is expected as we are using empty guid as activity id. We only check access to API
+                    //TODO: Investigate better approach
+                    messagesTextBox.Text += Resources.Access_to_D365FO_instance_was_successful + Environment.NewLine;
+                }
+
+                var checkPackageApi = Task.Run(async () =>
+                {
+                    var result = await httpClientHelper.GetAzureWriteUrl();
+                    return result;
+                });
+                checkPackageApi.Wait();
+
+                var blobInfo = (JObject)JsonConvert.DeserializeObject(checkPackageApi.Result);
+                var blobId = blobInfo["BlobId"].ToString();
+
+                if(!String.IsNullOrEmpty(blobId))
+                {
+                    messagesTextBox.Text += Resources.D365FO_instance_seems_to_support_package_API + Environment.NewLine;
+                }
+                else
+                {
+                    messagesTextBox.Text += Resources.D365FO_instance_seems_to_not_support_package_API + Environment.NewLine;
+                }
             }
             catch (Exception ex)
             {
                 if (!string.IsNullOrEmpty(ex.Message))
-                    messagesTextBox.Text = messagesTextBox.Text + Environment.NewLine + ex.Message;
+                    messagesTextBox.Text += ex.Message + Environment.NewLine;
                 var inner = ex;
                 while (inner.InnerException != null)
                 {
                     var innerMessage = inner.InnerException?.Message;
                     if (!string.IsNullOrEmpty(innerMessage))
-                        messagesTextBox.Text = messagesTextBox.Text + Environment.NewLine + innerMessage;
+                        messagesTextBox.Text += innerMessage + Environment.NewLine;
                     inner = inner.InnerException;
                 }
             }

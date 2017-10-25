@@ -98,7 +98,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The activity identifier.
         /// </value>
-        public Guid ActivityId { get; private set; }
+        public Guid ActivityId { get; set; }
 
         /// <summary>
         /// Gets the download success dir.

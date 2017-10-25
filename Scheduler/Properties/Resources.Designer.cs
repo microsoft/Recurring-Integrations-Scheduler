@@ -70,6 +70,24 @@ namespace RecurringIntegrationsScheduler.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AAD application is not mapped to a user or mapped user has insufficient privileges assigned..
+        /// </summary>
+        internal static string AAD_application_is_not_mapped {
+            get {
+                return ResourceManager.GetString("AAD_application_is_not_mapped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AAD authentication was successful.
+        /// </summary>
+        internal static string AAD_authentication_was_successful {
+            get {
+                return ResourceManager.GetString("AAD_authentication_was_successful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AAD application.
         /// </summary>
         internal static string AAD_client {
@@ -102,6 +120,15 @@ namespace RecurringIntegrationsScheduler.Properties {
         internal static string About_Recurring_Integrations_App {
             get {
                 return ResourceManager.GetString("About_Recurring_Integrations_App", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access to D365FO instance was successful..
+        /// </summary>
+        internal static string Access_to_D365FO_instance_was_successful {
+            get {
+                return ResourceManager.GetString("Access_to_D365FO_instance_was_successful", resourceCulture);
             }
         }
         
@@ -598,6 +625,33 @@ namespace RecurringIntegrationsScheduler.Properties {
         internal static string Cron_trigger {
             get {
                 return ResourceManager.GetString("Cron_trigger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to D365FO instance seems to be up and running..
+        /// </summary>
+        internal static string D365FO_instance_seems_to_be_up_and_running {
+            get {
+                return ResourceManager.GetString("D365FO_instance_seems_to_be_up_and_running", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to D365FO instance seems to not support package API. Use only download and upload jobs..
+        /// </summary>
+        internal static string D365FO_instance_seems_to_not_support_package_API {
+            get {
+                return ResourceManager.GetString("D365FO_instance_seems_to_not_support_package_API", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to D365FO instance seems to support package API. You can use export and import jobs..
+        /// </summary>
+        internal static string D365FO_instance_seems_to_support_package_API {
+            get {
+                return ResourceManager.GetString("D365FO_instance_seems_to_support_package_API", resourceCulture);
             }
         }
         
@@ -2072,6 +2126,15 @@ namespace RecurringIntegrationsScheduler.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User is not enabled or has insufficient privileges assigned..
+        /// </summary>
+        internal static string User_is_not_enabled {
+            get {
+                return ResourceManager.GetString("User_is_not_enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User is not selected..
         /// </summary>
         internal static string User_is_not_selected {
@@ -2168,6 +2231,15 @@ namespace RecurringIntegrationsScheduler.Properties {
         internal static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning! HTTP response status for D365FO instance is.
+        /// </summary>
+        internal static string Warning_HTTP_response_status_for_D365FO_instance_is {
+            get {
+                return ResourceManager.GetString("Warning_HTTP_response_status_for_D365FO_instance_is", resourceCulture);
             }
         }
         
