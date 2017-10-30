@@ -174,6 +174,14 @@ namespace RecurringIntegrationsScheduler.Job
                                 var tempZipStream = FileOperationsHelper.Read(tempFileName);
                                 using (archive = new ZipArchive(tempZipStream, ZipArchiveMode.Update))
                                 {
+                                    //Check if package template contains input file and remove it first. It should not be there in the first place.
+                                    ZipArchiveEntry entry = archive.GetEntry(fileNameInPackage);
+                                    if (entry != null)
+                                    {
+                                        entry.Delete();
+                                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Package_template_contains_input_file_0_Please_remove_it_from_the_template, fileNameInPackage));
+                                    }
+
                                     var importedFile = archive.CreateEntry(fileNameInPackage, CompressionLevel.Fastest);
                                     using (var entryStream = importedFile.Open())
                                     {

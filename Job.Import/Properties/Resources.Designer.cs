@@ -19,7 +19,7 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -183,6 +183,15 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         internal static string Job_0_was_paused_because_of_error {
             get {
                 return ResourceManager.GetString("Job_0_was_paused_because_of_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package template contains input file: {0}. Please remove it from the template..
+        /// </summary>
+        internal static string Package_template_contains_input_file_0_Please_remove_it_from_the_template {
+            get {
+                return ResourceManager.GetString("Package_template_contains_input_file_0_Please_remove_it_from_the_template", resourceCulture);
             }
         }
     }

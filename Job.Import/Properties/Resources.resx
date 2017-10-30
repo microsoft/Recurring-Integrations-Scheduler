@@ -159,4 +159,7 @@
   <data name="Delay_upload_of_next_file_for_0_seconds" xml:space="preserve">
     <value>Delay upload of next file for {0} seconds</value>
   </data>
+  <data name="Package_template_contains_input_file_0_Please_remove_it_from_the_template" xml:space="preserve">
+    <value>Package template contains input file: {0}. Please remove it from the template.</value>
+  </data>
 </root>
