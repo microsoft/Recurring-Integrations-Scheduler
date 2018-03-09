@@ -192,7 +192,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         public Uri GetDequeueUri()
         {
             if (_dequeueUri != null)
-                return _enqueueUri;
+                return _dequeueUri;
 
             var downloadSettings = _settings as DownloadJobSettings;
             var dequeueUri = new UriBuilder(downloadSettings.AosUri)
