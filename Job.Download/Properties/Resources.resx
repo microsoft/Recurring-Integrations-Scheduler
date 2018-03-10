@@ -162,4 +162,10 @@
   <data name="Job_0_was_paused_because_of_error" xml:space="preserve">
     <value>Job: {0} was paused because of error</value>
   </data>
+  <data name="Job_0_Retrying_Http_operation_Exception_1" xml:space="preserve">
+    <value>Job: {0}. Retrying HTTP operation. Exception : {1}</value>
+  </data>
+  <data name="Job_0_Retrying_IO_operation_Exception_1" xml:space="preserve">
+    <value>Job: {0}. Retrying IO operation. Exception : {1}</value>
+  </data>
 </root>

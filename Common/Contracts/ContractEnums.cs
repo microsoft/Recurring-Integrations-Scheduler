@@ -58,4 +58,21 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         FileName,
         Size
     }
+
+    /// <summary>
+    /// IntegrationActivityMessageStatus
+    /// </summary>
+    public enum IntegrationActivityMessageStatus
+    {
+        Enqueued = 0,
+        Dequeued = 1,
+        Downloaded = 2,
+        Acked = 3,
+        Processing = 4,
+        Processed = 5,
+        ProcessedWithErrors = 6,
+        PostProcessingError = 7,
+        PreProcessingError = 8,
+        PreProcessing = 9
+    }
 }

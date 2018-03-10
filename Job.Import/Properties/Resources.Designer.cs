@@ -142,6 +142,24 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Job: {0}. Retrying HTTP operation. Exception : {1}.
+        /// </summary>
+        internal static string Job_0_Retrying_Http_operation_Exception_1 {
+            get {
+                return ResourceManager.GetString("Job_0_Retrying_Http_operation_Exception_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job: {0}. Retrying IO operation. Exception : {1}.
+        /// </summary>
+        internal static string Job_0_Retrying_IO_operation_Exception_1 {
+            get {
+                return ResourceManager.GetString("Job_0_Retrying_IO_operation_Exception_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Job: {0} starting....
         /// </summary>
         internal static string Job_0_starting {

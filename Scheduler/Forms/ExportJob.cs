@@ -198,6 +198,14 @@ namespace RecurringIntegrationsScheduler.Forms
                     cronTriggerRadioButton.Checked = true;
                     cronExpressionTextBox.Text = localTrigger.CronExpressionString;
                 }
+                if(JobDetail.JobDataMap[SettingsConstants.RetryCount] != null)
+                {
+                    retriesCountUpDown.Value = Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.RetryCount]);
+                }
+                if(JobDetail.JobDataMap[SettingsConstants.RetryDelay] != null)
+                {
+                    retriesDelayUpDown.Value = Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.RetryDelay]);
+                }
                 Properties.Settings.Default.Save();
             }
         }
@@ -371,6 +379,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.DataProject, dataProject.Text},
                 {SettingsConstants.Company, legalEntity.Text},
                 {SettingsConstants.Interval, (interval.Value * 1000).ToString()},
+                {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString()},
+                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {

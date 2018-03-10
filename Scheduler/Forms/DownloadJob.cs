@@ -220,6 +220,14 @@ namespace RecurringIntegrationsScheduler.Forms
                     cronTriggerRadioButton.Checked = true;
                     cronExpressionTextBox.Text = localTrigger.CronExpressionString;
                 }
+                if(JobDetail.JobDataMap[SettingsConstants.RetryCount] != null)
+                {
+                    retriesCountUpDown.Value = Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.RetryCount]);
+                }
+                if(JobDetail.JobDataMap[SettingsConstants.RetryDelay] != null)
+                {
+                    retriesDelayUpDown.Value = Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.RetryDelay]);
+                }
                 Properties.Settings.Default.Save();
             }
         }
@@ -388,7 +396,9 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.AadClientId, application.ClientId},
                 {SettingsConstants.UnzipPackage, unzipCheckBox.Checked.ToString()},
                 {SettingsConstants.AddTimestamp, addTimestampCheckBox.Checked.ToString()},
-                {SettingsConstants.DeletePackage, deletePackageCheckBox.Checked.ToString()}
+                {SettingsConstants.DeletePackage, deletePackageCheckBox.Checked.ToString()},
+                {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString()},
+                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {

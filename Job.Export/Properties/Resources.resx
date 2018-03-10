@@ -171,4 +171,10 @@
   <data name="Job_0_Execution_status_1_Execution_Id_2" xml:space="preserve">
     <value>Job: {0} Execution status: {1} Execution Id {2}</value>
   </data>
+  <data name="Job_0_Retrying_Http_operation_Exception_1" xml:space="preserve">
+    <value>Job: {0}. Retrying HTTP operation. Exception : {1}</value>
+  </data>
+  <data name="Job_0_Retrying_IO_operation_Exception_1" xml:space="preserve">
+    <value>Job: {0}. Retrying IO operation. Exception : {1}</value>
+  </data>
 </root>

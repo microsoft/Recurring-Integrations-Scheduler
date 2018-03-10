@@ -229,6 +229,14 @@ namespace RecurringIntegrationsScheduler.Forms
                     upJobCronTriggerRadioButton.Checked = true;
                     upJobCronExpressionTextBox.Text = localTrigger.CronExpressionString;
                 }
+                if(ImportJobDetail.JobDataMap[SettingsConstants.RetryCount] != null)
+                {
+                    retriesCountUpDown.Value = Convert.ToDecimal(ImportJobDetail.JobDataMap[SettingsConstants.RetryCount]);
+                }
+                if(ImportJobDetail.JobDataMap[SettingsConstants.RetryDelay] != null)
+                {
+                    retriesDelayUpDown.Value = Convert.ToDecimal(ImportJobDetail.JobDataMap[SettingsConstants.RetryDelay]);
+                }
                 Properties.Settings.Default.Save();
             }
             if ((ExecutionJobDetail != null) && (ExecutionTrigger != null))
@@ -551,7 +559,9 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.ExecuteImport, executeImportCheckBox.Checked.ToString()},
                 {SettingsConstants.OverwriteDataProject, overwriteDataProjectCheckBox.Checked.ToString()},
                 {SettingsConstants.DataProject, dataProject.Text},
-                {SettingsConstants.PackageTemplate, packageTemplateTextBox.Text}
+                {SettingsConstants.PackageTemplate, packageTemplateTextBox.Text},
+                {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString()},
+                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -581,7 +591,9 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.AzureAuthEndpoint, instance.AzureAuthEndpoint},
                 {SettingsConstants.AosUri, instance.AosUri},
                 {SettingsConstants.AadClientId, application.ClientId},
-                {SettingsConstants.UseServiceAuthentication, serviceAuthRadioButton.Checked.ToString()}
+                {SettingsConstants.UseServiceAuthentication, serviceAuthRadioButton.Checked.ToString()},
+                {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString()},
+                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {

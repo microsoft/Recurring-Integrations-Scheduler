@@ -4,6 +4,7 @@
 using Common.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Polly;
 using Quartz;
 using RecurringIntegrationsScheduler.Common.Contracts;
 using RecurringIntegrationsScheduler.Common.Helpers;
@@ -14,6 +15,7 @@ using System.Collections.Concurrent;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -55,6 +57,16 @@ namespace RecurringIntegrationsScheduler.Job
         private ConcurrentQueue<DataMessage> InputQueue { get; set; }
 
         /// <summary>
+        /// Retry policy for IO operations
+        /// </summary>
+        private Policy _retryPolicyForIO;
+
+        /// <summary>
+        /// Retry policy for HTTP operations
+        /// </summary>
+        private Policy _retryPolicyForHttp;
+
+        /// <summary>
         /// Called by the <see cref="T:Quartz.IScheduler" /> when a <see cref="T:Quartz.ITrigger" />
         /// fires that is associated with the <see cref="T:Quartz.IJob" />.
         /// </summary>
@@ -74,6 +86,21 @@ namespace RecurringIntegrationsScheduler.Job
             {
                 _context = context;
                 _settings.Initialize(context);
+
+                _retryPolicyForIO = Policy.Handle<IOException>().WaitAndRetry(
+                    retryCount: _settings.RetryCount, 
+                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
+                    onRetry: (exception, calculatedWaitDuration) => 
+                    {
+                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_IO_operation_Exception_1, _context.JobDetail.Key, exception.Message));
+                    });
+                _retryPolicyForHttp = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(
+                    retryCount: _settings.RetryCount, 
+                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
+                    onRetry: (exception, calculatedWaitDuration) => 
+                    {
+                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_Http_operation_Exception_1, _context.JobDetail.Key, exception.Message));
+                    });
 
                 Log.DebugFormat(CultureInfo.InvariantCulture,
                     string.Format(Resources.Job_0_starting, _context.JobDetail.Key));
@@ -136,7 +163,7 @@ namespace RecurringIntegrationsScheduler.Job
         /// </returns>
         private async Task ProcessInputQueue()
         {
-            using (_httpClientHelper = new HttpClientHelper(_settings))
+            using (_httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp))
             {
                 var firstFile = true;
                 string fileNameInPackage = "";
@@ -161,7 +188,7 @@ namespace RecurringIntegrationsScheduler.Job
                         {
                             firstFile = false;
                         }
-                        var sourceStream = FileOperationsHelper.Read(dataMessage.FullPath);
+                        var sourceStream = _retryPolicyForIO.Execute(() => FileOperationsHelper.Read(dataMessage.FullPath));
                         if (sourceStream == null) continue;//Nothing to do here
 
                         //If we need to "wrap" file in package envelope
@@ -170,8 +197,8 @@ namespace RecurringIntegrationsScheduler.Job
                             using (zipToOpen = new FileStream(_settings.PackageTemplate, FileMode.Open))
                             {
                                 tempFileName = Path.GetTempFileName();
-                                FileOperationsHelper.Create(zipToOpen, tempFileName);
-                                var tempZipStream = FileOperationsHelper.Read(tempFileName);
+                                _retryPolicyForIO.Execute(() => FileOperationsHelper.Create(zipToOpen, tempFileName));
+                                var tempZipStream = _retryPolicyForIO.Execute(() => FileOperationsHelper.Read(tempFileName));
                                 using (archive = new ZipArchive(tempZipStream, ZipArchiveMode.Update))
                                 {
                                     //Check if package template contains input file and remove it first. It should not be there in the first place.
@@ -190,7 +217,7 @@ namespace RecurringIntegrationsScheduler.Job
                                         sourceStream.Dispose();
                                     }
                                 }
-                                sourceStream = FileOperationsHelper.Read(tempFileName);
+                                sourceStream = _retryPolicyForIO.Execute(() => FileOperationsHelper.Read(tempFileName));
                             }
                         }
 
@@ -198,7 +225,11 @@ namespace RecurringIntegrationsScheduler.Job
 
                         // Get blob url and id. Returns in json format
                         var response = await _httpClientHelper.GetAzureWriteUrl();
-
+                        if(String.IsNullOrEmpty(response))
+                        {
+                            Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format("Method GetAzureWriteUrl returned empty string"));
+                            continue;
+                        }
                         var blobInfo = (JObject)JsonConvert.DeserializeObject(response);
                         var blobId = blobInfo["BlobId"].ToString();
                         var blobUrl = blobInfo["BlobUrl"].ToString();
@@ -213,7 +244,7 @@ namespace RecurringIntegrationsScheduler.Job
                             sourceStream.Dispose();
                             if (!String.IsNullOrEmpty(_settings.PackageTemplate))
                             {
-                                FileOperationsHelper.Delete(tempFileName);
+                                _retryPolicyForIO.Execute(() => FileOperationsHelper.Delete(tempFileName));
                             }
                         }
                         if (uploadResponse.IsSuccessStatusCode)
@@ -235,10 +266,10 @@ namespace RecurringIntegrationsScheduler.Job
                                 };
 
                                 // Move to inprocess/success location
-                                FileOperationsHelper.Move(dataMessage.FullPath, targetDataMessage.FullPath);
+                                _retryPolicyForIO.Execute(() => FileOperationsHelper.Move(dataMessage.FullPath, targetDataMessage.FullPath));
 
                                 if (_settings.ExecutionJobPresent)
-                                    FileOperationsHelper.WriteStatusFile(targetDataMessage, _settings.StatusFileExtension);
+                                    _retryPolicyForIO.Execute(() => FileOperationsHelper.WriteStatusFile(targetDataMessage, _settings.StatusFileExtension));
 
                                 Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_File_1_uploaded_successfully, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}")));
                             }
@@ -254,10 +285,10 @@ namespace RecurringIntegrationsScheduler.Job
                                 };
 
                                 // Move data to error location
-                                FileOperationsHelper.Move(dataMessage.FullPath, targetDataMessage.FullPath);
+                                _retryPolicyForIO.Execute(() => FileOperationsHelper.Move(dataMessage.FullPath, targetDataMessage.FullPath));
 
                                 // Save the log with import failure details
-                                FileOperationsHelper.WriteStatusLogFile(targetDataMessage, importResponse, _settings.StatusFileExtension);
+                                _retryPolicyForIO.Execute(() => FileOperationsHelper.WriteStatusLogFile(targetDataMessage, importResponse, _settings.StatusFileExtension));
                             }
                         }
                         else
@@ -272,10 +303,10 @@ namespace RecurringIntegrationsScheduler.Job
                             };
 
                             // Move data to error location
-                            FileOperationsHelper.Move(dataMessage.FullPath, targetDataMessage.FullPath);
+                            _retryPolicyForIO.Execute(() => FileOperationsHelper.Move(dataMessage.FullPath, targetDataMessage.FullPath));
 
                             // Save the log with import failure details
-                            FileOperationsHelper.WriteStatusLogFile(targetDataMessage, uploadResponse, _settings.StatusFileExtension);
+                            _retryPolicyForIO.Execute(() => FileOperationsHelper.WriteStatusLogFile(targetDataMessage, uploadResponse, _settings.StatusFileExtension));
                         }
                     }
                     catch (Exception ex)

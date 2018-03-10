@@ -4,6 +4,7 @@
 using Common.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Polly;
 using Quartz;
 using RecurringIntegrationsScheduler.Common.Contracts;
 using RecurringIntegrationsScheduler.Common.Helpers;
@@ -13,6 +14,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RecurringIntegrationsScheduler.Job
@@ -53,6 +55,16 @@ namespace RecurringIntegrationsScheduler.Job
         private ConcurrentQueue<DataMessage> EnqueuedJobs { get; set; }
 
         /// <summary>
+        /// Retry policy for IO operations
+        /// </summary>
+        private Policy _retryPolicyForIO;
+
+        /// <summary>
+        /// Retry policy for HTTP operations
+        /// </summary>
+        private Policy _retryPolicyForHttp;
+
+        /// <summary>
         /// Called by the <see cref="T:Quartz.IScheduler" /> when a <see cref="T:Quartz.ITrigger" />
         /// fires that is associated with the <see cref="T:Quartz.IJob" />.
         /// </summary>
@@ -72,6 +84,21 @@ namespace RecurringIntegrationsScheduler.Job
             {
                 _context = context;
                 _settings.Initialize(context);
+
+                _retryPolicyForIO = Policy.Handle<IOException>().WaitAndRetry(
+                    retryCount: _settings.RetryCount, 
+                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
+                    onRetry: (exception, calculatedWaitDuration) => 
+                    {
+                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_IO_operation_Exception_1, _context.JobDetail.Key, exception.Message));
+                    });
+                _retryPolicyForHttp = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(
+                    retryCount: _settings.RetryCount, 
+                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
+                    onRetry: (exception, calculatedWaitDuration) => 
+                    {
+                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_Http_operation_Exception_1, _context.JobDetail.Key, exception.Message));
+                    });
 
                 Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_starting, _context.JobDetail.Key));
 
@@ -124,7 +151,7 @@ namespace RecurringIntegrationsScheduler.Job
         /// <returns></returns>
         private async Task ProcessEnqueuedQueue()
         {
-            _httpClientHelper = new HttpClientHelper(_settings);
+            _httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp);
 
             while (EnqueuedJobs.TryDequeue(out DataMessage dataMessage))
             {
@@ -152,14 +179,14 @@ namespace RecurringIntegrationsScheduler.Job
 
             dataMessage.DataJobState = jobStatusDetail.DataJobStatus.DataJobState;
 
-            FileOperationsHelper.WriteStatusFile(dataMessage, _settings.StatusFileExtension);
+            _retryPolicyForIO.Execute(() => FileOperationsHelper.WriteStatusFile(dataMessage, _settings.StatusFileExtension));
 
             switch (dataMessage.DataJobState)
             {
                 case DataJobState.Processed:
                 {
                     // Move message file and delete processing status file
-                    FileOperationsHelper.MoveDataToTarget(dataMessage.FullPath, Path.Combine(_settings.ProcessingSuccessDir, dataMessage.Name), true);
+                    _retryPolicyForIO.Execute(() => FileOperationsHelper.MoveDataToTarget(dataMessage.FullPath, Path.Combine(_settings.ProcessingSuccessDir, dataMessage.Name), true));
                 }
                 break;
 
@@ -172,8 +199,8 @@ namespace RecurringIntegrationsScheduler.Job
                         FullPath = Path.Combine(_settings.ProcessingErrorsDir, dataMessage.Name),
                         MessageStatus = MessageStatus.Failed
                     };
-                    FileOperationsHelper.MoveDataToTarget(dataMessage.FullPath, targetDataMessage.FullPath);
-                    FileOperationsHelper.WriteStatusLogFile(jobStatusDetail, targetDataMessage, null, _settings.StatusFileExtension);
+                    _retryPolicyForIO.Execute(() => FileOperationsHelper.MoveDataToTarget(dataMessage.FullPath, targetDataMessage.FullPath));
+                    _retryPolicyForIO.Execute(() => FileOperationsHelper.WriteStatusLogFile(jobStatusDetail, targetDataMessage, null, _settings.StatusFileExtension));
                 }
                 break;
             }

@@ -57,6 +57,7 @@ Source: "..\Output\Release\Microsoft.IdentityModel.Clients.ActiveDirectory.dll";
 Source: "..\Output\Release\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
 Source: "..\Output\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
 Source: "..\Output\Release\System.Linq.Dynamic.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
+Source: "..\Output\Release\Polly.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
 ; App
 Source: "..\Output\Release\RecurringIntegrationsScheduler.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: App
 Source: "..\Output\Release\RecurringIntegrationsScheduler.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: App
@@ -76,7 +77,6 @@ Root: HKLM; Subkey: "System\CurrentControlSet\Services\EventLog\Recurring Integr
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 Name: "{group}\Recurring Integrations Scheduler App"; Filename: "{app}\RecurringIntegrationsScheduler.exe"; WorkingDir: "{app}"
-Name: "{group}\Recurring Integrations Scheduler White Paper"; Filename: "{app}\Recurring Integrations Scheduler.pdf"; WorkingDir: "{app}"
 
 [Run]
 Filename: "{app}\Quartz.Server.exe"; Parameters: "install"; Flags: runhidden; Components: Scheduler

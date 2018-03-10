@@ -143,6 +143,8 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             }
 
             ReverseOrder = Convert.ToBoolean(dataMap.GetString(SettingsConstants.ReverseOrder));
+
+            UploadInOrder = Convert.ToBoolean(dataMap.GetString(SettingsConstants.UploadInOrder));
         }
 
         #region Members
@@ -242,6 +244,14 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         ///   <c>true</c> if [reverse order]; otherwise, <c>false</c>.
         /// </value>
         public bool ReverseOrder { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether files should be uploaded in order.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if file should be uploaded only when previous was successfully processed; otherwise, <c>false</c>.
+        /// </value>
+        public bool UploadInOrder { get; private set; }
 
         #endregion
     }

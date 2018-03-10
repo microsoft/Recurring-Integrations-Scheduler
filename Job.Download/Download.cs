@@ -14,6 +14,8 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using Polly;
+using System.Net.Http;
 
 namespace RecurringIntegrationsScheduler.Job
 {
@@ -63,6 +65,16 @@ namespace RecurringIntegrationsScheduler.Job
         private ConcurrentQueue<DataMessage> DownloadQueue { get; set; }
 
         /// <summary>
+        /// Retry policy for IO operations
+        /// </summary>
+        private Policy _retryPolicyForIO;
+
+        /// <summary>
+        /// Retry policy for HTTP operations
+        /// </summary>
+        private Policy _retryPolicyForHttp;
+
+        /// <summary>
         /// Called by the <see cref="T:Quartz.IScheduler" /> when a <see cref="T:Quartz.ITrigger" />
         /// fires that is associated with the <see cref="T:Quartz.IJob" />.
         /// </summary>
@@ -82,6 +94,21 @@ namespace RecurringIntegrationsScheduler.Job
             {
                 _context = context;
                 _settings.Initialize(context);
+
+                _retryPolicyForIO = Policy.Handle<IOException>().WaitAndRetry(
+                    retryCount: _settings.RetryCount, 
+                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
+                    onRetry: (exception, calculatedWaitDuration) => 
+                    {
+                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_IO_operation_Exception_1, _context.JobDetail.Key, exception.Message));
+                    });
+                _retryPolicyForHttp = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(
+                    retryCount: _settings.RetryCount, 
+                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
+                    onRetry: (exception, calculatedWaitDuration) => 
+                    {
+                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_Http_operation_Exception_1, _context.JobDetail.Key, exception.Message));
+                    });
 
                 Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_starting, _context.JobDetail.Key));
 
@@ -118,7 +145,7 @@ namespace RecurringIntegrationsScheduler.Job
         private async Task Process()
         {
             DownloadQueue = new ConcurrentQueue<DataMessage>();
-            _httpClientHelper = new HttpClientHelper(_settings);
+            _httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp);
             _dequeueUri = _httpClientHelper.GetDequeueUri();
             _acknowledgeDownloadUri = _httpClientHelper.GetAckUri();
 
@@ -197,7 +224,7 @@ namespace RecurringIntegrationsScheduler.Job
                     dataMessage.Name = fileName;
                     dataMessage.MessageStatus = MessageStatus.Succeeded;
 
-                    FileOperationsHelper.Create(downloadedStream, dataMessage.FullPath);
+                    _retryPolicyForIO.Execute(() => FileOperationsHelper.Create(downloadedStream, dataMessage.FullPath));
                 }
 
                 Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_File_1_was_downloaded, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}")));
@@ -205,7 +232,7 @@ namespace RecurringIntegrationsScheduler.Job
                 await AcknowledgeDownload(dataMessage);
 
                 if (_settings.UnzipPackage)
-                    FileOperationsHelper.UnzipPackage(dataMessage.FullPath, _settings.DeletePackage, _settings.AddTimestamp);
+                    _retryPolicyForIO.Execute(() => FileOperationsHelper.UnzipPackage(dataMessage.FullPath, _settings.DeletePackage, _settings.AddTimestamp));
 
                 System.Threading.Thread.Sleep(_settings.Interval);
             }
@@ -232,7 +259,7 @@ namespace RecurringIntegrationsScheduler.Job
                 Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Acknowledgment_failure_response, _context.JobDetail.Key, response.StatusCode, response.StatusCode, response.ReasonPhrase));
 
                 // Move message file
-                FileOperationsHelper.Move(dataMessage.FullPath, Path.Combine(_settings.DownloadErrorsDir, dataMessage.Name));
+                _retryPolicyForIO.Execute(() => FileOperationsHelper.Move(dataMessage.FullPath, Path.Combine(_settings.DownloadErrorsDir, dataMessage.Name)));
             }
         }
     }

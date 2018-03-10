@@ -19,7 +19,7 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -201,6 +201,24 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         internal static string Job_0_File_dequeued_successfully_Download_location_1 {
             get {
                 return ResourceManager.GetString("Job_0_File_dequeued_successfully_Download_location_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job: {0}. Retrying HTTP operation. Exception : {1}.
+        /// </summary>
+        internal static string Job_0_Retrying_Http_operation_Exception_1 {
+            get {
+                return ResourceManager.GetString("Job_0_Retrying_Http_operation_Exception_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job: {0}. Retrying IO operation. Exception : {1}.
+        /// </summary>
+        internal static string Job_0_Retrying_IO_operation_Exception_1 {
+            get {
+                return ResourceManager.GetString("Job_0_Retrying_IO_operation_Exception_1", resourceCulture);
             }
         }
         

@@ -12,6 +12,8 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Polly;
+using System.Net.Http;
 
 namespace RecurringIntegrationsScheduler.Forms
 {
@@ -84,7 +86,8 @@ namespace RecurringIntegrationsScheduler.Forms
             }
             settings.UseServiceAuthentication = serviceAuthRadioButton.Checked;
 
-            var httpClientHelper = new HttpClientHelper(settings);
+            var retryPolicy = Policy.Handle<HttpRequestException>().RetryAsync(retryCount: 1);
+            var httpClientHelper = new HttpClientHelper(settings, retryPolicy);
 
             try
             {
@@ -137,17 +140,41 @@ namespace RecurringIntegrationsScheduler.Forms
                     return result;
                 });
                 checkPackageApi.Wait();
-
-                var blobInfo = (JObject)JsonConvert.DeserializeObject(checkPackageApi.Result);
-                var blobId = blobInfo["BlobId"].ToString();
-
-                if(!String.IsNullOrEmpty(blobId))
+                if (String.IsNullOrEmpty(checkPackageApi.Result))
                 {
-                    messagesTextBox.Text += Resources.D365FO_instance_seems_to_support_package_API + Environment.NewLine;
+                    messagesTextBox.Text += string.Format("Method GetAzureWriteUrl returned empty string. Check previous errors.");
                 }
                 else
                 {
-                    messagesTextBox.Text += Resources.D365FO_instance_seems_to_not_support_package_API + Environment.NewLine;
+                    var blobInfo = (JObject)JsonConvert.DeserializeObject(checkPackageApi.Result);
+                    var blobId = blobInfo["BlobId"].ToString();
+
+                    if (!String.IsNullOrEmpty(blobId))
+                    {
+                        messagesTextBox.Text += Resources.D365FO_instance_seems_to_support_package_API + Environment.NewLine;
+                    }
+                    else
+                    {
+                        messagesTextBox.Text += Resources.D365FO_instance_seems_to_not_support_package_API + Environment.NewLine;
+                        return; //we should not check further.
+                    }
+                }
+
+                var checkKB4058074 = Task.Run(async () =>
+                {
+                    var result = await httpClientHelper.GetMessageStatus(new Guid().ToString());
+                    return result;
+                });
+                checkKB4058074.Wait();
+                if (String.IsNullOrEmpty(checkKB4058074.Result))
+                {
+                    //TODO
+                    messagesTextBox.Text += string.Format("Method GetMessageStatus returned empty string. Check previous errors.") + Environment.NewLine;
+                }
+                else
+                {
+                    //TODO
+                    messagesTextBox.Text += "Instance seems to support GetMessageStatus method" + Environment.NewLine;
                 }
             }
             catch (Exception ex)

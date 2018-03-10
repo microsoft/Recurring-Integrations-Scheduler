@@ -2,6 +2,7 @@
    Licensed under the MIT License. */
 
 using Common.Logging;
+using Polly;
 using Quartz;
 using RecurringIntegrationsScheduler.Common.Contracts;
 using RecurringIntegrationsScheduler.Common.Helpers;
@@ -10,6 +11,7 @@ using RecurringIntegrationsScheduler.Job.Properties;
 using System;
 using System.Globalization;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RecurringIntegrationsScheduler.Job
@@ -42,6 +44,16 @@ namespace RecurringIntegrationsScheduler.Job
         private IJobExecutionContext _context;
 
         /// <summary>
+        /// Retry policy for IO operations
+        /// </summary>
+        private Policy _retryPolicyForIO;
+
+        /// <summary>
+        /// Retry policy for HTTP operations
+        /// </summary>
+        private Policy _retryPolicyForHttp;
+
+        /// <summary>
         /// Called by the <see cref="T:Quartz.IScheduler" /> when a <see cref="T:Quartz.ITrigger" />
         /// fires that is associated with the <see cref="T:Quartz.IJob" />.
         /// </summary>
@@ -61,6 +73,21 @@ namespace RecurringIntegrationsScheduler.Job
             {
                 _context = context;
                 _settings.Initialize(context);
+
+                _retryPolicyForIO = Policy.Handle<IOException>().WaitAndRetry(
+                    retryCount: _settings.RetryCount, 
+                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
+                    onRetry: (exception, calculatedWaitDuration) => 
+                    {
+                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_IO_operation_Exception_1, _context.JobDetail.Key, exception.Message));
+                    });
+                _retryPolicyForHttp = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(
+                    retryCount: _settings.RetryCount, 
+                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
+                    onRetry: (exception, calculatedWaitDuration) => 
+                    {
+                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_Http_operation_Exception_1, _context.JobDetail.Key, exception.Message));
+                    });
 
                 Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_starting, _context.JobDetail.Key));
 
@@ -96,7 +123,7 @@ namespace RecurringIntegrationsScheduler.Job
         /// <returns></returns>
         private async Task Process()
         {
-            using (_httpClientHelper = new HttpClientHelper(_settings))
+            using (_httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp))
             {
                 var executionId = CreateExecutionId(_settings.DataProject);
                 var responseExportToPackage = await _httpClientHelper.ExportToPackage(_settings.DataProject, executionId, executionId, _settings.Company);
@@ -137,10 +164,10 @@ namespace RecurringIntegrationsScheduler.Job
                             Name = fileName,
                             MessageStatus = MessageStatus.Succeeded
                         };
-                        FileOperationsHelper.Create(downloadedStream, dataMessage.FullPath);
+                        _retryPolicyForIO.Execute(() => FileOperationsHelper.Create(downloadedStream, dataMessage.FullPath));
 
                         if (_settings.UnzipPackage)
-                            FileOperationsHelper.UnzipPackage(dataMessage.FullPath, _settings.DeletePackage, _settings.AddTimestamp);
+                            _retryPolicyForIO.Execute(() => FileOperationsHelper.UnzipPackage(dataMessage.FullPath, _settings.DeletePackage, _settings.AddTimestamp));
                     }
                 }
                 else if (executionStatus == "Unknown" || executionStatus == "Failed" || executionStatus == "Canceled")

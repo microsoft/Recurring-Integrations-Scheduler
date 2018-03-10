@@ -60,6 +60,16 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         public const string Interval = "Interval";
 
         /// <summary>
+        /// The retry count
+        /// </summary>
+        public const string RetryCount = "RetryCount";
+
+        /// <summary>
+        /// The retry delay
+        /// </summary>
+        public const string RetryDelay = "RetryDelay";
+
+        /// <summary>
         /// The download job
         /// </summary>
         public const string DownloadJob = "RecurringIntegrationsScheduler.Job.Download";
@@ -184,6 +194,11 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         /// Delete package archive
         /// </summary>
         public const string DeletePackage = "DeletePackage";
+
+        /// <summary>
+        /// Upload in order
+        /// </summary>
+        public const string UploadInOrder = "UploadInOrder";
         #endregion
 
         #region Import Job settings

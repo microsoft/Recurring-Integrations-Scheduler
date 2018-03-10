@@ -159,4 +159,10 @@
   <data name="Delay_upload_of_next_file_for_0_seconds" xml:space="preserve">
     <value>Delay upload of next file for {0} seconds</value>
   </data>
+  <data name="Job_0_Retrying_Http_operation_Exception_1" xml:space="preserve">
+    <value>Job: {0}. Retrying HTTP operation. Exception : {1}</value>
+  </data>
+  <data name="Job_0_Retrying_IO_operation_Exception_1" xml:space="preserve">
+    <value>Job: {0}. Retrying IO operation. Exception : {1}</value>
+  </data>
 </root>

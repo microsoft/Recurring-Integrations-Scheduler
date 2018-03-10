@@ -96,6 +96,18 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             {
                 Interval = 2000;
             }
+
+            RetryCount = dataMap.GetInt(SettingsConstants.RetryCount);
+            if (RetryCount == 0) 
+            {
+                RetryCount = 1;
+            }
+
+            RetryDelay = dataMap.GetInt(SettingsConstants.RetryDelay);
+            if (RetryDelay == 0) 
+            {
+                RetryDelay = 60;
+            }
         }
 
         #region Members
@@ -171,6 +183,22 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// The execution interval.
         /// </value>
         public int Interval { get; private set; }
+
+        /// <summary>
+        /// Gets or sets retry count.
+        /// </summary>
+        /// <value>
+        /// Retry count.
+        /// </value>
+        public int RetryCount { get; private set; }
+
+        /// <summary>
+        /// Gets or sets delay between retries.
+        /// </summary>
+        /// <value>
+        /// Delay between retries in seconds.
+        /// </value>
+        public int RetryDelay { get; private set; }
 
         #endregion
     }
