@@ -154,7 +154,7 @@
     <value>Job: {0}. Failed to save status log file. Exception : {1}</value>
   </data>
   <data name="Job_0_was_paused_because_of_error" xml:space="preserve">
-    <value>Job: {0} was paused because of error</value>
+    <value>Job: {0} was paused because of an error.</value>
   </data>
   <data name="Delay_upload_of_next_file_for_0_seconds" xml:space="preserve">
     <value>Delay upload of next file for {0} seconds</value>
@@ -167,5 +167,8 @@
   </data>
   <data name="Job_0_Retrying_IO_operation_Exception_1" xml:space="preserve">
     <value>Job: {0}. Retrying IO operation. Exception : {1}</value>
+  </data>
+  <data name="Job_0_thrown_an_error_1" xml:space="preserve">
+    <value>Job: {0} thrown an error. Exception : {1}</value>
   </data>
 </root>

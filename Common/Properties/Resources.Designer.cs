@@ -61,7 +61,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AAD tenant id is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to AAD tenant id is missing in job configuration..
         /// </summary>
         internal static string AAD_tenant_id_is_missing_in_job_configuration {
             get {
@@ -70,7 +70,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Activity Id of recurring job is missing or is not a GUID in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to Activity Id of recurring job is missing or is not a GUID in job configuration..
         /// </summary>
         internal static string Activity_Id_of_recurring_job_is_missing_or_is_not_a_GUID_in_job_configuration {
             get {
@@ -79,7 +79,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AOS URL is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to AOS URL is missing in job configuration..
         /// </summary>
         internal static string AOS_URL_is_missing_in_job_configuration {
             get {
@@ -88,7 +88,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Azure application client id is missing or is not a GUID in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to Azure application client id is missing or is not a GUID in job configuration..
         /// </summary>
         internal static string Azure_application_client_id_is_missing_or_is_not_a_GUID_in_job_configuration {
             get {
@@ -97,7 +97,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Azure authentication endpoint URL is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to Azure authentication endpoint URL is missing in job configuration..
         /// </summary>
         internal static string Azure_authentication_endpoint_URL_is_missing_in_job_configuration {
             get {
@@ -106,7 +106,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Azure web application secret is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to Azure web application secret is missing in job configuration..
         /// </summary>
         internal static string Azure_web_application_secret_is_missing_in_job_configuration {
             get {
@@ -133,7 +133,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Company is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to Company is missing in job configuration..
         /// </summary>
         internal static string Company_is_missing_in_job_configuration {
             get {
@@ -142,7 +142,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data project is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to Data project is missing in job configuration..
         /// </summary>
         internal static string Data_project_is_missing_in_job_configuration {
             get {
@@ -151,7 +151,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download errors directory does not exist or cannot be accessed. Job: {0}.
+        ///   Looks up a localized string similar to Download errors directory does not exist or cannot be accessed..
         /// </summary>
         internal static string Download_errors_directory_does_not_exist_or_cannot_be_accessed {
             get {
@@ -160,7 +160,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download errors directory is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to Download errors directory is missing in job configuration..
         /// </summary>
         internal static string Download_errors_directory_is_missing_in_job_configuration {
             get {
@@ -169,7 +169,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download success directory does not exist or cannot be accessed. Job: {0}.
+        ///   Looks up a localized string similar to Download success directory does not exist or cannot be accessed..
         /// </summary>
         internal static string Download_success_directory_does_not_exist_or_cannot_be_accessed {
             get {
@@ -178,7 +178,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download success directory is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to Download success directory is missing in job configuration..
         /// </summary>
         internal static string Download_success_directory_is_missing_in_job_configuration {
             get {
@@ -187,7 +187,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Entity name is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to Entity name is missing in job configuration..
         /// </summary>
         internal static string Entity_name_is_missing_in_job_configuration {
             get {
@@ -214,7 +214,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extension of status files is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to Extension of status files is missing in job configuration..
         /// </summary>
         internal static string Extension_of_status_files_is_missing_in_job_configuration {
             get {
@@ -250,7 +250,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Input directory does not exist or cannot be accessed. Job: {0}.
+        ///   Looks up a localized string similar to Input directory does not exist or cannot be accessed..
         /// </summary>
         internal static string Input_directory_does_not_exist_or_cannot_be_accessed {
             get {
@@ -259,7 +259,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Input directory is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to Input directory is missing in job configuration..
         /// </summary>
         internal static string Input_directory_is_missing_in_job_configuration {
             get {
@@ -286,7 +286,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package template: {0} was not found! Job: {1}.
+        ///   Looks up a localized string similar to Package template: {0} was not found!.
         /// </summary>
         internal static string Package_template_0_not_found {
             get {
@@ -295,7 +295,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Processing errors directory does not exist or cannot be accessed. Job: {0}.
+        ///   Looks up a localized string similar to Processing errors directory does not exist or cannot be accessed..
         /// </summary>
         internal static string Processing_errors_directory_does_not_exist_or_cannot_be_accessed {
             get {
@@ -304,7 +304,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Processing errors directory is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to Processing errors directory is missing in job configuration..
         /// </summary>
         internal static string Processing_errors_directory_is_missing_in_job_configuration {
             get {
@@ -313,7 +313,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Processing success directory does not exist or cannot be accessed. Job: {0}.
+        ///   Looks up a localized string similar to Processing success directory does not exist or cannot be accessed..
         /// </summary>
         internal static string Processing_success_directory_does_not_exist_or_cannot_be_accessed {
             get {
@@ -322,7 +322,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Processing success directory is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to Processing success directory is missing in job configuration..
         /// </summary>
         internal static string Processing_success_directory_is_missing_in_job_configuration {
             get {
@@ -349,7 +349,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Upload errors directory does not exist or cannot be accessed. Job: {0}.
+        ///   Looks up a localized string similar to Upload errors directory does not exist or cannot be accessed..
         /// </summary>
         internal static string Upload_errors_directory_does_not_exist_or_cannot_be_accessed {
             get {
@@ -358,7 +358,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Upload errors directory is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to Upload errors directory is missing in job configuration..
         /// </summary>
         internal static string Upload_errors_directory_is_missing_in_job_configuration {
             get {
@@ -367,7 +367,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Upload success directory does not exist or cannot be accessed. Job: {0}.
+        ///   Looks up a localized string similar to Upload success directory does not exist or cannot be accessed..
         /// </summary>
         internal static string Upload_success_directory_does_not_exist_or_cannot_be_accessed {
             get {
@@ -376,7 +376,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Upload success directory is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to Upload success directory is missing in job configuration..
         /// </summary>
         internal static string Upload_success_directory_is_missing_in_job_configuration {
             get {
@@ -385,7 +385,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User password is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to User password is missing in job configuration..
         /// </summary>
         internal static string User_password_is_missing_in_job_configuration {
             get {
@@ -394,7 +394,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User principal name is missing in job configuration. Job: {0}.
+        ///   Looks up a localized string similar to User principal name is missing in job configuration..
         /// </summary>
         internal static string User_principal_name_is_missing_in_job_configuration {
             get {
@@ -403,7 +403,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Verification of package template file location failed! {0} Job: {1}.
+        ///   Looks up a localized string similar to Verification of package template file location failed! {0}.
         /// </summary>
         internal static string Verification_of_package_template_location_failed_0 {
             get {

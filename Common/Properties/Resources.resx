@@ -133,76 +133,76 @@
     <value>File {0} deleted successfully.</value>
   </data>
   <data name="Download_success_directory_does_not_exist_or_cannot_be_accessed" xml:space="preserve">
-    <value>Download success directory does not exist or cannot be accessed. Job: {0}</value>
+    <value>Download success directory does not exist or cannot be accessed.</value>
   </data>
   <data name="Download_success_directory_is_missing_in_job_configuration" xml:space="preserve">
-    <value>Download success directory is missing in job configuration. Job: {0}</value>
+    <value>Download success directory is missing in job configuration.</value>
   </data>
   <data name="Download_errors_directory_does_not_exist_or_cannot_be_accessed" xml:space="preserve">
-    <value>Download errors directory does not exist or cannot be accessed. Job: {0}</value>
+    <value>Download errors directory does not exist or cannot be accessed.</value>
   </data>
   <data name="Download_errors_directory_is_missing_in_job_configuration" xml:space="preserve">
-    <value>Download errors directory is missing in job configuration. Job: {0}</value>
+    <value>Download errors directory is missing in job configuration.</value>
   </data>
   <data name="Upload_success_directory_does_not_exist_or_cannot_be_accessed" xml:space="preserve">
-    <value>Upload success directory does not exist or cannot be accessed. Job: {0}</value>
+    <value>Upload success directory does not exist or cannot be accessed.</value>
   </data>
   <data name="Upload_success_directory_is_missing_in_job_configuration" xml:space="preserve">
-    <value>Upload success directory is missing in job configuration. Job: {0}</value>
+    <value>Upload success directory is missing in job configuration.</value>
   </data>
   <data name="Processing_success_directory_does_not_exist_or_cannot_be_accessed" xml:space="preserve">
-    <value>Processing success directory does not exist or cannot be accessed. Job: {0}</value>
+    <value>Processing success directory does not exist or cannot be accessed.</value>
   </data>
   <data name="Processing_success_directory_is_missing_in_job_configuration" xml:space="preserve">
-    <value>Processing success directory is missing in job configuration. Job: {0}</value>
+    <value>Processing success directory is missing in job configuration.</value>
   </data>
   <data name="Processing_errors_directory_does_not_exist_or_cannot_be_accessed" xml:space="preserve">
-    <value>Processing errors directory does not exist or cannot be accessed. Job: {0}</value>
+    <value>Processing errors directory does not exist or cannot be accessed.</value>
   </data>
   <data name="Processing_errors_directory_is_missing_in_job_configuration" xml:space="preserve">
-    <value>Processing errors directory is missing in job configuration. Job: {0}</value>
+    <value>Processing errors directory is missing in job configuration.</value>
   </data>
   <data name="Extension_of_status_files_is_missing_in_job_configuration" xml:space="preserve">
-    <value>Extension of status files is missing in job configuration. Job: {0}</value>
+    <value>Extension of status files is missing in job configuration.</value>
   </data>
   <data name="AOS_URL_is_missing_in_job_configuration" xml:space="preserve">
-    <value>AOS URL is missing in job configuration. Job: {0}</value>
+    <value>AOS URL is missing in job configuration.</value>
   </data>
   <data name="Azure_authentication_endpoint_URL_is_missing_in_job_configuration" xml:space="preserve">
-    <value>Azure authentication endpoint URL is missing in job configuration. Job: {0}</value>
+    <value>Azure authentication endpoint URL is missing in job configuration.</value>
   </data>
   <data name="AAD_tenant_id_is_missing_in_job_configuration" xml:space="preserve">
-    <value>AAD tenant id is missing in job configuration. Job: {0}</value>
+    <value>AAD tenant id is missing in job configuration.</value>
   </data>
   <data name="Azure_application_client_id_is_missing_or_is_not_a_GUID_in_job_configuration" xml:space="preserve">
-    <value>Azure application client id is missing or is not a GUID in job configuration. Job: {0}</value>
+    <value>Azure application client id is missing or is not a GUID in job configuration.</value>
   </data>
   <data name="Azure_web_application_secret_is_missing_in_job_configuration" xml:space="preserve">
-    <value>Azure web application secret is missing in job configuration. Job: {0}</value>
+    <value>Azure web application secret is missing in job configuration.</value>
   </data>
   <data name="User_principal_name_is_missing_in_job_configuration" xml:space="preserve">
-    <value>User principal name is missing in job configuration. Job: {0}</value>
+    <value>User principal name is missing in job configuration.</value>
   </data>
   <data name="User_password_is_missing_in_job_configuration" xml:space="preserve">
-    <value>User password is missing in job configuration. Job: {0}</value>
+    <value>User password is missing in job configuration.</value>
   </data>
   <data name="Activity_Id_of_recurring_job_is_missing_or_is_not_a_GUID_in_job_configuration" xml:space="preserve">
-    <value>Activity Id of recurring job is missing or is not a GUID in job configuration. Job: {0}</value>
+    <value>Activity Id of recurring job is missing or is not a GUID in job configuration.</value>
   </data>
   <data name="Input_directory_does_not_exist_or_cannot_be_accessed" xml:space="preserve">
-    <value>Input directory does not exist or cannot be accessed. Job: {0}</value>
+    <value>Input directory does not exist or cannot be accessed.</value>
   </data>
   <data name="Input_directory_is_missing_in_job_configuration" xml:space="preserve">
-    <value>Input directory is missing in job configuration. Job: {0}</value>
+    <value>Input directory is missing in job configuration.</value>
   </data>
   <data name="Upload_errors_directory_does_not_exist_or_cannot_be_accessed" xml:space="preserve">
-    <value>Upload errors directory does not exist or cannot be accessed. Job: {0}</value>
+    <value>Upload errors directory does not exist or cannot be accessed.</value>
   </data>
   <data name="Upload_errors_directory_is_missing_in_job_configuration" xml:space="preserve">
-    <value>Upload errors directory is missing in job configuration. Job: {0}</value>
+    <value>Upload errors directory is missing in job configuration.</value>
   </data>
   <data name="Entity_name_is_missing_in_job_configuration" xml:space="preserve">
-    <value>Entity name is missing in job configuration. Job: {0}</value>
+    <value>Entity name is missing in job configuration.</value>
   </data>
   <data name="Request_failed_at_client" xml:space="preserve">
     <value>Request failed at client.</value>
@@ -214,19 +214,19 @@
     <value>No active scheduler</value>
   </data>
   <data name="Company_is_missing_in_job_configuration" xml:space="preserve">
-    <value>Company is missing in job configuration. Job: {0}</value>
+    <value>Company is missing in job configuration.</value>
   </data>
   <data name="Data_project_is_missing_in_job_configuration" xml:space="preserve">
-    <value>Data project is missing in job configuration. Job: {0}</value>
+    <value>Data project is missing in job configuration.</value>
   </data>
   <data name="Cannot_parse_SortBy_value_in_job_configuration" xml:space="preserve">
     <value>Cannot parse SortBy value in job configuration</value>
   </data>
   <data name="Package_template_0_not_found" xml:space="preserve">
-    <value>Package template: {0} was not found! Job: {1}</value>
+    <value>Package template: {0} was not found!</value>
   </data>
   <data name="Verification_of_package_template_location_failed_0" xml:space="preserve">
-    <value>Verification of package template file location failed! {0} Job: {1}</value>
+    <value>Verification of package template file location failed! {0}</value>
   </data>
   <data name="Unknown_error" xml:space="preserve">
     <value>Unknown error</value>

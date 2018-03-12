@@ -103,7 +103,8 @@ namespace RecurringIntegrationsScheduler.Job
                 if (_settings.PauseJobOnException)
                 {
                     await context.Scheduler.PauseJob(context.JobDetail.Key);
-                    Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
+                    Log.WarnFormat(CultureInfo.InvariantCulture,
+                        string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
                 }
                 if (Log.IsDebugEnabled)
                 {
@@ -120,6 +121,9 @@ namespace RecurringIntegrationsScheduler.Job
                 }
                 if (context.Scheduler.SchedulerName != "Private")
                     throw new JobExecutionException(string.Format(Resources.Download_job_0_failed, _context.JobDetail.Key), ex, false);
+
+                if (!Log.IsDebugEnabled)
+                    Log.Error(string.Format(Resources.Job_0_thrown_an_error_1, _context.JobDetail.Key, ex.Message));
             }
         }
 

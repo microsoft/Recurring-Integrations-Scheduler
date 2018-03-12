@@ -37,17 +37,12 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 }
                 catch (Exception ex)
                 {
-                    throw new JobExecutionException(
-                        string.Format(CultureInfo.InvariantCulture,
-                            string.Format(Resources.Upload_success_directory_does_not_exist_or_cannot_be_accessed,
-                                context.JobDetail.Key)), ex);
+                    throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Upload_success_directory_does_not_exist_or_cannot_be_accessed), ex);
                 }
             }
             else
             {
-                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                    string.Format(Resources.Upload_success_directory_is_missing_in_job_configuration,
-                        context.JobDetail.Key)));
+                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Upload_success_directory_is_missing_in_job_configuration));
             }
 
             ProcessingSuccessDir = dataMap.GetString(SettingsConstants.ProcessingSuccessDir);
@@ -59,17 +54,12 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 }
                 catch (Exception ex)
                 {
-                    throw new JobExecutionException(
-                        string.Format(CultureInfo.InvariantCulture,
-                            string.Format(Resources.Processing_success_directory_does_not_exist_or_cannot_be_accessed,
-                                context.JobDetail.Key)), ex);
+                    throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Processing_success_directory_does_not_exist_or_cannot_be_accessed), ex);
                 }
             }
             else
             {
-                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                    string.Format(Resources.Processing_success_directory_is_missing_in_job_configuration,
-                        context.JobDetail.Key)));
+                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Processing_success_directory_is_missing_in_job_configuration));
             }
 
             ProcessingErrorsDir = dataMap.GetString(SettingsConstants.ProcessingErrorsDir);
@@ -81,25 +71,18 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 }
                 catch (Exception ex)
                 {
-                    throw new JobExecutionException(
-                        string.Format(CultureInfo.InvariantCulture,
-                            string.Format(Resources.Processing_errors_directory_does_not_exist_or_cannot_be_accessed,
-                                context.JobDetail.Key)), ex);
+                    throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Processing_errors_directory_does_not_exist_or_cannot_be_accessed), ex);
                 }
             }
             else
             {
-                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                    string.Format(Resources.Processing_errors_directory_is_missing_in_job_configuration,
-                        context.JobDetail.Key)));
+                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Processing_errors_directory_is_missing_in_job_configuration));
             }
 
             StatusFileExtension = dataMap.GetString("StatusFileExtension");
             if (string.IsNullOrEmpty(StatusFileExtension))
             {
-                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                    string.Format(Resources.Extension_of_status_files_is_missing_in_job_configuration,
-                        context.JobDetail.Key)));
+                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Extension_of_status_files_is_missing_in_job_configuration));
             }
         }
 

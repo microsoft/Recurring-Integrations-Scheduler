@@ -88,6 +88,8 @@ namespace RecurringIntegrationsScheduler.Forms
             this.retriesCountUpDown = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.groupBoxExceptions = new System.Windows.Forms.GroupBox();
+            this.pauseOnExceptionsCheckBox = new System.Windows.Forms.CheckBox();
             this.jobDetailsGroupBox.SuspendLayout();
             this.axDetailsGroupBox.SuspendLayout();
             this.authMethodPanel.SuspendLayout();
@@ -97,6 +99,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.retryPolicyGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.retriesDelayUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.retriesCountUpDown)).BeginInit();
+            this.groupBoxExceptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // jobDetailsGroupBox
@@ -294,7 +297,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobNameLabel.Name = "jobNameLabel";
             this.jobNameLabel.Size = new System.Drawing.Size(51, 20);
             this.jobNameLabel.TabIndex = 0;
-            this.jobNameLabel.Text = RecurringIntegrationsScheduler.Properties.Resources.NameLabel;
+            this.jobNameLabel.Text = "Name";
             // 
             // axDetailsGroupBox
             // 
@@ -771,11 +774,34 @@ namespace RecurringIntegrationsScheduler.Forms
             this.label1.TabIndex = 0;
             this.label1.Text = "Number of retries";
             // 
+            // groupBoxExceptions
+            // 
+            this.groupBoxExceptions.Controls.Add(this.pauseOnExceptionsCheckBox);
+            this.groupBoxExceptions.Location = new System.Drawing.Point(20, 737);
+            this.groupBoxExceptions.Name = "groupBoxExceptions";
+            this.groupBoxExceptions.Size = new System.Drawing.Size(345, 59);
+            this.groupBoxExceptions.TabIndex = 10;
+            this.groupBoxExceptions.TabStop = false;
+            this.groupBoxExceptions.Text = "Exceptions";
+            // 
+            // pauseOnExceptionsCheckBox
+            // 
+            this.pauseOnExceptionsCheckBox.AutoSize = true;
+            this.pauseOnExceptionsCheckBox.Checked = true;
+            this.pauseOnExceptionsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.pauseOnExceptionsCheckBox.Location = new System.Drawing.Point(13, 26);
+            this.pauseOnExceptionsCheckBox.Name = "pauseOnExceptionsCheckBox";
+            this.pauseOnExceptionsCheckBox.Size = new System.Drawing.Size(270, 24);
+            this.pauseOnExceptionsCheckBox.TabIndex = 0;
+            this.pauseOnExceptionsCheckBox.Text = "Pause job when exception occurs";
+            this.pauseOnExceptionsCheckBox.UseVisualStyleBackColor = true;
+            // 
             // DownloadJob
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(728, 834);
+            this.Controls.Add(this.groupBoxExceptions);
             this.Controls.Add(this.retryPolicyGroupBox);
             this.Controls.Add(this.bottomToolStrip);
             this.Controls.Add(this.recurrenceGroupBox);
@@ -809,6 +835,8 @@ namespace RecurringIntegrationsScheduler.Forms
             this.retryPolicyGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.retriesDelayUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.retriesCountUpDown)).EndInit();
+            this.groupBoxExceptions.ResumeLayout(false);
+            this.groupBoxExceptions.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -873,5 +901,7 @@ namespace RecurringIntegrationsScheduler.Forms
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown retriesDelayUpDown;
         private System.Windows.Forms.NumericUpDown retriesCountUpDown;
+        private System.Windows.Forms.GroupBox groupBoxExceptions;
+        private System.Windows.Forms.CheckBox pauseOnExceptionsCheckBox;
     }
 }

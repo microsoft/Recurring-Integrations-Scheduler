@@ -37,16 +37,12 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 }
                 catch (Exception ex)
                 {
-                    throw new JobExecutionException(
-                        string.Format(CultureInfo.InvariantCulture,
-                            string.Format(Resources.Input_directory_does_not_exist_or_cannot_be_accessed,
-                                context.JobDetail.Key)), ex);
+                    throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Input_directory_does_not_exist_or_cannot_be_accessed), ex);
                 }
             }
             else
             {
-                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                    string.Format(Resources.Input_directory_is_missing_in_job_configuration, context.JobDetail.Key)));
+                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Input_directory_is_missing_in_job_configuration));
             }
 
             UploadSuccessDir = dataMap.GetString(SettingsConstants.UploadSuccessDir);
@@ -58,17 +54,12 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 }
                 catch (Exception ex)
                 {
-                    throw new JobExecutionException(
-                        string.Format(CultureInfo.InvariantCulture,
-                            string.Format(Resources.Upload_success_directory_does_not_exist_or_cannot_be_accessed,
-                                context.JobDetail.Key)), ex);
+                    throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Upload_success_directory_does_not_exist_or_cannot_be_accessed), ex);
                 }
             }
             else
             {
-                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                    string.Format(Resources.Upload_success_directory_is_missing_in_job_configuration,
-                        context.JobDetail.Key)));
+                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Upload_success_directory_is_missing_in_job_configuration));
             }
 
             UploadErrorsDir = dataMap.GetString(SettingsConstants.UploadErrorsDir);
@@ -80,17 +71,12 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 }
                 catch (Exception ex)
                 {
-                    throw new JobExecutionException(
-                        string.Format(CultureInfo.InvariantCulture,
-                            string.Format(Resources.Upload_errors_directory_does_not_exist_or_cannot_be_accessed,
-                                context.JobDetail.Key)), ex);
+                    throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Upload_errors_directory_does_not_exist_or_cannot_be_accessed), ex);
                 }
             }
             else
             {
-                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                    string.Format(Resources.Upload_errors_directory_is_missing_in_job_configuration,
-                        context.JobDetail.Key)));
+                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Upload_errors_directory_is_missing_in_job_configuration));
             }
 
             ExecutionJobPresent = Convert.ToBoolean(dataMap.GetString(SettingsConstants.ExecutionJobPresent));
@@ -98,17 +84,13 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             Company = dataMap.GetString(SettingsConstants.Company);
             if (string.IsNullOrEmpty(Company))
             {
-                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                    string.Format(Resources.Company_is_missing_in_job_configuration,
-                        context.JobDetail.Key)));
+                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Company_is_missing_in_job_configuration));
             }
 
             StatusFileExtension = dataMap.GetString(SettingsConstants.StatusFileExtension);
             if (string.IsNullOrEmpty(StatusFileExtension))
             {
-                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                    string.Format(Resources.Extension_of_status_files_is_missing_in_job_configuration,
-                        context.JobDetail.Key)));
+                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Extension_of_status_files_is_missing_in_job_configuration));
             }
 
             SearchPattern = dataMap.GetString(SettingsConstants.SearchPattern);
@@ -131,9 +113,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             DataProject = dataMap.GetString(SettingsConstants.DataProject);
             if (string.IsNullOrEmpty(DataProject))
             {
-                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                    string.Format(Resources.Data_project_is_missing_in_job_configuration,
-                        context.JobDetail.Key)));
+                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Data_project_is_missing_in_job_configuration));
             }
 
             OverwriteDataProject = Convert.ToBoolean(dataMap.GetString(SettingsConstants.OverwriteDataProject));
@@ -147,18 +127,12 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 {
                     if (!File.Exists(PackageTemplate))
                     {
-                        throw new JobExecutionException(
-                            string.Format(CultureInfo.InvariantCulture,
-                                string.Format(Resources.Package_template_0_not_found, PackageTemplate,
-                                    context.JobDetail.Key)));
+                        throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Package_template_0_not_found, PackageTemplate));
                     }
                 }
                 catch (Exception ex)
                 {
-                    throw new JobExecutionException(
-                        string.Format(CultureInfo.InvariantCulture,
-                            string.Format(Resources.Verification_of_package_template_location_failed_0, PackageTemplate,
-                                context.JobDetail.Key)), ex);
+                    throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Verification_of_package_template_location_failed_0, PackageTemplate), ex);
                 }
             }
         }

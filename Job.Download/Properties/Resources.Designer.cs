@@ -205,7 +205,16 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Job: {0} was paused because of error.
+        ///   Looks up a localized string similar to Job: {0} thrown an error. Exception : {1}.
+        /// </summary>
+        internal static string Job_0_thrown_an_error_1 {
+            get {
+                return ResourceManager.GetString("Job_0_thrown_an_error_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job: {0} was paused because of an error..
         /// </summary>
         internal static string Job_0_was_paused_because_of_error {
             get {

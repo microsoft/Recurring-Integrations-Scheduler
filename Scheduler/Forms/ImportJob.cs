@@ -238,6 +238,10 @@ namespace RecurringIntegrationsScheduler.Forms
                 {
                     retriesDelayUpDown.Value = Convert.ToDecimal(ImportJobDetail.JobDataMap[SettingsConstants.RetryDelay]);
                 }
+                pauseOnExceptionsCheckBox.Checked =
+                    (ImportJobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
+                    Convert.ToBoolean(ImportJobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
+
                 Properties.Settings.Default.Save();
             }
             if ((ExecutionJobDetail != null) && (ExecutionTrigger != null))
@@ -562,7 +566,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.DataProject, dataProject.Text},
                 {SettingsConstants.PackageTemplate, packageTemplateTextBox.Text},
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)}
+                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -594,7 +599,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.AadClientId, application.ClientId},
                 {SettingsConstants.UseServiceAuthentication, serviceAuthRadioButton.Checked.ToString()},
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)}
+                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {

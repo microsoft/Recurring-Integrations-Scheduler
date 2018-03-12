@@ -229,6 +229,10 @@ namespace RecurringIntegrationsScheduler.Forms
                 {
                     retriesDelayUpDown.Value = Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.RetryDelay]);
                 }
+                pauseOnExceptionsCheckBox.Checked =
+                    (JobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
+                    Convert.ToBoolean(JobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
+
                 Properties.Settings.Default.Save();
             }
         }
@@ -399,7 +403,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.AddTimestamp, addTimestampCheckBox.Checked.ToString()},
                 {SettingsConstants.DeletePackage, deletePackageCheckBox.Checked.ToString()},
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)}
+                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {

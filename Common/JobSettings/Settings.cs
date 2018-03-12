@@ -19,7 +19,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// Initialize and verify settings for job
         /// </summary>
         /// <param name="context">The context.</param>
-        /// <exception cref="Quartz.JobExecutionException">
+        /// <exception cref="JobExecutionException">
         /// </exception>
         public virtual void Initialize(IJobExecutionContext context)
         {
@@ -28,8 +28,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             AosUri = dataMap.GetString(SettingsConstants.AosUri);
             if (string.IsNullOrEmpty(AosUri))
             {
-                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                    string.Format(Resources.AOS_URL_is_missing_in_job_configuration, context.JobDetail.Key)));
+                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.AOS_URL_is_missing_in_job_configuration));
             }
             //remove trailing slash if any
             AosUri = AosUri.TrimEnd('/');
@@ -37,16 +36,13 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             AzureAuthEndpoint = dataMap.GetString(SettingsConstants.AzureAuthEndpoint);
             if (string.IsNullOrEmpty(AzureAuthEndpoint))
             {
-                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                    string.Format(Resources.Azure_authentication_endpoint_URL_is_missing_in_job_configuration,
-                        context.JobDetail.Key)));
+                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Azure_authentication_endpoint_URL_is_missing_in_job_configuration));
             }
 
             AadTenant = dataMap.GetString(SettingsConstants.AadTenant);
             if (string.IsNullOrEmpty(AadTenant))
             {
-                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                    string.Format(Resources.AAD_tenant_id_is_missing_in_job_configuration, context.JobDetail.Key)));
+                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.AAD_tenant_id_is_missing_in_job_configuration));
             }
 
             UseServiceAuthentication = Convert.ToBoolean(dataMap.GetString(SettingsConstants.UseServiceAuthentication));
@@ -54,10 +50,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             var aadClientIdStr = dataMap.GetString(SettingsConstants.AadClientId);
             if (!Guid.TryParse(aadClientIdStr, out Guid aadClientGuid) || (Guid.Empty == aadClientGuid))
             {
-                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                    string.Format(
-                        Resources.Azure_application_client_id_is_missing_or_is_not_a_GUID_in_job_configuration,
-                        context.JobDetail.Key)));
+                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Azure_application_client_id_is_missing_or_is_not_a_GUID_in_job_configuration));
             }
             AadClientId = aadClientGuid;
 
@@ -66,9 +59,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 AadClientSecret = dataMap.GetString(SettingsConstants.AadClientSecret);
                 if (string.IsNullOrEmpty(AadClientSecret))
                 {
-                    throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                        string.Format(Resources.Azure_web_application_secret_is_missing_in_job_configuration,
-                            context.JobDetail.Key)));
+                    throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Azure_web_application_secret_is_missing_in_job_configuration));
                 }
                 AadClientSecret = EncryptDecrypt.Decrypt(AadClientSecret);
             }
@@ -77,16 +68,13 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 UserName = dataMap.GetString(SettingsConstants.UserName);
                 if (string.IsNullOrEmpty(UserName))
                 {
-                    throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                        string.Format(Resources.User_principal_name_is_missing_in_job_configuration,
-                            context.JobDetail.Key)));
+                    throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.User_principal_name_is_missing_in_job_configuration));
                 }
 
                 UserPassword = dataMap.GetString(SettingsConstants.UserPassword);
                 if (string.IsNullOrEmpty(UserPassword))
                 {
-                    throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture,
-                        string.Format(Resources.User_password_is_missing_in_job_configuration, context.JobDetail.Key)));
+                    throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.User_password_is_missing_in_job_configuration));
                 }
                 UserPassword = EncryptDecrypt.Decrypt(UserPassword);
             }

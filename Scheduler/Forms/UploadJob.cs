@@ -252,6 +252,10 @@ namespace RecurringIntegrationsScheduler.Forms
                 {
                     retriesDelayUpDown.Value = Convert.ToDecimal(UploadJobDetail.JobDataMap[SettingsConstants.RetryDelay]);
                 }
+                pauseOnExceptionsCheckBox.Checked =
+                    (UploadJobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
+                    Convert.ToBoolean(UploadJobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
+
                 Properties.Settings.Default.Save();
             }
             if ((ProcessingJobDetail != null) && (ProcessingTrigger != null))
@@ -573,7 +577,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.OrderBy, orderByComboBox.SelectedItem.ToString()},
                 {SettingsConstants.ReverseOrder, orderDescendingRadioButton.Checked.ToString()},
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)}
+                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -607,7 +612,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.ActivityId, dataJob.ActivityId},
                 {SettingsConstants.UseServiceAuthentication, serviceAuthRadioButton.Checked.ToString()},
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)}
+                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {
