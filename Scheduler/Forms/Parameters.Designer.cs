@@ -352,7 +352,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.instanceName.DataPropertyName = "Name";
             this.instanceName.FillWeight = 40F;
-            this.instanceName.HeaderText = Resources.Name;
+            this.instanceName.HeaderText = Resources.NameLabel;
             this.instanceName.Name = "instanceName";
             this.instanceName.ReadOnly = true;
             this.instanceName.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Friendly_name_used_only_in_Recurring_Integrations_App;
@@ -488,7 +488,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // dataJobName
             // 
             this.dataJobName.DataPropertyName = "Name";
-            this.dataJobName.HeaderText = Resources.Name;
+            this.dataJobName.HeaderText = Resources.NameLabel;
             this.dataJobName.MinimumWidth = 50;
             this.dataJobName.Name = "dataJobName";
             this.dataJobName.ReadOnly = true;
@@ -865,7 +865,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // applicationName
             // 
             this.applicationName.DataPropertyName = "Name";
-            this.applicationName.HeaderText = Resources.Name;
+            this.applicationName.HeaderText = Resources.NameLabel;
             this.applicationName.Name = "applicationName";
             this.applicationName.ReadOnly = true;
             // 

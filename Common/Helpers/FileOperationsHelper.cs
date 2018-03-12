@@ -1,6 +1,7 @@
 ﻿/* Copyright (c) Microsoft Corporation. All rights reserved.
    Licensed under the MIT License. */
 
+using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using RecurringIntegrationsScheduler.Common.Contracts;
@@ -10,7 +11,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Text;
-using System.Threading;
 
 namespace RecurringIntegrationsScheduler.Common.Helpers
 {
@@ -203,10 +203,10 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
 
                         if (addTimestamp)
                             fileName =
-                                Path.Combine(Path.GetDirectoryName(filePath),
-                                    Path.GetFileNameWithoutExtension(filePath)) + "-" + entry.FullName;
+                                Path.Combine(Path.GetDirectoryName(filePath) ?? throw new InvalidOperationException(),
+                                    Path.GetFileNameWithoutExtension(filePath) ?? throw new InvalidOperationException()) + "-" + entry.FullName;
                         else
-                            fileName = Path.Combine(Path.GetDirectoryName(filePath), entry.FullName);
+                            fileName = Path.Combine(Path.GetDirectoryName(filePath) ?? throw new InvalidOperationException(), entry.FullName);
 
                         entry.ExtractToFile(fileName, !addTimestamp);
                     }
@@ -230,13 +230,13 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             //Now status file
             if (!deleteStatusFile)
             {
-                var sourceStatusFile = Path.Combine(Path.GetDirectoryName(sourceFilePath), Path.GetFileNameWithoutExtension(sourceFilePath) + statusFileExtension);
-                var targetStatusFile = Path.Combine(Path.GetDirectoryName(targetFilePath), Path.GetFileNameWithoutExtension(targetFilePath) + statusFileExtension);
+                var sourceStatusFile = Path.Combine(Path.GetDirectoryName(sourceFilePath) ?? throw new InvalidOperationException(), Path.GetFileNameWithoutExtension(sourceFilePath) + statusFileExtension);
+                var targetStatusFile = Path.Combine(Path.GetDirectoryName(targetFilePath) ?? throw new InvalidOperationException(), Path.GetFileNameWithoutExtension(targetFilePath) + statusFileExtension);
                 Move(sourceStatusFile, targetStatusFile);
             }
             else
             {
-                var sourceStatusFile = Path.Combine(Path.GetDirectoryName(sourceFilePath), Path.GetFileNameWithoutExtension(sourceFilePath) + statusFileExtension);
+                var sourceStatusFile = Path.Combine(Path.GetDirectoryName(sourceFilePath) ?? throw new InvalidOperationException(), Path.GetFileNameWithoutExtension(sourceFilePath) + statusFileExtension);
                 Delete(sourceStatusFile);
             }
         }
@@ -271,7 +271,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
 
             using (var statusFileMemoryStream = new MemoryStream(Encoding.Default.GetBytes(statusData)))
             {
-                Create(statusFileMemoryStream, Path.Combine(Path.GetDirectoryName(dataMessage.FullPath), Path.GetFileNameWithoutExtension(dataMessage.FullPath) + statusFileExtension));
+                Create(statusFileMemoryStream, Path.Combine(Path.GetDirectoryName(dataMessage.FullPath) ?? throw new InvalidOperationException(), Path.GetFileNameWithoutExtension(dataMessage.FullPath) + statusFileExtension));
             }
         }
 
@@ -287,8 +287,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             {
                 return;
             }
-            var logFilePath = Path.Combine(Path.GetDirectoryName(targetDataMessage.FullPath), Path.GetFileNameWithoutExtension(targetDataMessage.FullPath) + statusFileExtension);
-            var logData = JsonConvert.SerializeObject(httpResponse, Newtonsoft.Json.Formatting.Indented, new StringEnumConverter());
+            var logFilePath = Path.Combine(Path.GetDirectoryName(targetDataMessage.FullPath) ?? throw new InvalidOperationException(), Path.GetFileNameWithoutExtension(targetDataMessage.FullPath) + statusFileExtension);
+            var logData = JsonConvert.SerializeObject(httpResponse, Formatting.Indented, new StringEnumConverter());
 
             using (var logMemoryStream = new MemoryStream(Encoding.Default.GetBytes(logData)))
             {
@@ -309,8 +309,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             {
                 return;
             }
-            var logFilePath = Path.Combine(Path.GetDirectoryName(targetDataMessage.FullPath), Path.GetFileNameWithoutExtension(targetDataMessage.FullPath) + statusFileExtension);
-            var logData = string.Empty;
+            var logFilePath = Path.Combine(Path.GetDirectoryName(targetDataMessage.FullPath) ?? throw new InvalidOperationException(), Path.GetFileNameWithoutExtension(targetDataMessage.FullPath) + statusFileExtension);
+            string logData;
 
             if (null != jobStatusDetail)
             {

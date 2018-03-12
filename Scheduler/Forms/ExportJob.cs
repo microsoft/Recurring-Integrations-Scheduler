@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -52,19 +53,19 @@ namespace RecurringIntegrationsScheduler.Forms
 
             jobGroupComboBox.DataSource = Properties.Settings.Default.JobGroups;
             jobGroupComboBox.ValueMember = null;
-            jobGroupComboBox.DisplayMember = Resources.Name;
+            jobGroupComboBox.DisplayMember = "Name";
 
             jobGroupComboBox.Enabled = JobDetail == null;
 
             instanceComboBox.DataSource = Properties.Settings.Default.Instances;
             instanceComboBox.ValueMember = null;
-            instanceComboBox.DisplayMember = Resources.Name;
+            instanceComboBox.DisplayMember = "Name";
 
             var applications = Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.User);
             var applicationsBindingList = new BindingList<AadApplication>(applications.ToList());
             aadApplicationComboBox.DataSource = applicationsBindingList;
             aadApplicationComboBox.ValueMember = null;
-            aadApplicationComboBox.DisplayMember = Resources.Name;
+            aadApplicationComboBox.DisplayMember = "Name";
 
             userComboBox.DataSource = Properties.Settings.Default.Users;
             userComboBox.ValueMember = null;
@@ -150,7 +151,7 @@ namespace RecurringIntegrationsScheduler.Forms
                         applicationsBindingList = new BindingList<AadApplication>(applications.ToList());
                         aadApplicationComboBox.DataSource = applicationsBindingList;
                         aadApplicationComboBox.ValueMember = null;
-                        aadApplicationComboBox.DisplayMember = Resources.Name;
+                        aadApplicationComboBox.DisplayMember = "Name";
                     }
                     else
                     {
@@ -257,7 +258,7 @@ namespace RecurringIntegrationsScheduler.Forms
             if (JobDetail == null)
             {
                 var jobKey = new JobKey(jobName.Text, jobGroupComboBox.Text);
-                if (Scheduler.Instance.GetScheduler().CheckExists(jobKey))
+                if (Scheduler.Instance.GetScheduler().CheckExists(jobKey).Result)
                     if (
                         MessageBox.Show(
                             string.Format(Resources.Job_0_in_group_1_already_exists, jobKey.Name, jobKey.Group),
@@ -378,9 +379,9 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.DeletePackage, deletePackageCheckBox.Checked.ToString()},
                 {SettingsConstants.DataProject, dataProject.Text},
                 {SettingsConstants.Company, legalEntity.Text},
-                {SettingsConstants.Interval, (interval.Value * 1000).ToString()},
-                {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString()},
-                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString()}
+                {SettingsConstants.Interval, (interval.Value * 1000).ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -479,7 +480,7 @@ namespace RecurringIntegrationsScheduler.Forms
             var applicationsBindingList = new BindingList<AadApplication>(applications.ToList());
             aadApplicationComboBox.DataSource = applicationsBindingList;
             aadApplicationComboBox.ValueMember = null;
-            aadApplicationComboBox.DisplayMember = Resources.Name;
+            aadApplicationComboBox.DisplayMember = "Name";
 
             userComboBox.Enabled = !serviceAuthRadioButton.Checked;
         }

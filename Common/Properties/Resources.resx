@@ -231,4 +231,7 @@
   <data name="Unknown_error" xml:space="preserve">
     <value>Unknown error</value>
   </data>
+  <data name="GetAzureWriteUrl_returned_empty_string_Check_previous_errors" xml:space="preserve">
+    <value>Method GetAzureWriteUrl returned empty string. Check previous errors.</value>
+  </data>
 </root>

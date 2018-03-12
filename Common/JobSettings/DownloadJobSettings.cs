@@ -11,10 +11,11 @@ using System.IO;
 namespace RecurringIntegrationsScheduler.Common.JobSettings
 
 {
+    /// <inheritdoc />
     /// <summary>
     /// Serialize/deserialize download job settings
     /// </summary>
-    /// <seealso cref="RecurringIntegrationsScheduler.Common.Configuration.Settings" />
+    /// <seealso cref="N:RecurringIntegrationsScheduler.Common.JobSettings" />
     public class DownloadJobSettings : Settings
     {
         /// <summary>

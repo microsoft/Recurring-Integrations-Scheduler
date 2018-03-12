@@ -23,7 +23,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <remarks>
         /// Keep in mind that the decrypted string remains in memory
         /// and makes your application vulnerable per se. If runtime protection
-        /// is essential, <see cref="SecureString" /> should be used.
+        /// is essential, <see cref="System.Security.SecureString" /> should be used.
         /// </remarks>
         public static string Decrypt(string cipher)
         {
@@ -58,7 +58,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <remarks>
         /// This solution is not really secure as we are
         /// keeping strings in memory. If runtime protection is essential,
-        /// <see cref="SecureString" /> should be used.
+        /// <see cref="System.Security.SecureString" /> should be used.
         /// </remarks>
         public static string Encrypt(string plainText)
         {

@@ -70,6 +70,11 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         public const string RetryDelay = "RetryDelay";
 
         /// <summary>
+        /// Pause job in case of exception
+        /// </summary>
+        public const string PauseJobOnException = "PauseJobOnException";
+
+        /// <summary>
         /// The download job
         /// </summary>
         public const string DownloadJob = "RecurringIntegrationsScheduler.Job.Download";

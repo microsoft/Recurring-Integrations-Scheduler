@@ -48,7 +48,7 @@ namespace RecurringIntegrationsScheduler.Forms
             }
             else
             {
-                var isValid = Guid.TryParse(textBox2.Text, out Guid guidOutput);
+                var isValid = Guid.TryParse(textBox2.Text, out var guidOutput);
                 if (!isValid)
                     message.AppendLine(Resources.Activity_Id_is_invalid);
             }

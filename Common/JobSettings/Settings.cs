@@ -92,9 +92,9 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             }
 
             Interval = dataMap.GetInt(SettingsConstants.Interval);
-            if (Interval < 2000) //Default execution interval is 2 seconds.
+            if (Interval < 100) //Default execution interval is 100 ms.
             {
-                Interval = 2000;
+                Interval = 100;
             }
 
             RetryCount = dataMap.GetInt(SettingsConstants.RetryCount);
@@ -106,8 +106,10 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             RetryDelay = dataMap.GetInt(SettingsConstants.RetryDelay);
             if (RetryDelay == 0) 
             {
-                RetryDelay = 60;
+                RetryDelay = 60; //seconds
             }
+
+            PauseJobOnException = Convert.ToBoolean(dataMap.GetString(SettingsConstants.PauseJobOnException));
         }
 
         #region Members
@@ -199,6 +201,14 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// Delay between retries in seconds.
         /// </value>
         public int RetryDelay { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [pause job when exception occurs].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [pause job when exception occurs]; otherwise, <c>false</c>.
+        /// </value>
+        public bool PauseJobOnException { get; set; }
 
         #endregion
     }

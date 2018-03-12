@@ -3,6 +3,7 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Polly;
 using RecurringIntegrationsScheduler.Common.Helpers;
 using RecurringIntegrationsScheduler.Properties;
 using RecurringIntegrationsScheduler.Settings;
@@ -10,10 +11,9 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Polly;
-using System.Net.Http;
 
 namespace RecurringIntegrationsScheduler.Forms
 {
@@ -41,7 +41,7 @@ namespace RecurringIntegrationsScheduler.Forms
             var applicationsBindingList = new BindingList<AadApplication>(applications.ToList());
             aadApplicationComboBox.DataSource = applicationsBindingList;
             aadApplicationComboBox.ValueMember = null;
-            aadApplicationComboBox.DisplayMember = Resources.Name;
+            aadApplicationComboBox.DisplayMember = "Name";
         }
 
         private void ValidateButton_Click(object sender, EventArgs e)
@@ -76,7 +76,7 @@ namespace RecurringIntegrationsScheduler.Forms
             if (Instance != null)
             {
                 settings.AadTenant = Instance.AadTenant;
-                settings.AosUri = Instance.AosUri.TrimEnd('/'); ;
+                settings.AosUri = Instance.AosUri.TrimEnd('/');
                 settings.AzureAuthEndpoint = Instance.AzureAuthEndpoint;
             }
             if (user != null)
@@ -140,16 +140,16 @@ namespace RecurringIntegrationsScheduler.Forms
                     return result;
                 });
                 checkPackageApi.Wait();
-                if (String.IsNullOrEmpty(checkPackageApi.Result))
+                if (string.IsNullOrEmpty(checkPackageApi.Result))
                 {
-                    messagesTextBox.Text += string.Format("Method GetAzureWriteUrl returned empty string. Check previous errors.");
+                    messagesTextBox.Text += Resources.GetAzureWriteUrl_returned_empty_string_Check_previous_errors;
                 }
                 else
                 {
                     var blobInfo = (JObject)JsonConvert.DeserializeObject(checkPackageApi.Result);
                     var blobId = blobInfo["BlobId"].ToString();
 
-                    if (!String.IsNullOrEmpty(blobId))
+                    if (!string.IsNullOrEmpty(blobId))
                     {
                         messagesTextBox.Text += Resources.D365FO_instance_seems_to_support_package_API + Environment.NewLine;
                     }
@@ -160,21 +160,21 @@ namespace RecurringIntegrationsScheduler.Forms
                     }
                 }
 
-                var checkKB4058074 = Task.Run(async () =>
+                var checkKb4058074 = Task.Run(async () =>
                 {
                     var result = await httpClientHelper.GetMessageStatus(new Guid().ToString());
                     return result;
                 });
-                checkKB4058074.Wait();
-                if (String.IsNullOrEmpty(checkKB4058074.Result))
+                checkKb4058074.Wait();
+                if (string.IsNullOrEmpty(checkKb4058074.Result))
                 {
                     //TODO
-                    messagesTextBox.Text += string.Format("Method GetMessageStatus returned empty string. Check previous errors.") + Environment.NewLine;
+                    messagesTextBox.Text += Resources.Method_GetMessageStatus_returned_empty_string_Check_previous_errors + Environment.NewLine;
                 }
                 else
                 {
                     //TODO
-                    messagesTextBox.Text += "Instance seems to support GetMessageStatus method" + Environment.NewLine;
+                    messagesTextBox.Text += Resources.Instance_seems_to_support_GetMessageStatus_method + Environment.NewLine;
                 }
             }
             catch (Exception ex)
@@ -201,7 +201,7 @@ namespace RecurringIntegrationsScheduler.Forms
             var applicationsBindingList = new BindingList<AadApplication>(applications.ToList());
             aadApplicationComboBox.DataSource = applicationsBindingList;
             aadApplicationComboBox.ValueMember = null;
-            aadApplicationComboBox.DisplayMember = Resources.Name;
+            aadApplicationComboBox.DisplayMember = "Name";
 
             userComboBox.Enabled = !serviceAuthRadioButton.Checked;
         }

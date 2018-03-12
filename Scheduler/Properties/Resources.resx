@@ -412,7 +412,7 @@
   <data name="Group" xml:space="preserve">
     <value>Group</value>
   </data>
-  <data name="Name" xml:space="preserve">
+  <data name="NameLabel" xml:space="preserve">
     <value>Name</value>
   </data>
   <data name="Dynamics_details" xml:space="preserve">
@@ -849,5 +849,14 @@
   </data>
   <data name="Warning_HTTP_response_status_for_D365FO_instance_is" xml:space="preserve">
     <value>Warning! HTTP response status for D365FO instance is</value>
+  </data>
+  <data name="GetAzureWriteUrl_returned_empty_string_Check_previous_errors" xml:space="preserve">
+    <value>Method GetAzureWriteUrl returned empty string. Check previous errors.</value>
+  </data>
+  <data name="Instance_seems_to_support_GetMessageStatus_method" xml:space="preserve">
+    <value>Instance seems to support GetMessageStatus method</value>
+  </data>
+  <data name="Method_GetMessageStatus_returned_empty_string_Check_previous_errors" xml:space="preserve">
+    <value>Method GetMessageStatus returned empty string. Check previous errors.</value>
   </data>
 </root>

@@ -501,7 +501,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobNameLabel.Name = "jobNameLabel";
             this.jobNameLabel.Size = new System.Drawing.Size(35, 13);
             this.jobNameLabel.TabIndex = 0;
-            this.jobNameLabel.Text = RecurringIntegrationsScheduler.Properties.Resources.Name;
+            this.jobNameLabel.Text = RecurringIntegrationsScheduler.Properties.Resources.NameLabel;
             // 
             // axDetailsGroupBox
             // 

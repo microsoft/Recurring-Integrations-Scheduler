@@ -1,12 +1,15 @@
-To create installation package you need two additional binary files which are not included in RIS source code.
+To create installation package you need few additional binary files which are not included in RIS source code.
 
 Please download the following Quartz.NET server binaries and copy those files to this folder.
 
 * Quartz.Server.exe
+* Quartz.Jobs.dll
+* Quartz.Plugins.dll
+* Quartz.Serialization.Json.dll
 * Topshelf.dll
 
-This version of Recurring Integrations Scheduler requires Quartz.NET 2.4.1
-Download zip archive from https://sourceforge.net/projects/quartznet/files/quartznet/Quartz.NET%202.4.1/Quartz.NET-2.4.1.zip/download
+This version of Recurring Integrations Scheduler requires Quartz.NET 3.0.4
+Download zip archive from https://github.com/quartznet/quartznet/releases
 
 
 **Recurring Integrations Scheduler.iss** file contains packaging instructions for [Inno Setup](http://www.jrsoftware.org/isinfo.php) installer.

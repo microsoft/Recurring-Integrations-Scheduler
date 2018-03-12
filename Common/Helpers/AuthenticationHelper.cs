@@ -5,7 +5,6 @@ using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Polly;
 using RecurringIntegrationsScheduler.Common.JobSettings;
 using System;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
@@ -18,12 +17,13 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
     {
         private readonly Settings _settings;
         private string _authorizationHeader;
-        private Policy _retryPolicy;
+        private readonly Policy _retryPolicy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticationHelper"/> class.
         /// </summary>
         /// <param name="jobSettings">Job settings</param>
+        /// <param name="retryPolicy">Retry policy</param>
         public AuthenticationHelper(Settings jobSettings, Policy retryPolicy)
         {
             _settings = jobSettings;

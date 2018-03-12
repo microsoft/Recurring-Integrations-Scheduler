@@ -37,7 +37,7 @@ namespace RecurringIntegrationsScheduler
         /// <summary>
         /// Synchro object
         /// </summary>
-        private static object syncRoot = new Object();
+        private static readonly object SyncRoot = new object();
 
         /// <summary>
         /// Prevents a default instance of the <see cref="Scheduler"/> class from being created.
@@ -66,7 +66,7 @@ namespace RecurringIntegrationsScheduler
             {
                 if (_instance == null)
                 {
-                    lock (syncRoot)
+                    lock (SyncRoot)
                     {
                         if (_instance == null)
                             _instance = new Scheduler();
@@ -88,9 +88,8 @@ namespace RecurringIntegrationsScheduler
             {
                 Address = $"tcp://{server}:{port}/{scheduler}";
                 _schedulerFactory = new StdSchedulerFactory(GetProperties(Address));
-
-                if (_scheduler == null || !_schedulerFactory.AllSchedulers.Contains(_scheduler))
-                    _scheduler = _schedulerFactory.GetScheduler(Address) ?? _schedulerFactory.GetScheduler();
+                if (_scheduler == null || !_schedulerFactory.GetAllSchedulers().Result.Contains(_scheduler))
+                    _scheduler = _schedulerFactory.GetScheduler(Address).Result ?? _schedulerFactory.GetScheduler().Result;
             }
             catch (Exception ex)
             {
@@ -106,7 +105,7 @@ namespace RecurringIntegrationsScheduler
             try
             {
                 _schedulerFactory = new StdSchedulerFactory();
-                _scheduler = _schedulerFactory.GetScheduler();
+                _scheduler = _schedulerFactory.GetScheduler().Result;
             }
             catch (Exception ex)
             {
@@ -129,7 +128,7 @@ namespace RecurringIntegrationsScheduler
         /// <returns></returns>
         public DataTable GetJobs()
         {
-            DataTable table = null;
+            DataTable table;
             try
             {
                 table = new DataTable();
@@ -142,14 +141,14 @@ namespace RecurringIntegrationsScheduler
                 table.Columns.Add("PreviousFireTime");
                 table.Columns.Add("Instance");
 
-                var jobGroups = GetScheduler().GetJobGroupNames();
+                var jobGroups = GetScheduler().GetJobGroupNames().Result;
                 foreach (var group in jobGroups)
                 {
                     var groupMatcher = GroupMatcher<JobKey>.GroupContains(group);
-                    var jobKeys = GetScheduler().GetJobKeys(groupMatcher);
+                    var jobKeys = GetScheduler().GetJobKeys(groupMatcher).Result;
                     foreach (var jobKey in jobKeys)
                     {
-                        var detail = GetScheduler().GetJobDetail(jobKey);
+                        var detail = GetScheduler().GetJobDetail(jobKey).Result;
                         var row = table.NewRow();
                         row["JobGroup"] = group;
                         row["JobName"] = jobKey.Name;
@@ -157,16 +156,16 @@ namespace RecurringIntegrationsScheduler
                         row["JobType"] = detail.JobType.Name;
                         row["Instance"] = detail.JobDataMap["AosUri"];
 
-                        var triggers = GetScheduler().GetTriggersOfJob(jobKey);
-                        var nextFireTime = triggers[0].GetNextFireTimeUtc();
+                        var triggers = GetScheduler().GetTriggersOfJob(jobKey).Result;
+                        var nextFireTime = triggers.First().GetNextFireTimeUtc();
                         if (nextFireTime.HasValue)
                             row["NextFireTime"] = TimeZone.CurrentTimeZone.ToLocalTime(nextFireTime.Value.DateTime);
 
-                        var previousFireTime = triggers[0].GetPreviousFireTimeUtc();
+                        var previousFireTime = triggers.First().GetPreviousFireTimeUtc();
                         if (previousFireTime.HasValue)
                             row["PreviousFireTime"] =
                                 TimeZone.CurrentTimeZone.ToLocalTime(previousFireTime.Value.DateTime);
-                        row["JobStatus"] = GetScheduler().GetTriggerState(triggers[0].Key).ToString();
+                        row["JobStatus"] = GetScheduler().GetTriggerState(triggers.First().Key).Result.ToString();
                         table.Rows.Add(row);
                     }
                 }
@@ -192,24 +191,24 @@ namespace RecurringIntegrationsScheduler
                 {
                     throw new ArgumentException("Scheduler is missing.");
                 }
-                var jobGroupNames = scheduler.GetJobGroupNames();
+                var jobGroupNames = scheduler.GetJobGroupNames().Result;
                 var jobDetails = new List<IJobDetail>();
 
-                var triggerGroupNames = scheduler.GetTriggerGroupNames();
+                var triggerGroupNames = scheduler.GetTriggerGroupNames().Result;
                 var triggerDetails = new List<ITrigger>();
 
                 foreach (var jobGroup in jobGroupNames)
                 {
                     var groupMatcher = GroupMatcher<JobKey>.GroupContains(jobGroup);
-                    var jobKeys = scheduler.GetJobKeys(groupMatcher);
-                    jobDetails.AddRange(jobKeys.Select(jobKey => scheduler.GetJobDetail(jobKey)));
+                    var jobKeys = scheduler.GetJobKeys(groupMatcher).Result;
+                    jobDetails.AddRange(jobKeys.Select(jobKey => scheduler.GetJobDetail(jobKey).Result));
                 }
 
                 foreach (var triggerGroup in triggerGroupNames)
                 {
                     var groupMatcher = GroupMatcher<TriggerKey>.GroupContains(triggerGroup);
-                    var keys = scheduler.GetTriggerKeys(groupMatcher);
-                    triggerDetails.AddRange(keys.Select(triggerKey => scheduler.GetTrigger(triggerKey)));
+                    var keys = scheduler.GetTriggerKeys(groupMatcher).Result;
+                    triggerDetails.AddRange(keys.Select(triggerKey => scheduler.GetTrigger(triggerKey).Result));
                 }
 
                 WriteToFile(file, jobDetails, triggerDetails);

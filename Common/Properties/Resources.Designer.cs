@@ -19,7 +19,7 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -237,6 +237,15 @@ namespace RecurringIntegrationsScheduler.Common.Properties {
         internal static string File_0_saved_successfully {
             get {
                 return ResourceManager.GetString("File_0_saved_successfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method GetAzureWriteUrl returned empty string. Check previous errors..
+        /// </summary>
+        internal static string GetAzureWriteUrl_returned_empty_string_Check_previous_errors {
+            get {
+                return ResourceManager.GetString("GetAzureWriteUrl_returned_empty_string_Check_previous_errors", resourceCulture);
             }
         }
         

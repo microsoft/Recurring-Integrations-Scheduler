@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) Microsoft Corporation. All rights reserved.
    Licensed under the MIT License. */
 
-using Common.Logging;
+using log4net;
 using Polly;
 using Quartz;
 using RecurringIntegrationsScheduler.Common.Contracts;
@@ -19,14 +19,14 @@ namespace RecurringIntegrationsScheduler.Job
     /// <summary>
     /// Job that is used to request export of data using new mothod introduced in platform update 5
     /// </summary>
-    /// <seealso cref="Quartz.IJob" />
+    /// <seealso cref="IJob" />
     [DisallowConcurrentExecution]
     public class Export : IJob
     {
         /// <summary>
         /// The log
         /// </summary>
-        private static readonly ILog Log = LogManager.GetLogger(typeof(Export));
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// The settings
@@ -46,7 +46,7 @@ namespace RecurringIntegrationsScheduler.Job
         /// <summary>
         /// Retry policy for IO operations
         /// </summary>
-        private Policy _retryPolicyForIO;
+        private Policy _retryPolicyForIo;
 
         /// <summary>
         /// Retry policy for HTTP operations
@@ -58,7 +58,7 @@ namespace RecurringIntegrationsScheduler.Job
         /// fires that is associated with the <see cref="T:Quartz.IJob" />.
         /// </summary>
         /// <param name="context">The execution context.</param>
-        /// <exception cref="Quartz.JobExecutionException">false</exception>
+        /// <exception cref="JobExecutionException">false</exception>
         /// <remarks>
         /// The implementation may wish to set a  result object on the
         /// JobExecutionContext before this method exits.  The result itself
@@ -67,14 +67,15 @@ namespace RecurringIntegrationsScheduler.Job
         /// <see cref="T:Quartz.ITriggerListener" />s that are watching the job's
         /// execution.
         /// </remarks>
-        public void Execute(IJobExecutionContext context)
+        public async Task Execute(IJobExecutionContext context)
         {
             try
             {
+                log4net.Config.XmlConfigurator.Configure();
                 _context = context;
                 _settings.Initialize(context);
 
-                _retryPolicyForIO = Policy.Handle<IOException>().WaitAndRetry(
+                _retryPolicyForIo = Policy.Handle<IOException>().WaitAndRetry(
                     retryCount: _settings.RetryCount, 
                     sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
                     onRetry: (exception, calculatedWaitDuration) => 
@@ -89,28 +90,33 @@ namespace RecurringIntegrationsScheduler.Job
                         Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_Http_operation_Exception_1, _context.JobDetail.Key, exception.Message));
                     });
 
-                Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_starting, _context.JobDetail.Key));
+                if (Log.IsDebugEnabled)
+                    Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_starting, _context.JobDetail.Key));
 
-                var t = Task.Run(Process);
-                t.Wait();
+                await Process();
 
-                Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_ended, _context.JobDetail.Key));
+                if (Log.IsDebugEnabled)
+                    Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_ended, _context.JobDetail.Key));
             }
             catch (Exception ex)
             {
-                //Pause this job
-                context.Scheduler.PauseJob(context.JobDetail.Key);
-                Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
-
-                if (!string.IsNullOrEmpty(ex.Message))
-                    Log.Error(ex.Message, ex);
-
-                while (ex.InnerException != null)
+                if (_settings.PauseJobOnException)
                 {
-                    if (!string.IsNullOrEmpty(ex.InnerException.Message))
-                        Log.Error(ex.InnerException.Message, ex.InnerException);
+                    await context.Scheduler.PauseJob(context.JobDetail.Key);
+                    Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
+                }
+                if (Log.IsDebugEnabled)
+                {
+                    if (!string.IsNullOrEmpty(ex.Message))
+                        Log.Error(ex.Message, ex);
 
-                    ex = ex.InnerException;
+                    while (ex.InnerException != null)
+                    {
+                        if (!string.IsNullOrEmpty(ex.InnerException.Message))
+                            Log.Error(ex.InnerException.Message, ex.InnerException);
+
+                        ex = ex.InnerException;
+                    }
                 }
                 if (context.Scheduler.SchedulerName != "Private")
                     throw new JobExecutionException(string.Format(Resources.Download_job_0_failed, _context.JobDetail.Key), ex, false);
@@ -131,20 +137,17 @@ namespace RecurringIntegrationsScheduler.Job
                 if (!responseExportToPackage.IsSuccessStatusCode)
                     throw new Exception(string.Format(Resources.Job_0_Download_failure_1, _context.JobDetail.Key, responseExportToPackage.StatusCode));
 
-                var executionStatus = "";
-                const int RETRIES = 10;
-                var i = 0;
-                do
+                string executionStatus;
+                var attempt = 0;
+                do //Potentially endless loop
                 {
+                    attempt++;
+                    System.Threading.Thread.Sleep(_settings.Interval);
                     executionStatus = await _httpClientHelper.GetExecutionSummaryStatus(executionId);
-                    if (executionStatus == "NotRun" || executionStatus == "Executing")
-                    {
-                        System.Threading.Thread.Sleep(_settings.Interval);
-                    }
-                    i++;
-                    Log.Debug(string.Format(Resources.Job_0_Checking_if_export_is_completed_Try_1, _context.JobDetail.Key, i));
+                    if (Log.IsDebugEnabled)
+                        Log.Debug(string.Format(Resources.Job_0_Checking_if_export_is_completed_Try_1, _context.JobDetail.Key, attempt));
                 }
-                while ((executionStatus == "NotRun" || executionStatus == "Executing") && i <= RETRIES);
+                while ((executionStatus == "NotRun" || executionStatus == "Executing"));
 
                 if (executionStatus == "Succeeded" || executionStatus == "PartiallySucceeded")
                 {
@@ -152,7 +155,7 @@ namespace RecurringIntegrationsScheduler.Job
 
                     var response = await _httpClientHelper.GetRequestAsync(new UriBuilder(packageUrl).Uri, false);
                     if (!response.IsSuccessStatusCode)
-                        throw new Exception(string.Format(Resources.Job_0_Download_failure_1, _context.JobDetail.Key, string.Format($"Status: {response.StatusCode}. Message: {response.Content}")));
+                        throw new JobExecutionException(string.Format(Resources.Job_0_Download_failure_1, _context.JobDetail.Key, string.Format($"Status: {response.StatusCode}. Message: {response.Content}")));
 
                     using (Stream downloadedStream = await response.Content.ReadAsStreamAsync())
                     {
@@ -164,15 +167,15 @@ namespace RecurringIntegrationsScheduler.Job
                             Name = fileName,
                             MessageStatus = MessageStatus.Succeeded
                         };
-                        _retryPolicyForIO.Execute(() => FileOperationsHelper.Create(downloadedStream, dataMessage.FullPath));
+                        _retryPolicyForIo.Execute(() => FileOperationsHelper.Create(downloadedStream, dataMessage.FullPath));
 
                         if (_settings.UnzipPackage)
-                            _retryPolicyForIO.Execute(() => FileOperationsHelper.UnzipPackage(dataMessage.FullPath, _settings.DeletePackage, _settings.AddTimestamp));
+                            _retryPolicyForIo.Execute(() => FileOperationsHelper.UnzipPackage(dataMessage.FullPath, _settings.DeletePackage, _settings.AddTimestamp));
                     }
                 }
                 else if (executionStatus == "Unknown" || executionStatus == "Failed" || executionStatus == "Canceled")
                 {
-                    throw new Exception(string.Format(Resources.Export_execution_failed_for_job_0_Status_1, _context.JobDetail.Key, executionStatus));
+                    throw new JobExecutionException(string.Format(Resources.Export_execution_failed_for_job_0_Status_1, _context.JobDetail.Key, executionStatus));
                 }
                 else
                 {

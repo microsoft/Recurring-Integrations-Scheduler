@@ -19,22 +19,22 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
     public class HttpClientHelper : IDisposable
     {
-        private readonly JobSettings.Settings _settings;
+        private readonly Settings _settings;
         private readonly HttpClient _httpClient;
-        private readonly HttpClientHandler _httpClientHandler;
         private readonly AuthenticationHelper _authenticationHelper;
         private Uri _enqueueUri;
         private Uri _dequeueUri;
         private Uri _ackUri;
 
-        private bool disposed;
+        private bool _disposed;
 
-        private Policy _retryPolicy;
+        private readonly Policy _retryPolicy;
 
         /// <summary>
-       /// Initializes a new instance of the <see cref="HttpClientHelper"/> class.
+        /// Initializes a new instance of the <see cref="HttpClientHelper"/> class.
         /// </summary>
         /// <param name="jobSettings">Job settings</param>
+        /// <param name="retryPolicy">Retry policy</param>
         public HttpClientHelper(Settings jobSettings, Policy retryPolicy)
         {
             _settings = jobSettings;
@@ -43,13 +43,13 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             //Use Tls1.2 as default transport layer
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            _httpClientHandler = new HttpClientHandler {
+            var httpClientHandler = new HttpClientHandler {
                 AllowAutoRedirect = false,
                 UseCookies = false,
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
 
-            _httpClient = new HttpClient(_httpClientHandler)
+            _httpClient = new HttpClient(httpClientHandler)
             {
                 Timeout = TimeSpan.FromMinutes(60) //Timeout for large uploads or downloads
             };
@@ -126,6 +126,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// Http Get request
         /// </summary>
         /// <param name="uri">Request Uri</param>
+        /// <param name="addAuthorization">Add authorization header</param>
         /// <returns>Http response</returns>
         public async Task<HttpResponseMessage> GetRequestAsync(Uri uri, bool addAuthorization = true)
         {
@@ -148,30 +149,28 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             if (_enqueueUri != null)
                 return _enqueueUri;
 
-            var uploadSettings = _settings as UploadJobSettings;
-
-            //var enqueueUri = new UriBuilder(uploadSettings.AosUri)
-            //{
-            //    Path = "api/connector/enqueue/" + uploadSettings.ActivityId
-            //};
-            var enqueueUri = new UriBuilder(GetAosRequestUri("api/connector/enqueue/" + uploadSettings.ActivityId));
-
-            if (uploadSettings.IsDataPackage)
+            if (_settings is UploadJobSettings uploadSettings)
             {
-                if (!string.IsNullOrEmpty(uploadSettings.Company))
-                    enqueueUri.Query = "company=" + uploadSettings.Company;
+                var enqueueUri = new UriBuilder(GetAosRequestUri("api/connector/enqueue/" + uploadSettings.ActivityId));
+
+                if (uploadSettings.IsDataPackage)
+                {
+                    if (!string.IsNullOrEmpty(uploadSettings.Company))
+                        enqueueUri.Query = "company=" + uploadSettings.Company;
+                }
+                else // Individual file
+                {
+                    // entity name is required
+                    var enqueueQuery = "entity=" + uploadSettings.EntityName;
+                    // Append company if it is specified
+                    if (!string.IsNullOrEmpty(uploadSettings.Company))
+                        enqueueQuery += "&company=" + uploadSettings.Company;
+                    enqueueUri.Query = enqueueQuery;
+                }
+                return _enqueueUri = enqueueUri.Uri;
             }
-            else // Individual file
-            {
-                // entity name is required
-                var enqueueQuery = "entity=" + uploadSettings?.EntityName;
-                // Append company if it is specified
-                if (!string.IsNullOrEmpty(uploadSettings?.Company))
-                    enqueueQuery += "&company=" + uploadSettings.Company;
-                enqueueUri.Query = enqueueQuery;
-            }
-            return _enqueueUri = enqueueUri.Uri;
-         }
+            return null;
+        }
 
         /// <summary>
         /// Gets data job dequeue request Uri
@@ -184,13 +183,12 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             if (_dequeueUri != null)
                 return _dequeueUri;
 
-            var downloadSettings = _settings as DownloadJobSettings;
-            //var dequeueUri = new UriBuilder(downloadSettings.AosUri)
-            //{
-            //    Path = "api/connector/dequeue/" + downloadSettings.ActivityId
-            //};
-            var dequeueUri = new UriBuilder(GetAosRequestUri("api/connector/dequeue/" + downloadSettings.ActivityId));
-            return _dequeueUri = dequeueUri.Uri;
+            if (_settings is DownloadJobSettings downloadSettings)
+            {
+                var dequeueUri = new UriBuilder(GetAosRequestUri("api/connector/dequeue/" + downloadSettings.ActivityId));
+                return _dequeueUri = dequeueUri.Uri;
+            }
+            return null;
         }
 
         /// <summary>
@@ -204,13 +202,12 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             if (_ackUri != null)
                 return _ackUri;
 
-            var downloadSettings = _settings as DownloadJobSettings;
-            //var acknowledgeUri = new UriBuilder(downloadSettings.AosUri)
-            //{
-            //    Path = "api/connector/ack/" + downloadSettings.ActivityId
-            //};
-            var acknowledgeUri = new UriBuilder(GetAosRequestUri("api/connector/ack/" + downloadSettings.ActivityId));
-            return _ackUri = acknowledgeUri.Uri;
+            if (_settings is DownloadJobSettings downloadSettings)
+            {
+                var acknowledgeUri = new UriBuilder(GetAosRequestUri("api/connector/ack/" + downloadSettings.ActivityId));
+                return _ackUri = acknowledgeUri.Uri;
+            }
+            return null;
         }
 
         /// <summary>
@@ -222,17 +219,15 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </returns>
         public Uri GetJobStatusUri(string jobId)
         {
-            var processingJobSettings = _settings as ProcessingJobSettings;
-            //var jobStatusUri = new UriBuilder(processingJobSettings.AosUri)
-            //{
-            //    Path = "api/connector/jobstatus/" + processingJobSettings.ActivityId,
-            //    Query = "jobId=" + jobId.Replace(@"""", "")
-            //};
-            var jobStatusUri = new UriBuilder(GetAosRequestUri("api/connector/jobstatus/" + processingJobSettings.ActivityId))
+            if (_settings is ProcessingJobSettings processingJobSettings)
             {
-                Query = "jobId=" + jobId.Replace(@"""", "")
-            };
-            return jobStatusUri.Uri;
+                var jobStatusUri = new UriBuilder(GetAosRequestUri("api/connector/jobstatus/" + processingJobSettings.ActivityId))
+                {
+                    Query = "jobId=" + jobId.Replace(@"""", "")
+                };
+                return jobStatusUri.Uri;
+            }
+            return null;
         }
 
         /// <summary>
@@ -519,16 +514,11 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <param name="disposing">enable dispose</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposed)
+            if (_disposed) return;
+            _disposed = true;
+            if (disposing)
             {
-                disposed = true;
-                if (disposing)
-                {
-                    if (_httpClient != null)
-                    {
-                        _httpClient.Dispose();
-                    }
-                }
+                _httpClient?.Dispose();
             }
         }
     }

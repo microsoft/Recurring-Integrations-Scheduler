@@ -1,7 +1,7 @@
 ﻿/* Copyright (c) Microsoft Corporation. All rights reserved.
    Licensed under the MIT License. */
 
-using Common.Logging;
+using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Polly;
@@ -24,14 +24,14 @@ namespace RecurringIntegrationsScheduler.Job
     /// <summary>
     /// Job that uploads data packages using new method introduced in platform update 5
     /// </summary>
-    /// <seealso cref="Quartz.IJob" />
+    /// <seealso cref="IJob" />
     [DisallowConcurrentExecution]
     public class Import : IJob
     {
         /// <summary>
         /// The log
         /// </summary>
-        private static readonly ILog Log = LogManager.GetLogger(typeof(Import));
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// The settings
@@ -59,7 +59,7 @@ namespace RecurringIntegrationsScheduler.Job
         /// <summary>
         /// Retry policy for IO operations
         /// </summary>
-        private Policy _retryPolicyForIO;
+        private Policy _retryPolicyForIo;
 
         /// <summary>
         /// Retry policy for HTTP operations
@@ -71,7 +71,7 @@ namespace RecurringIntegrationsScheduler.Job
         /// fires that is associated with the <see cref="T:Quartz.IJob" />.
         /// </summary>
         /// <param name="context">The execution context.</param>
-        /// <exception cref="Quartz.JobExecutionException">false</exception>
+        /// <exception cref="JobExecutionException">false</exception>
         /// <remarks>
         /// The implementation may wish to set a  result object on the
         /// JobExecutionContext before this method exits.  The result itself
@@ -80,14 +80,15 @@ namespace RecurringIntegrationsScheduler.Job
         /// <see cref="T:Quartz.ITriggerListener" />s that are watching the job's
         /// execution.
         /// </remarks>
-        public void Execute(IJobExecutionContext context)
+        public async Task Execute(IJobExecutionContext context)
         {
             try
             {
+                log4net.Config.XmlConfigurator.Configure();
                 _context = context;
                 _settings.Initialize(context);
 
-                _retryPolicyForIO = Policy.Handle<IOException>().WaitAndRetry(
+                _retryPolicyForIo = Policy.Handle<IOException>().WaitAndRetry(
                     retryCount: _settings.RetryCount, 
                     sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
                     onRetry: (exception, calculatedWaitDuration) => 
@@ -102,34 +103,36 @@ namespace RecurringIntegrationsScheduler.Job
                         Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_Http_operation_Exception_1, _context.JobDetail.Key, exception.Message));
                     });
 
-                Log.DebugFormat(CultureInfo.InvariantCulture,
-                    string.Format(Resources.Job_0_starting, _context.JobDetail.Key));
+                if (Log.IsDebugEnabled)
+                    Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_starting, _context.JobDetail.Key));
 
-                var t = Task.Run(Process);
-                t.Wait();
+                await Process();
 
-                Log.DebugFormat(CultureInfo.InvariantCulture,
-                    string.Format(Resources.Job_0_ended, _context.JobDetail.Key));
+                if (Log.IsDebugEnabled)
+                    Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_ended, _context.JobDetail.Key));
             }
             catch (Exception ex)
             {
-                //Pause this job
-                context.Scheduler.PauseJob(context.JobDetail.Key);
-                Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
-
-                if (!string.IsNullOrEmpty(ex.Message))
-                    Log.Error(ex.Message, ex);
-
-                while (ex.InnerException != null)
+                if (_settings.PauseJobOnException)
                 {
-                    if (!string.IsNullOrEmpty(ex.InnerException.Message))
-                        Log.Error(ex.InnerException.Message, ex.InnerException);
+                    await context.Scheduler.PauseJob(context.JobDetail.Key);
+                    Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
+                }
+                if (Log.IsDebugEnabled)
+                {
+                    if (!string.IsNullOrEmpty(ex.Message))
+                        Log.Error(ex.Message, ex);
 
-                    ex = ex.InnerException;
+                    while (ex.InnerException != null)
+                    {
+                        if (!string.IsNullOrEmpty(ex.InnerException.Message))
+                            Log.Error(ex.InnerException.Message, ex.InnerException);
+
+                        ex = ex.InnerException;
+                    }
                 }
                 if (context.Scheduler.SchedulerName != "Private")
-                    throw new JobExecutionException(
-                        string.Format(Resources.Import_job_0_failed, _context.JobDetail.Key), ex, false);
+                    throw new JobExecutionException(string.Format(Resources.Import_job_0_failed, _context.JobDetail.Key), ex, false);
             }
         }
 
@@ -144,7 +147,8 @@ namespace RecurringIntegrationsScheduler.Job
             foreach (
                 var dataMessage in FileOperationsHelper.GetFiles(MessageStatus.Input, _settings.InputDir, _settings.SearchPattern, SearchOption.AllDirectories, _settings.OrderBy, _settings.ReverseOrder))
             {
-                Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_File_1_found_in_input_location, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}")));
+                if (Log.IsDebugEnabled)
+                    Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_File_1_found_in_input_location, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}")));
                 InputQueue.Enqueue(dataMessage);
             }
 
@@ -188,7 +192,7 @@ namespace RecurringIntegrationsScheduler.Job
                         {
                             firstFile = false;
                         }
-                        var sourceStream = _retryPolicyForIO.Execute(() => FileOperationsHelper.Read(dataMessage.FullPath));
+                        var sourceStream = _retryPolicyForIo.Execute(() => FileOperationsHelper.Read(dataMessage.FullPath));
                         if (sourceStream == null) continue;//Nothing to do here
 
                         //If we need to "wrap" file in package envelope
@@ -197,8 +201,8 @@ namespace RecurringIntegrationsScheduler.Job
                             using (zipToOpen = new FileStream(_settings.PackageTemplate, FileMode.Open))
                             {
                                 tempFileName = Path.GetTempFileName();
-                                _retryPolicyForIO.Execute(() => FileOperationsHelper.Create(zipToOpen, tempFileName));
-                                var tempZipStream = _retryPolicyForIO.Execute(() => FileOperationsHelper.Read(tempFileName));
+                                _retryPolicyForIo.Execute(() => FileOperationsHelper.Create(zipToOpen, tempFileName));
+                                var tempZipStream = _retryPolicyForIo.Execute(() => FileOperationsHelper.Read(tempFileName));
                                 using (archive = new ZipArchive(tempZipStream, ZipArchiveMode.Update))
                                 {
                                     //Check if package template contains input file and remove it first. It should not be there in the first place.
@@ -217,21 +221,20 @@ namespace RecurringIntegrationsScheduler.Job
                                         sourceStream.Dispose();
                                     }
                                 }
-                                sourceStream = _retryPolicyForIO.Execute(() => FileOperationsHelper.Read(tempFileName));
+                                sourceStream = _retryPolicyForIo.Execute(() => FileOperationsHelper.Read(tempFileName));
                             }
                         }
-
-                        Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Uploading_file_1_File_size_2_bytes, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}"), sourceStream.Length));
+                        if (Log.IsDebugEnabled)
+                            Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Uploading_file_1_File_size_2_bytes, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}"), sourceStream.Length));
 
                         // Get blob url and id. Returns in json format
                         var response = await _httpClientHelper.GetAzureWriteUrl();
                         if(String.IsNullOrEmpty(response))
                         {
-                            Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format("Method GetAzureWriteUrl returned empty string"));
+                            Log.ErrorFormat(CultureInfo.InvariantCulture, "Method GetAzureWriteUrl returned empty string");
                             continue;
                         }
                         var blobInfo = (JObject)JsonConvert.DeserializeObject(response);
-                        var blobId = blobInfo["BlobId"].ToString();
                         var blobUrl = blobInfo["BlobUrl"].ToString();
 
                         var blobUri = new Uri(blobUrl);
@@ -244,7 +247,7 @@ namespace RecurringIntegrationsScheduler.Job
                             sourceStream.Dispose();
                             if (!String.IsNullOrEmpty(_settings.PackageTemplate))
                             {
-                                _retryPolicyForIO.Execute(() => FileOperationsHelper.Delete(tempFileName));
+                                _retryPolicyForIo.Execute(() => FileOperationsHelper.Delete(tempFileName));
                             }
                         }
                         if (uploadResponse.IsSuccessStatusCode)
@@ -266,12 +269,12 @@ namespace RecurringIntegrationsScheduler.Job
                                 };
 
                                 // Move to inprocess/success location
-                                _retryPolicyForIO.Execute(() => FileOperationsHelper.Move(dataMessage.FullPath, targetDataMessage.FullPath));
+                                _retryPolicyForIo.Execute(() => FileOperationsHelper.Move(dataMessage.FullPath, targetDataMessage.FullPath));
 
                                 if (_settings.ExecutionJobPresent)
-                                    _retryPolicyForIO.Execute(() => FileOperationsHelper.WriteStatusFile(targetDataMessage, _settings.StatusFileExtension));
-
-                                Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_File_1_uploaded_successfully, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}")));
+                                    _retryPolicyForIo.Execute(() => FileOperationsHelper.WriteStatusFile(targetDataMessage, _settings.StatusFileExtension));
+                                if (Log.IsDebugEnabled)
+                                    Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_File_1_uploaded_successfully, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}")));
                             }
                             else
                             {
@@ -285,10 +288,10 @@ namespace RecurringIntegrationsScheduler.Job
                                 };
 
                                 // Move data to error location
-                                _retryPolicyForIO.Execute(() => FileOperationsHelper.Move(dataMessage.FullPath, targetDataMessage.FullPath));
+                                _retryPolicyForIo.Execute(() => FileOperationsHelper.Move(dataMessage.FullPath, targetDataMessage.FullPath));
 
                                 // Save the log with import failure details
-                                _retryPolicyForIO.Execute(() => FileOperationsHelper.WriteStatusLogFile(targetDataMessage, importResponse, _settings.StatusFileExtension));
+                                _retryPolicyForIo.Execute(() => FileOperationsHelper.WriteStatusLogFile(targetDataMessage, importResponse, _settings.StatusFileExtension));
                             }
                         }
                         else
@@ -303,10 +306,10 @@ namespace RecurringIntegrationsScheduler.Job
                             };
 
                             // Move data to error location
-                            _retryPolicyForIO.Execute(() => FileOperationsHelper.Move(dataMessage.FullPath, targetDataMessage.FullPath));
+                            _retryPolicyForIo.Execute(() => FileOperationsHelper.Move(dataMessage.FullPath, targetDataMessage.FullPath));
 
                             // Save the log with import failure details
-                            _retryPolicyForIO.Execute(() => FileOperationsHelper.WriteStatusLogFile(targetDataMessage, uploadResponse, _settings.StatusFileExtension));
+                            _retryPolicyForIo.Execute(() => FileOperationsHelper.WriteStatusLogFile(targetDataMessage, uploadResponse, _settings.StatusFileExtension));
                         }
                     }
                     catch (Exception ex)
@@ -321,10 +324,8 @@ namespace RecurringIntegrationsScheduler.Job
                             zipToOpen.Close();
                             zipToOpen.Dispose();
                         }
-                        if (archive != null)
-                        {
-                            archive.Dispose();
-                        }
+
+                        archive?.Dispose();
                     }
                 }
             }
@@ -333,9 +334,9 @@ namespace RecurringIntegrationsScheduler.Job
         private string GetFileNameInPackage()
         {
             var manifestPath = "";
-            using (ZipArchive package = ZipFile.OpenRead(_settings.PackageTemplate))
+            using (var package = ZipFile.OpenRead(_settings.PackageTemplate))
             {
-                foreach (ZipArchiveEntry entry in package.Entries)
+                foreach (var entry in package.Entries)
                 {
                     if (entry.FullName.Equals("Manifest.xml", StringComparison.OrdinalIgnoreCase))
                     {
@@ -344,17 +345,17 @@ namespace RecurringIntegrationsScheduler.Job
                     }
                 }
             }
-            XmlDocument doc = new XmlDocument();
-            string fileName = "";
+            var doc = new XmlDocument();
+            string fileName;
             using (var manifestFile = new StreamReader(manifestPath))
             {
                 doc.Load(new XmlTextReader(manifestFile) { Namespaces = false });
-                fileName = doc.SelectSingleNode("//InputFilePath[1]").InnerText;
+                fileName = doc.SelectSingleNode("//InputFilePath[1]")?.InnerText;
             }
             return fileName;
         }
 
-        private string CreateExecutionId(string dataProject)
+        private static string CreateExecutionId(string dataProject)
         {
             return $"{dataProject}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}-{Guid.NewGuid().ToString()}";
         }

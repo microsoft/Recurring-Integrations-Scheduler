@@ -2,14 +2,15 @@
    Licensed under the MIT License. */
 
 using Quartz;
-using Quartz.Collection;
 using RecurringIntegrationsScheduler.Common.Contracts;
 using RecurringIntegrationsScheduler.Properties;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Windows.Forms;
 
@@ -19,10 +20,11 @@ namespace RecurringIntegrationsScheduler.Forms
     {
         private bool _privateScheduler;
         private bool _scheduleChanged;
-        private JobKey selectedJobKey;
+        private JobKey _selectedJobKey;
         public MainForm()
         {
             InitializeComponent();
+            log4net.Config.XmlConfigurator.Configure();
         }
 
         private void RefreshGrid()
@@ -109,7 +111,7 @@ namespace RecurringIntegrationsScheduler.Forms
                 var jobKey = new JobKey(Convert.ToString(selectedRow.Cells["JobName"].Value),
                                         Convert.ToString(selectedRow.Cells["JobGroup"].Value));
 
-                if (Scheduler.Instance.GetScheduler().DeleteJob(jobKey))
+                if (Scheduler.Instance.GetScheduler().DeleteJob(jobKey).Result)
                 {
                     _scheduleChanged = true;
                 }
@@ -144,25 +146,6 @@ namespace RecurringIntegrationsScheduler.Forms
             }
         }
 
-        private void PauseAllJobsButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var scheduler = Scheduler.Instance.GetScheduler();
-                if (scheduler == null)
-                {
-                    MessageBox.Show(Resources.No_active_scheduler, Resources.Missing_scheduler);
-                    return;
-                }
-                scheduler.PauseAll();
-                RefreshGrid();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, Resources.Unexpected_error);
-            }
-        }
-
         private void ResumeJobButton_Click(object sender, EventArgs e)
         {
             try
@@ -178,25 +161,6 @@ namespace RecurringIntegrationsScheduler.Forms
                     return;
                 }
                 scheduler.ResumeJob(jobKey);
-                RefreshGrid();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, Resources.Unexpected_error);
-            }
-        }
-
-        private void ResumeAllJobsButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var scheduler = Scheduler.Instance.GetScheduler();
-                if (scheduler == null)
-                {
-                    MessageBox.Show(Resources.No_active_scheduler, Resources.Missing_scheduler);
-                    return;
-                }
-                scheduler.ResumeAll();
                 RefreshGrid();
             }
             catch (Exception ex)
@@ -318,7 +282,7 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             if (_privateScheduler)
             {
-                var executing = Scheduler.Instance.GetScheduler().GetCurrentlyExecutingJobs();
+                var executing = Scheduler.Instance.GetScheduler().GetCurrentlyExecutingJobs().Result;
                 if (executing.Count > 0)
                 {
                     var result =
@@ -330,11 +294,11 @@ namespace RecurringIntegrationsScheduler.Forms
                         e.Cancel = true;
                         return;
                     }
-                    Scheduler.Instance.GetScheduler().Shutdown();
+                    Scheduler.Instance.GetScheduler().Shutdown().Wait();
                 }
                 else
                 {
-                    Scheduler.Instance.GetScheduler().Shutdown();
+                    Scheduler.Instance.GetScheduler().Shutdown().Wait();
                 }
             }
             else
@@ -365,9 +329,8 @@ namespace RecurringIntegrationsScheduler.Forms
                     return;
                 }
 
-                var jobDetail = scheduler.GetJobDetail(jobKey);
-                var jobTrigger = scheduler.GetTriggersOfJob(jobKey)[0];
-
+                var jobDetail = scheduler.GetJobDetail(jobKey).Result;
+                var jobTrigger = scheduler.GetTriggersOfJob(jobKey).Result.First();
                 switch (jobDetail.JobType.FullName)
                 {
                     case SettingsConstants.DownloadJob:
@@ -414,12 +377,12 @@ namespace RecurringIntegrationsScheduler.Forms
                         //find related processing job
                         var processingJobName = jobDetail.Key.Name + "-Processing monitor";
                         var processingJobKey = new JobKey(processingJobName, jobDetail.Key.Group);
-                        var processingJobDetail = scheduler.GetJobDetail(processingJobKey);
+                        var processingJobDetail = scheduler.GetJobDetail(processingJobKey).Result;
                         ITrigger processingJobTrigger = null;
 
                         if (processingJobDetail != null)
                         {
-                            processingJobTrigger = scheduler.GetTriggersOfJob(processingJobKey)[0];
+                            processingJobTrigger = scheduler.GetTriggersOfJob(processingJobKey).Result.First();
                         }
 
                         using (UploadJob uploadForm = new UploadJob
@@ -456,12 +419,12 @@ namespace RecurringIntegrationsScheduler.Forms
                         //find related execution job
                         var executionJobName = jobDetail.Key.Name + "-Execution monitor";
                         var executionJobKey = new JobKey(executionJobName, jobDetail.Key.Group);
-                        var executionJobDetail = scheduler.GetJobDetail(executionJobKey);
+                        var executionJobDetail = scheduler.GetJobDetail(executionJobKey).Result;
                         ITrigger executionJobTrigger = null;
 
                         if (executionJobDetail != null)
                         {
-                            executionJobTrigger = scheduler.GetTriggersOfJob(executionJobKey)[0];
+                            executionJobTrigger = scheduler.GetTriggersOfJob(executionJobKey).Result.First();
                         }
 
                         using (ImportJob importForm = new ImportJob
@@ -587,7 +550,7 @@ namespace RecurringIntegrationsScheduler.Forms
             {
                 var jobName = jobsDataGridView.Rows[rowIndex].Cells["JobName"].Value.ToString();
                 var jobGroup = jobsDataGridView.Rows[rowIndex].Cells["JobGroup"].Value.ToString();
-                selectedJobKey = new JobKey(jobName, jobGroup);
+                _selectedJobKey = new JobKey(jobName, jobGroup);
 
                 var scheduler = Scheduler.Instance.GetScheduler();
                 if (scheduler == null)
@@ -596,7 +559,7 @@ namespace RecurringIntegrationsScheduler.Forms
                     return;
                 }
 
-                var jobDetail = scheduler.GetJobDetail(selectedJobKey);
+                var jobDetail = scheduler.GetJobDetail(_selectedJobKey).Result;
 
                 switch (jobDetail.JobType.FullName)
                 {
@@ -738,15 +701,15 @@ namespace RecurringIntegrationsScheduler.Forms
             dt.DefaultView.RowFilter = string.Empty;
             if (instanceFilter.Text != string.Empty && jobNameFilter.Text == string.Empty)
             {
-                dt.DefaultView.RowFilter = string.Format("Instance like '%{0}%'", instanceFilter.Text);
+                dt.DefaultView.RowFilter = $"Instance like '%{instanceFilter.Text}%'";
             }
             else if (instanceFilter.Text == string.Empty && jobNameFilter.Text != string.Empty)
             {
-                dt.DefaultView.RowFilter = string.Format("JobName like '%{0}%'", jobNameFilter.Text);
+                dt.DefaultView.RowFilter = $"JobName like '%{jobNameFilter.Text}%'";
             }
             else if (instanceFilter.Text != string.Empty && jobNameFilter.Text != string.Empty)
             {
-                dt.DefaultView.RowFilter = string.Format("Instance like '%{0}%' and JobName like '%{1}%'", instanceFilter.Text, jobNameFilter.Text);
+                dt.DefaultView.RowFilter = $"Instance like '%{instanceFilter.Text}%' and JobName like '%{jobNameFilter.Text}%'";
             }
             jobsDataGridView.Refresh();
             if (jobsDataGridView.RowCount == 0)
@@ -760,7 +723,7 @@ namespace RecurringIntegrationsScheduler.Forms
         private void OpenSuccessfulDownloadsFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var scheduler = Scheduler.Instance.GetScheduler();
-            var jobDetail = scheduler.GetJobDetail(selectedJobKey);
+            var jobDetail = scheduler.GetJobDetail(_selectedJobKey).Result;
             var path = jobDetail.JobDataMap[SettingsConstants.DownloadSuccessDir]?.ToString();
             if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
             {
@@ -775,14 +738,14 @@ namespace RecurringIntegrationsScheduler.Forms
             }
             else
             {
-                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error); ;
+                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error);
             }
         }
 
         private void OpenFailedProcessingFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var scheduler = Scheduler.Instance.GetScheduler();
-            var jobDetail = scheduler.GetJobDetail(selectedJobKey);
+            var jobDetail = scheduler.GetJobDetail(_selectedJobKey).Result;
             var path = jobDetail.JobDataMap[SettingsConstants.ProcessingErrorsDir]?.ToString();
             if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
             {
@@ -797,14 +760,14 @@ namespace RecurringIntegrationsScheduler.Forms
             }
             else
             {
-                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error); ;
+                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error);
             }
         }
 
         private void OpenSuccessfulProcessingFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var scheduler = Scheduler.Instance.GetScheduler();
-            var jobDetail = scheduler.GetJobDetail(selectedJobKey);
+            var jobDetail = scheduler.GetJobDetail(_selectedJobKey).Result;
             var path = jobDetail.JobDataMap[SettingsConstants.ProcessingSuccessDir]?.ToString();
             if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
             {
@@ -819,14 +782,14 @@ namespace RecurringIntegrationsScheduler.Forms
             }
             else
             {
-                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error); ;
+                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error);
             }
         }
 
         private void OpenFailedUploadsFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var scheduler = Scheduler.Instance.GetScheduler();
-            var jobDetail = scheduler.GetJobDetail(selectedJobKey);
+            var jobDetail = scheduler.GetJobDetail(_selectedJobKey).Result;
             var path = jobDetail.JobDataMap[SettingsConstants.UploadErrorsDir]?.ToString();
             if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
             {
@@ -841,14 +804,14 @@ namespace RecurringIntegrationsScheduler.Forms
             }
             else
             {
-                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error); ;
+                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error);
             }
         }
 
         private void OpenSuccessfulUploadsFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var scheduler = Scheduler.Instance.GetScheduler();
-            var jobDetail = scheduler.GetJobDetail(selectedJobKey);
+            var jobDetail = scheduler.GetJobDetail(_selectedJobKey).Result;
             var path = jobDetail.JobDataMap[SettingsConstants.UploadSuccessDir]?.ToString();
             if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
             {
@@ -863,14 +826,14 @@ namespace RecurringIntegrationsScheduler.Forms
             }
             else
             {
-                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error); ;
+                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error);
             }
         }
 
         private void OpenInputFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var scheduler = Scheduler.Instance.GetScheduler();
-            var jobDetail = scheduler.GetJobDetail(selectedJobKey);
+            var jobDetail = scheduler.GetJobDetail(_selectedJobKey).Result;
             var path = jobDetail.JobDataMap[SettingsConstants.InputDir]?.ToString();
             if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
             {
@@ -885,7 +848,7 @@ namespace RecurringIntegrationsScheduler.Forms
             }
             else
             {
-                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error); ;
+                MessageBox.Show(Resources.Path_doesnot_exist_or_is_unaccessible, Resources.Unexpected_error);
             }
         }
 

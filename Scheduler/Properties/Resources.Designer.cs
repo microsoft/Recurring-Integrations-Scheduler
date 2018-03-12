@@ -1108,6 +1108,15 @@ namespace RecurringIntegrationsScheduler.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Method GetAzureWriteUrl returned empty string. Check previous errors..
+        /// </summary>
+        internal static string GetAzureWriteUrl_returned_empty_string_Check_previous_errors {
+            get {
+                return ResourceManager.GetString("GetAzureWriteUrl_returned_empty_string_Check_previous_errors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Group.
         /// </summary>
         internal static string Group {
@@ -1203,6 +1212,15 @@ namespace RecurringIntegrationsScheduler.Properties {
         internal static string Instance_name_ {
             get {
                 return ResourceManager.GetString("Instance_name_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instance seems to support GetMessageStatus method.
+        /// </summary>
+        internal static string Instance_seems_to_support_GetMessageStatus_method {
+            get {
+                return ResourceManager.GetString("Instance_seems_to_support_GetMessageStatus_method", resourceCulture);
             }
         }
         
@@ -1378,6 +1396,15 @@ namespace RecurringIntegrationsScheduler.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Method GetMessageStatus returned empty string. Check previous errors..
+        /// </summary>
+        internal static string Method_GetMessageStatus_returned_empty_string_Check_previous_errors {
+            get {
+                return ResourceManager.GetString("Method_GetMessageStatus_returned_empty_string_Check_previous_errors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing scheduler.
         /// </summary>
         internal static string Missing_scheduler {
@@ -1407,9 +1434,9 @@ namespace RecurringIntegrationsScheduler.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        internal static string Name {
+        internal static string NameLabel {
             get {
-                return ResourceManager.GetString("Name", resourceCulture);
+                return ResourceManager.GetString("NameLabel", resourceCulture);
             }
         }
         

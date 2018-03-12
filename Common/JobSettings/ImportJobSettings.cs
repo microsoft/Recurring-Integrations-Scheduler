@@ -13,7 +13,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
     /// <summary>
     /// Serialize/deserialize DMImport job settings
     /// </summary>
-    /// <seealso cref="RecurringIntegrationsScheduler.Common.Configuration.Settings" />
+    /// <seealso cref="RecurringIntegrationsScheduler.Common.JobSettings" />
     public class ImportJobSettings : Settings
     {
         /// <summary>
