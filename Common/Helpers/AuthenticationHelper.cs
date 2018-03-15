@@ -48,19 +48,22 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 Path = _settings.AadTenant
             };
 
-            var authenticationContext = new AuthenticationContext(uri.ToString());
+            Uri aosUriAuthUri = new Uri(_settings.AosUri);
+            string aosUriAuth = aosUriAuthUri.GetLeftPart(UriPartial.Authority);
+
+            var authenticationContext = new AuthenticationContext(uri.ToString(), validateAuthority: false);
 
             if (_settings.UseServiceAuthentication)
             {
                 var credentials = new ClientCredential(_settings.AadClientId.ToString(), _settings.AadClientSecret);
 
-                AuthenticationResult = await authenticationContext.AcquireTokenAsync(_settings.AosUri, credentials);
+                AuthenticationResult = await authenticationContext.AcquireTokenAsync(aosUriAuth, credentials);
             }
             else
             {
                 var credentials = new UserPasswordCredential(_settings.UserName, _settings.UserPassword);
 
-                AuthenticationResult = await authenticationContext.AcquireTokenAsync(_settings.AosUri, _settings.AadClientId.ToString(), credentials);
+                AuthenticationResult = await authenticationContext.AcquireTokenAsync(aosUriAuth, _settings.AadClientId.ToString(), credentials);
             }
 
             return _authorizationHeader = AuthenticationResult.CreateAuthorizationHeader();

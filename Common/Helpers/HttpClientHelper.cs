@@ -160,11 +160,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 return _enqueueUri;
 
             var uploadSettings = _settings as UploadJobSettings;
-
-            var enqueueUri = new UriBuilder(uploadSettings.AosUri)
-            {
-                Path = "api/connector/enqueue/" + uploadSettings.ActivityId
-            };
+            Uri aosUri = GetAosRequestUri("api/connector/enqueue/" + uploadSettings.ActivityId);
+            var enqueueUri = new UriBuilder(aosUri);
 
             if (uploadSettings.IsDataPackage)
             {
@@ -195,11 +192,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 return _dequeueUri;
 
             var downloadSettings = _settings as DownloadJobSettings;
-            var dequeueUri = new UriBuilder(downloadSettings.AosUri)
-            {
-                Path = "api/connector/dequeue/" + downloadSettings.ActivityId
-            };
-            return _dequeueUri = dequeueUri.Uri;
+            var dequeueUri = GetAosRequestUri("api/connector/dequeue/" + downloadSettings.ActivityId);
+            return _dequeueUri = dequeueUri;
         }
 
         /// <summary>
@@ -214,11 +208,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 return _ackUri;
 
             var downloadSettings = _settings as DownloadJobSettings;
-            var acknowledgeUri = new UriBuilder(downloadSettings.AosUri)
-            {
-                Path = "api/connector/ack/" + downloadSettings.ActivityId
-            };
-            return _ackUri = acknowledgeUri.Uri;
+            Uri acknowledgeUri = GetAosRequestUri("api/connector/ack/" + downloadSettings.ActivityId);
+            return _ackUri = acknowledgeUri;
         }
 
         /// <summary>
@@ -231,9 +222,9 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         public Uri GetJobStatusUri(string jobId)
         {
             var processingJobSettings = _settings as ProcessingJobSettings;
-            var jobStatusUri = new UriBuilder(processingJobSettings.AosUri)
+            Uri requestUri = GetAosRequestUri("api/connector/jobstatus/" + processingJobSettings.ActivityId);
+            var jobStatusUri = new UriBuilder(requestUri)
             {
-                Path = "api/connector/jobstatus/" + processingJobSettings.ActivityId,
                 Query = "jobId=" + jobId.Replace(@"""", "")
             };
             return jobStatusUri.Uri;
@@ -245,16 +236,13 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>temp writable cloud url</returns>
         public async Task<string> GetAzureWriteUrl()
         {
-            var requestUri = new UriBuilder(_settings.AosUri)
-            {
-                Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetAzureWriteUrl"
-            };
+            Uri requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetAzureWriteUrl");
 
             string uniqueFileName = Guid.NewGuid().ToString();
             var parameters = new { uniqueFileName };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
 
-            var response = await PostStringRequestAsync(requestUri.Uri, parametersJson);
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
             string result = response.Content.ReadAsStringAsync().Result;
             JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
             string jvalue = jsonResponse["value"].ToString();
@@ -268,15 +256,12 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>job's execution status</returns>
         public async Task<string> GetExecutionSummaryStatus(string executionId)
         {
-            var requestUri = new UriBuilder(_settings.AosUri)
-            {
-                Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExecutionSummaryStatus"
-            };
+            Uri requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExecutionSummaryStatus");
 
             var parameters = new { executionId };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
 
-            var response = await PostStringRequestAsync(requestUri.Uri, parametersJson);
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
 
             string result = response.Content.ReadAsStringAsync().Result;
             JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
@@ -290,14 +275,12 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>exorted package Url location</returns>
         public async Task<Uri> GetExportedPackageUrl(string executionId)
         {
-            var requestUri = new UriBuilder(_settings.AosUri)
-            {
-                Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExportedPackageUrl"
-            };
+            Uri requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExportedPackageUrl");
+
             var parameters = new { executionId };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
 
-            var response = await PostStringRequestAsync(requestUri.Uri, parametersJson);
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
             string result = response.Content.ReadAsStringAsync().Result;
             JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
             string jvalue = jsonResponse["value"].ToString();
@@ -311,14 +294,12 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>execution's summary page Url</returns>
         public async Task<string> GetExecutionSummaryPageUrl(string executionId)
         {
-            var requestUri = new UriBuilder(_settings.AosUri)
-            {
-                Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExecutionSummaryPageUrl"
-            };
+            Uri requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExecutionSummaryPageUrl");
+            
             var parameters = new { executionId };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
 
-            var response = await PostStringRequestAsync(requestUri.Uri, parametersJson);
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
             string result = response.Content.ReadAsStringAsync().Result;
             JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
             return jsonResponse["value"].ToString();
@@ -355,10 +336,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns></returns>
         public async Task<HttpResponseMessage> ImportFromPackage(string packageUrl, string definitionGroupId, string executionId, bool execute, bool overwrite, string legalEntityId)
         {
-            var requestUri = new UriBuilder(_settings.AosUri)
-            {
-                Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage"
-            };
+            Uri requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage");
+            
             var parameters = new
             {
                 packageUrl,
@@ -369,7 +348,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 legalEntityId
             };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
-            return await PostStringRequestAsync(requestUri.Uri, parametersJson);
+            return await PostStringRequestAsync(requestUri, parametersJson);
         }
 
         /// <summary>
@@ -379,14 +358,12 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns></returns>
         public async Task<string> DeleteExecutionHistoryJob(string executionId)
         {
-            var requestUri = new UriBuilder(_settings.AosUri)
-            {
-                Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.DeleteExecutionHistoryJob"
-            };
+            Uri requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.DeleteExecutionHistoryJob");
+            
             var parameters = new { executionId };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
 
-            var response = await PostStringRequestAsync(requestUri.Uri, parametersJson);
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
             string result = response.Content.ReadAsStringAsync().Result;
             JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
             return jsonResponse["value"].ToString();
@@ -403,10 +380,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>export package url</returns>
         public async Task<HttpResponseMessage> ExportToPackage(string definitionGroupId, string packageName, string executionId, string legalEntityId, bool reExecute = false)
         {
-            var requestUri = new UriBuilder(_settings.AosUri)
-            {
-                Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ExportToPackage"
-            };
+            Uri requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ExportToPackage");
+            
             var parameters = new
             {
                 definitionGroupId,
@@ -415,8 +390,9 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 reExecute,
                 legalEntityId
             };
+
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
-            return await PostStringRequestAsync(requestUri.Uri, parametersJson);
+            return await PostStringRequestAsync(requestUri, parametersJson);
         }
 
         /// <summary>
@@ -431,10 +407,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>export package url</returns>
         public async Task<HttpResponseMessage> ExportFromPackage(string packageUrl, string definitionGroupId, string executionId, bool execute, bool overwrite, string legalEntityId)
         {
-            var requestUri = new UriBuilder(_settings.AosUri)
-            {
-                Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ExportFromPackage"
-            };
+            Uri requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ExportFromPackage");
+
             var parameters = new
             {
                 packageUrl,
@@ -445,7 +419,18 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 legalEntityId
             };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
-            return await PostStringRequestAsync(requestUri.Uri, parametersJson);
+            return await PostStringRequestAsync(requestUri, parametersJson);
+        }
+
+        private Uri GetAosRequestUri(string requestRelativePath)
+        {
+            Uri aosUri = new Uri(_settings.AosUri);
+            UriBuilder builder = new UriBuilder(aosUri)
+            {
+                Path = string.Concat(aosUri.AbsolutePath.TrimEnd('/'), "/", requestRelativePath.TrimStart('/'))
+            };
+
+            return builder.Uri;
         }
 
         /// <summary>
