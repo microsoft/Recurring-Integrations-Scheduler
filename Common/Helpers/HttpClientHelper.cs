@@ -463,16 +463,13 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns></returns>
         public async Task<string> GetMessageStatus(string messageId)
         {
-            var requestUri = new UriBuilder(_settings.AosUri)
-            {
-                Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetMessageStatus"
-            };
+            var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetMessageStatus");
             var parameters = new
             {
                 messageId
             };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
-            var response = await PostStringRequestAsync(requestUri.Uri, parametersJson);
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
             
             if (response.IsSuccessStatusCode)
             {
