@@ -155,7 +155,17 @@ namespace RecurringIntegrationsScheduler.Job
 
                 if (executionStatus == "Succeeded" || executionStatus == "PartiallySucceeded")
                 {
-                    Uri packageUrl = await _httpClientHelper.GetExportedPackageUrl(executionId);
+                    attempt = 0;
+                    Uri packageUrl = null;
+                    do //Potentially endless loop
+                    {
+                        attempt++;
+                        System.Threading.Thread.Sleep(_settings.Interval);
+                        packageUrl = await _httpClientHelper.GetExportedPackageUrl(executionId);
+                        if (Log.IsDebugEnabled)
+                            Log.Debug(string.Format(Resources.Job_0_Trying_to_get_exported_package_URL_Try_1, _context.JobDetail.Key, attempt));
+                    }
+                    while (packageUrl == null);
 
                     var response = await _httpClientHelper.GetRequestAsync(new UriBuilder(packageUrl).Uri, false);
                     if (!response.IsSuccessStatusCode)

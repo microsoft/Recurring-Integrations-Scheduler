@@ -241,6 +241,15 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Job: {0} Trying to get exported package URL. Try: {1}.
+        /// </summary>
+        internal static string Job_0_Trying_to_get_exported_package_URL_Try_1 {
+            get {
+                return ResourceManager.GetString("Job_0_Trying_to_get_exported_package_URL_Try_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Job: {0} was paused because of an error..
         /// </summary>
         internal static string Job_0_was_paused_because_of_error {

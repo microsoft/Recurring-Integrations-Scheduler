@@ -189,7 +189,7 @@ namespace RecurringIntegrationsScheduler.Forms
             0,
             0});
             this.interval.Minimum = new decimal(new int[] {
-            60,
+            5,
             0,
             0,
             0});

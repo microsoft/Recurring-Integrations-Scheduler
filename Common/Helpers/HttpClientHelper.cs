@@ -236,10 +236,6 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>temp writable cloud url</returns>
         public async Task<string> GetAzureWriteUrl()
         {
-            //var requestUri = new UriBuilder(_settings.AosUri)
-            //{
-            //    Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetAzureWriteUrl"
-            //};
             var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetAzureWriteUrl");
 
             string uniqueFileName = Guid.NewGuid().ToString();
@@ -266,10 +262,6 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>job's execution status</returns>
         public async Task<string> GetExecutionSummaryStatus(string executionId)
         {
-            //var requestUri = new UriBuilder(_settings.AosUri)
-            //{
-            //    Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExecutionSummaryStatus"
-            //};
             var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExecutionSummaryStatus");
 
             var parameters = new { executionId };
@@ -289,20 +281,23 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>exorted package Url location</returns>
         public async Task<Uri> GetExportedPackageUrl(string executionId)
         {
-            //var requestUri = new UriBuilder(_settings.AosUri)
-            //{
-            //    Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExportedPackageUrl"
-            //};
-            var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExportedPackageUrl");
+            try
+            {
+                var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExportedPackageUrl");
 
-            var parameters = new { executionId };
-            string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+                var parameters = new { executionId };
+                string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
 
-            var response = await PostStringRequestAsync(requestUri, parametersJson);
-            string result = response.Content.ReadAsStringAsync().Result;
-            JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
-            string jvalue = jsonResponse["value"].ToString();
-            return new Uri(jvalue);
+                var response = await PostStringRequestAsync(requestUri, parametersJson);
+                string result = response.Content.ReadAsStringAsync().Result;
+                JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
+                string jvalue = jsonResponse["value"].ToString();
+                return new Uri(jvalue);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -312,10 +307,6 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>execution's summary page Url</returns>
         public async Task<string> GetExecutionSummaryPageUrl(string executionId)
         {
-            //var requestUri = new UriBuilder(_settings.AosUri)
-            //{
-            //    Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExecutionSummaryPageUrl"
-            //};
             var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExecutionSummaryPageUrl");
 
             var parameters = new { executionId };
@@ -355,10 +346,6 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns></returns>
         public async Task<HttpResponseMessage> ImportFromPackage(string packageUrl, string definitionGroupId, string executionId, bool execute, bool overwrite, string legalEntityId)
         {
-            //var requestUri = new UriBuilder(_settings.AosUri)
-            //{
-            //    Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage"
-            //};
             var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage");
 
             var parameters = new
@@ -381,10 +368,6 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns></returns>
         public async Task<string> DeleteExecutionHistoryJob(string executionId)
         {
-            //var requestUri = new UriBuilder(_settings.AosUri)
-            //{
-            //    Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.DeleteExecutionHistoryJob"
-            //};
             var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.DeleteExecutionHistoryJob"); 
 
             var parameters = new { executionId };
@@ -407,10 +390,6 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>export package url</returns>
         public async Task<HttpResponseMessage> ExportToPackage(string definitionGroupId, string packageName, string executionId, string legalEntityId, bool reExecute = false)
         {
-            //var requestUri = new UriBuilder(_settings.AosUri)
-            //{
-            //    Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ExportToPackage"
-            //};
             var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ExportToPackage");
 
             var parameters = new
@@ -437,10 +416,6 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>export package url</returns>
         public async Task<HttpResponseMessage> ExportFromPackage(string packageUrl, string definitionGroupId, string executionId, bool execute, bool overwrite, string legalEntityId)
         {
-            //var requestUri = new UriBuilder(_settings.AosUri)
-            //{
-            //    Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ExportFromPackage"
-            //};
             var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ExportFromPackage");
 
             var parameters = new
