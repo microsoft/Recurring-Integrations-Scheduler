@@ -174,6 +174,46 @@ namespace RecurringIntegrationsScheduler.Job
                                 var tempZipStream = FileOperationsHelper.Read(tempFileName);
                                 using (archive = new ZipArchive(tempZipStream, ZipArchiveMode.Update))
                                 {
+                                    // 20180410 - mehrdadg - modified : begin -->
+                                    // This modification will cause that the original file name is used in the package that is going to be uploaded to D365
+                                    // Get the manifest.xml entery
+                                    ZipArchiveEntry manifestEntry = archive.GetEntry("Manifest.xml");
+
+                                    // Save the Manifest.xml as temporary file
+                                    string tempManifestFileName = Path.GetTempFileName();
+                                    string tempManifestFileNameNew = Path.GetTempFileName();
+
+                                    manifestEntry.ExtractToFile(tempManifestFileName, true);
+
+                                    // Modify the file name to the original filename
+                                    XmlDocument tempXmlDocManifest = new XmlDocument();
+                                    
+                                    using (var tempManifestFile = new StreamReader(tempManifestFileName))
+                                    {
+                                        tempXmlDocManifest.Load(new XmlTextReader(tempManifestFile) { Namespaces = false });
+                                        tempXmlDocManifest.SelectSingleNode("//InputFilePath[1]").InnerText = Path.GetFileName(dataMessage.FullPath);
+
+                                        // Save the document to a file and auto-indent the output.
+                                        using (XmlTextWriter writer = new XmlTextWriter(tempManifestFileNameNew, null))
+                                        {
+                                            writer.Namespaces = false;
+                                            writer.Formatting = System.Xml.Formatting.Indented;
+                                            tempXmlDocManifest.Save(writer);
+                                        }
+                                    }
+
+                                    // Delete the Manifest.xml from the archive file
+                                    manifestEntry.Delete();
+
+                                    // Add a new Manifest.xml based on the adjusted file
+                                    archive.CreateEntryFromFile(tempManifestFileNameNew, "Manifest.xml");
+
+                                    // Delete the tempoirary file
+                                    File.Delete(tempManifestFileName);
+                                    File.Delete(tempManifestFileNameNew);
+
+                                    // 20180410 - mehrdadg - modified : end --<
+
                                     //Check if package template contains input file and remove it first. It should not be there in the first place.
                                     ZipArchiveEntry entry = archive.GetEntry(fileNameInPackage);
                                     if (entry != null)
@@ -181,6 +221,17 @@ namespace RecurringIntegrationsScheduler.Job
                                         entry.Delete();
                                         Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Package_template_contains_input_file_0_Please_remove_it_from_the_template, fileNameInPackage));
                                     }
+
+                                    // 20180410 - mehrdadg - modified : begin -->
+                                    // Check if package template contains input file and remove it first. It should not be there in the first place.
+                                    fileNameInPackage = Path.GetFileName(dataMessage.FullPath);
+                                    entry = archive.GetEntry(fileNameInPackage);
+                                    if (entry != null)
+                                    {
+                                        entry.Delete();
+                                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Package_template_contains_input_file_0_Please_remove_it_from_the_template, fileNameInPackage));
+                                    }
+                                    // 20180410 - mehrdadg - modified : end --<
 
                                     var importedFile = archive.CreateEntry(fileNameInPackage, CompressionLevel.Fastest);
                                     using (var entryStream = importedFile.Open())

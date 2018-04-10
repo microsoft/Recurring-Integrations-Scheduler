@@ -357,7 +357,13 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         {
             var requestUri = new UriBuilder(_settings.AosUri)
             {
-                Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage"
+                // 20180210 - mehrdadg - modified : begin
+                // Use our own service
+                /*
+                 * Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage"
+                 */
+                Path = "data/CgkDataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage"
+                // 20180210 - mehrdadg - modified : end
             };
             var parameters = new
             {
