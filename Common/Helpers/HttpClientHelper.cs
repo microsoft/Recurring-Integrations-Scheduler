@@ -362,7 +362,13 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 /*
                  * Path = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage"
                  */
-                Path = "data/CgkDataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage"
+
+                // 20180410 - mehrdadg - modified : begin
+                Path = (string.IsNullOrEmpty(Properties.Settings.Default.ImportFromPackageRelativePath) ?
+                            "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage" :
+                            Properties.Settings.Default.ImportFromPackageRelativePath)
+                // 20180410 - mehrdadg - modified : end
+
                 // 20180210 - mehrdadg - modified : end
             };
             var parameters = new

@@ -101,7 +101,7 @@ namespace RecurringIntegrationsScheduler.Properties {
             }
         }
         
-		[global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
@@ -113,20 +113,19 @@ namespace RecurringIntegrationsScheduler.Properties {
                 this["UpdateSettings"] = value;
             }
         }
-		
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"
-        <?xml version=""1.0"" encoding=""utf-16""?>
-        <ArrayOfDataJob xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-        <DataJob>
-        <Name>Customers import</Name>
-        <ActivityId>00000000-0000-0000-0000-000000000000</ActivityId>
-        <EntityName>Customers</EntityName>
-        <Type>Download</Type>
-        </DataJob>
-        </ArrayOfDataJob>
-      ")]
+          <ArrayOfDataJob xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+            <DataJob>
+              <Name>Customers import</Name>
+              <ActivityId>00000000-0000-0000-0000-000000000000</ActivityId>
+              <EntityName>Customers</EntityName>
+              <Type>Download</Type>
+            </DataJob>
+          </ArrayOfDataJob>
+        ")]
         [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
         public global::RecurringIntegrationsScheduler.Settings.DataJobs DataJobs {
             get {
@@ -140,16 +139,15 @@ namespace RecurringIntegrationsScheduler.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"
-        <?xml version=""1.0"" encoding=""utf-16""?>
-        <ArrayOfAxInstance xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-        <Instance>
-        <Name>Contoso PROD</Name>
-        <AosUri>https://contoso.production.axcloud.dynamics.com</AosUri>
-        <AzureAuthEndpoint>https://login.microsoftonline.com</AzureAuthEndpoint>
-        <AadTenant>contoso.com</AadTenant>
-        </Instance>
-        </ArrayOfInstance>
-      ")]
+          <ArrayOfInstance xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+            <Instance>
+              <Name>Contoso PROD</Name>
+              <AosUri>https://contoso.production.operations.dynamics.com</AosUri>
+              <AzureAuthEndpoint>https://login.microsoftonline.com</AzureAuthEndpoint>
+              <AadTenant>contoso.com</AadTenant>
+            </Instance>
+          </ArrayOfInstance>
+        ")]
         [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
         public global::RecurringIntegrationsScheduler.Settings.Instances Instances {
             get {
@@ -163,14 +161,13 @@ namespace RecurringIntegrationsScheduler.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"
-        <?xml version=""1.0"" encoding=""utf-16""?>
-        <ArrayOfUser xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-        <User>
-        <Login>admin@contoso.com</Login>
-        <Password>pass@word1</Password>
-        </User>
-        </ArrayOfUser>
-      ")]
+          <ArrayOfUser xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+            <User>
+              <Login>admin@contoso.com</Login>
+              <Password>pass@word1</Password>
+            </User>
+          </ArrayOfUser>
+        ")]
         [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
         public global::RecurringIntegrationsScheduler.Settings.Users Users {
             get {
@@ -184,16 +181,21 @@ namespace RecurringIntegrationsScheduler.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"
-        <?xml version=""1.0"" encoding=""utf-16""?>
-        <ArrayOfJobGroup xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-        <JobGroup>
-        <Name>Download jobs</Name>
-        </JobGroup>
-        <JobGroup>
-        <Name>Upload jobs</Name>
-        </JobGroup>
-        </ArrayOfJobGroup>
-      ")]
+          <ArrayOfJobGroup xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+            <JobGroup>
+              <Name>Import jobs</Name>
+            </JobGroup>
+            <JobGroup>
+              <Name>Export jobs</Name>
+            </JobGroup>
+            <JobGroup>
+              <Name>Download jobs</Name>
+            </JobGroup>
+            <JobGroup>
+              <Name>Upload jobs</Name>
+            </JobGroup>
+          </ArrayOfJobGroup>
+        ")]
         [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
         public global::RecurringIntegrationsScheduler.Settings.JobGroups JobGroups {
             get {
@@ -207,22 +209,21 @@ namespace RecurringIntegrationsScheduler.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"
-        <?xml version=""1.0"" encoding=""utf-16""?>
-        <ArrayOfAadApplication xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-        <AadApplication>
-        <Name>User impersonation</Name>
-        <ClientId>00000000-0000-0000-0000-000000000000</ClientId>
-        <Secret />
-        <AuthenticationType>User</AuthenticationType>
-        </AadApplication>
-        <AadApplication>
-        <Name>Service to Service</Name>
-        <ClientId>00000000-0000-0000-0000-000000000000</ClientId>
-        <Secret />
-        <AuthenticationType>Service</AuthenticationType>
-        </AadApplication>
-        </ArrayOfAadApplication>
-      ")]
+          <ArrayOfAadApplication xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+            <AadApplication>
+              <Name>User impersonation</Name>
+              <ClientId>00000000-0000-0000-0000-000000000000</ClientId>
+              <Secret />
+              <AuthenticationType>User</AuthenticationType>
+            </AadApplication>
+            <AadApplication>
+              <Name>Service to Service</Name>
+              <ClientId>00000000-0000-0000-0000-000000000000</ClientId>
+              <Secret />
+              <AuthenticationType>Service</AuthenticationType>
+            </AadApplication>
+          </ArrayOfAadApplication>
+        ")]
         [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
         public global::RecurringIntegrationsScheduler.Settings.AadApplications AadApplications {
             get {

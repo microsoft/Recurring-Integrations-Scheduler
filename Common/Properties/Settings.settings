@@ -11,5 +11,8 @@
     <Setting Name="BufferSize" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">4096</Value>
     </Setting>
+    <Setting Name="ImportFromPackageRelativePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">data/CgkDataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
