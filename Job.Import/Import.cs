@@ -217,6 +217,9 @@ namespace RecurringIntegrationsScheduler.Job
                                         Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Package_template_contains_input_file_0_Please_remove_it_from_the_template, fileNameInPackage));
                                     }
 
+                                    // Update Manifest file with the original file name for end-to-end traceability. Use the new file name in the rest of the method.
+                                    fileNameInPackage = this.UpdateManifestFile(archive, dataMessage, fileNameInPackage);
+
                                     var importedFile = archive.CreateEntry(fileNameInPackage, CompressionLevel.Fastest);
                                     using (var entryStream = importedFile.Open())
                                     {
@@ -357,6 +360,71 @@ namespace RecurringIntegrationsScheduler.Job
                 fileName = doc.SelectSingleNode("//InputFilePath[1]")?.InnerText;
             }
             return fileName;
+        }
+
+        /// <summary>
+        /// Updates the Manifest.xml file of the datapackage to be uploaded with the original file name of the related data message before the upload
+        /// </summary>
+        /// <param name="archive">The data package which is being prepared for upload</param>
+        /// <param name="dataMessage">The data message object containing the inforation related to the file which is getting uploaded</param>
+        /// <param name="fileNameInPackageOrig">Original file name in the package</param>
+        /// <returns>Final file name in the package</returns>
+        private string UpdateManifestFile(ZipArchive archive, DataMessage dataMessage, string fileNameInPackageOrig)
+        {
+            if (archive is null || dataMessage is null)
+            {
+                return fileNameInPackageOrig;
+            }
+
+            // This modification will cause that the original file name is used in the package that is going to be uploaded to D365
+            // Get the manifest.xml entery
+            ZipArchiveEntry manifestEntry = archive.GetEntry("Manifest.xml");
+
+            // Save the Manifest.xml as temporary file
+            string tempManifestFileName = Path.GetTempFileName();
+            string tempManifestFileNameNew = Path.GetTempFileName();
+
+            manifestEntry.ExtractToFile(tempManifestFileName, true);
+
+            // Modify the file name to the original filename
+            XmlDocument tempXmlDocManifest = new XmlDocument();
+
+            using (var tempManifestFile = new StreamReader(tempManifestFileName))
+            {
+                tempXmlDocManifest.Load(new XmlTextReader(tempManifestFile) { Namespaces = false });
+                tempXmlDocManifest.SelectSingleNode("//InputFilePath[1]").InnerText = Path.GetFileName(dataMessage.FullPath);
+
+                // Save the document to a file and auto-indent the output.
+                using (XmlTextWriter writer = new XmlTextWriter(tempManifestFileNameNew, null))
+                {
+                    writer.Namespaces = false;
+                    writer.Formatting = System.Xml.Formatting.Indented;
+                    tempXmlDocManifest.Save(writer);
+                }
+            }
+
+            // Delete the Manifest.xml from the archive file
+            manifestEntry.Delete();
+
+            // Add a new Manifest.xml based on the adjusted file
+            archive.CreateEntryFromFile(tempManifestFileNameNew, "Manifest.xml");
+
+            // Delete the tempoirary file
+            File.Delete(tempManifestFileName);
+            File.Delete(tempManifestFileNameNew);
+
+            // Adapt the fileNameInPackage
+            string fileNameInPackage = Path.GetFileName(dataMessage.FullPath);
+
+            // Check if package template contains input file and remove it first. It should not be there in the first place.
+            ZipArchiveEntry entry = archive.GetEntry(fileNameInPackage);            
+            if (entry != null)
+            {
+                entry.Delete();
+                Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Package_template_contains_input_file_0_Please_remove_it_from_the_template, fileNameInPackage));
+            }
+
+            return fileNameInPackage;
         }
 
         private static string CreateExecutionId(string dataProject)

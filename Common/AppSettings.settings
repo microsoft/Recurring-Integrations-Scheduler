@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ImportFromPackageRelativePath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage</Value>
+      <Value Profile="(Default)">data/CgkDataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage</Value>
     </Setting>
   </Settings>
 </SettingsFile>
