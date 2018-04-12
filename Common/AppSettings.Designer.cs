@@ -25,8 +25,8 @@ namespace RecurringIntegrationsScheduler.Common {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("data/CgkDataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFrom" +
-            "Package")]
+        [global::System.Configuration.DefaultSettingValueAttribute("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPac" +
+            "kage")]
         public string ImportFromPackageRelativePath {
             get {
                 return ((string)(this["ImportFromPackageRelativePath"]));
