@@ -346,7 +346,13 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns></returns>
         public async Task<HttpResponseMessage> ImportFromPackage(string packageUrl, string definitionGroupId, string executionId, bool execute, bool overwrite, string legalEntityId)
         {
-            var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage");
+            // Get the ImportFromPackage relative path from the configuration file, if defined. Otherwise use the original value
+            string importFromPackageRelativePath = 
+                string.IsNullOrEmpty(AppSettings.Default.ImportFromPackageRelativePath) ?
+                            "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage" :
+                            AppSettings.Default.ImportFromPackageRelativePath;
+
+            var requestUri = GetAosRequestUri(importFromPackageRelativePath);
 
             var parameters = new
             {
