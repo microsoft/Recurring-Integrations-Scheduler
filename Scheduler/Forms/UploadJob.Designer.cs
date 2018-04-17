@@ -85,7 +85,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.upJobCronTriggerRadioButton = new System.Windows.Forms.RadioButton();
             this.upJobSimpleTriggerRadioButton = new System.Windows.Forms.RadioButton();
             this.buildCronLabel = new System.Windows.Forms.Label();
-            this.cronTriggerInofTextBox = new System.Windows.Forms.TextBox();
+            this.cronTriggerInfoTextBox = new System.Windows.Forms.TextBox();
             this.cronmakerLinkLabel = new System.Windows.Forms.LinkLabel();
             this.upJobCronExpressionLabel = new System.Windows.Forms.Label();
             this.upJobCronExpressionTextBox = new System.Windows.Forms.TextBox();
@@ -189,7 +189,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.processingErrorsFolderBrowserButton.Enabled = false;
             this.processingErrorsFolderBrowserButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.processingErrorsFolderBrowserButton.Image = ((System.Drawing.Image)(resources.GetObject("processingErrorsFolderBrowserButton.Image")));
+            this.processingErrorsFolderBrowserButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Folder_open_32xMD_exp;
             this.processingErrorsFolderBrowserButton.Location = new System.Drawing.Point(300, 566);
             this.processingErrorsFolderBrowserButton.Margin = new System.Windows.Forms.Padding(0);
             this.processingErrorsFolderBrowserButton.Name = "processingErrorsFolderBrowserButton";
@@ -273,7 +273,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.inputFolderBrowserButton.Enabled = false;
             this.inputFolderBrowserButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.inputFolderBrowserButton.Image = ((System.Drawing.Image)(resources.GetObject("inputFolderBrowserButton.Image")));
+            this.inputFolderBrowserButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Folder_open_32xMD_exp;
             this.inputFolderBrowserButton.Location = new System.Drawing.Point(300, 322);
             this.inputFolderBrowserButton.Margin = new System.Windows.Forms.Padding(0);
             this.inputFolderBrowserButton.Name = "inputFolderBrowserButton";
@@ -306,7 +306,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.processingSuccessFolderBrowserButton.Enabled = false;
             this.processingSuccessFolderBrowserButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.processingSuccessFolderBrowserButton.Image = ((System.Drawing.Image)(resources.GetObject("processingSuccessFolderBrowserButton.Image")));
+            this.processingSuccessFolderBrowserButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Folder_open_32xMD_exp;
             this.processingSuccessFolderBrowserButton.Location = new System.Drawing.Point(300, 505);
             this.processingSuccessFolderBrowserButton.Margin = new System.Windows.Forms.Padding(0);
             this.processingSuccessFolderBrowserButton.Name = "processingSuccessFolderBrowserButton";
@@ -339,7 +339,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.uploadSuccessFolderBrowserButton.Enabled = false;
             this.uploadSuccessFolderBrowserButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.uploadSuccessFolderBrowserButton.Image = ((System.Drawing.Image)(resources.GetObject("uploadSuccessFolderBrowserButton.Image")));
+            this.uploadSuccessFolderBrowserButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Folder_open_32xMD_exp;
             this.uploadSuccessFolderBrowserButton.Location = new System.Drawing.Point(300, 383);
             this.uploadSuccessFolderBrowserButton.Margin = new System.Windows.Forms.Padding(0);
             this.uploadSuccessFolderBrowserButton.Name = "uploadSuccessFolderBrowserButton";
@@ -418,7 +418,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // topUploadFolderBrowserButton
             // 
             this.topUploadFolderBrowserButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.topUploadFolderBrowserButton.Image = ((System.Drawing.Image)(resources.GetObject("topUploadFolderBrowserButton.Image")));
+            this.topUploadFolderBrowserButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Folder_open_32xMD_exp;
             this.topUploadFolderBrowserButton.Location = new System.Drawing.Point(300, 228);
             this.topUploadFolderBrowserButton.Margin = new System.Windows.Forms.Padding(0);
             this.topUploadFolderBrowserButton.Name = "topUploadFolderBrowserButton";
@@ -649,7 +649,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.recurrenceGroupBox.Controls.Add(this.cronDocsLinkLabel);
             this.recurrenceGroupBox.Controls.Add(this.upJobTriggerTypePanel);
             this.recurrenceGroupBox.Controls.Add(this.buildCronLabel);
-            this.recurrenceGroupBox.Controls.Add(this.cronTriggerInofTextBox);
+            this.recurrenceGroupBox.Controls.Add(this.cronTriggerInfoTextBox);
             this.recurrenceGroupBox.Controls.Add(this.cronmakerLinkLabel);
             this.recurrenceGroupBox.Controls.Add(this.upJobCronExpressionLabel);
             this.recurrenceGroupBox.Controls.Add(this.upJobCronExpressionTextBox);
@@ -772,18 +772,18 @@ namespace RecurringIntegrationsScheduler.Forms
             this.buildCronLabel.TabIndex = 26;
             this.buildCronLabel.Text = "Build cron expression at";
             // 
-            // cronTriggerInofTextBox
+            // cronTriggerInfoTextBox
             // 
-            this.cronTriggerInofTextBox.BackColor = System.Drawing.SystemColors.Control;
-            this.cronTriggerInofTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.cronTriggerInofTextBox.Location = new System.Drawing.Point(14, 182);
-            this.cronTriggerInofTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cronTriggerInofTextBox.Multiline = true;
-            this.cronTriggerInofTextBox.Name = "cronTriggerInofTextBox";
-            this.cronTriggerInofTextBox.Size = new System.Drawing.Size(322, 226);
-            this.cronTriggerInofTextBox.TabIndex = 25;
-            this.cronTriggerInofTextBox.TabStop = false;
-            this.cronTriggerInofTextBox.Text = resources.GetString("cronTriggerInofTextBox.Text");
+            this.cronTriggerInfoTextBox.BackColor = System.Drawing.SystemColors.Control;
+            this.cronTriggerInfoTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.cronTriggerInfoTextBox.Location = new System.Drawing.Point(14, 182);
+            this.cronTriggerInfoTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cronTriggerInfoTextBox.Multiline = true;
+            this.cronTriggerInfoTextBox.Name = "cronTriggerInfoTextBox";
+            this.cronTriggerInfoTextBox.Size = new System.Drawing.Size(322, 226);
+            this.cronTriggerInfoTextBox.TabIndex = 25;
+            this.cronTriggerInfoTextBox.TabStop = false;
+            this.cronTriggerInfoTextBox.Text = RecurringIntegrationsScheduler.Properties.Resources.cronTriggerInfo;
             // 
             // cronmakerLinkLabel
             // 
@@ -893,7 +893,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.bottomToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cancelButton,
             this.addJobButton});
-            this.bottomToolStrip.Location = new System.Drawing.Point(0, 777);
+            this.bottomToolStrip.Location = new System.Drawing.Point(0, 782);
             this.bottomToolStrip.Name = "bottomToolStrip";
             this.bottomToolStrip.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.bottomToolStrip.Size = new System.Drawing.Size(1078, 32);
@@ -1278,7 +1278,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1078, 809);
+            this.ClientSize = new System.Drawing.Size(1078, 814);
             this.Controls.Add(this.groupBoxExceptions);
             this.Controls.Add(this.retryPolicyGroupBox);
             this.Controls.Add(this.bottomToolStrip);
@@ -1291,9 +1291,9 @@ namespace RecurringIntegrationsScheduler.Forms
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(1100, 865);
+            this.MaximumSize = new System.Drawing.Size(1100, 870);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(1100, 865);
+            this.MinimumSize = new System.Drawing.Size(1100, 870);
             this.Name = "UploadJob";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -1363,7 +1363,7 @@ namespace RecurringIntegrationsScheduler.Forms
         private System.Windows.Forms.Label upJobHoursLabel;
         private System.Windows.Forms.Label upJobStartAtLabel;
         private System.Windows.Forms.Label buildCronLabel;
-        private System.Windows.Forms.TextBox cronTriggerInofTextBox;
+        private System.Windows.Forms.TextBox cronTriggerInfoTextBox;
         private System.Windows.Forms.LinkLabel cronmakerLinkLabel;
         private System.Windows.Forms.Label upJobCronExpressionLabel;
         private System.Windows.Forms.TextBox upJobCronExpressionTextBox;

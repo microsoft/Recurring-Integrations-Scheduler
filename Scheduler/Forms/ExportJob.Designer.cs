@@ -74,7 +74,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.cronTriggerRadioButton = new System.Windows.Forms.RadioButton();
             this.simpleTriggerRadioButton = new System.Windows.Forms.RadioButton();
             this.buildCronLabel = new System.Windows.Forms.Label();
-            this.cronTriggerInofTextBox = new System.Windows.Forms.TextBox();
+            this.cronTriggerInfoTextBox = new System.Windows.Forms.TextBox();
             this.cronmakerLinkLabel = new System.Windows.Forms.LinkLabel();
             this.cronExpressionLabel = new System.Windows.Forms.Label();
             this.cronExpressionTextBox = new System.Windows.Forms.TextBox();
@@ -502,7 +502,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.recurrenceGroupBox.Controls.Add(this.cronDocsLinkLabel);
             this.recurrenceGroupBox.Controls.Add(this.triggerTypePanel);
             this.recurrenceGroupBox.Controls.Add(this.buildCronLabel);
-            this.recurrenceGroupBox.Controls.Add(this.cronTriggerInofTextBox);
+            this.recurrenceGroupBox.Controls.Add(this.cronTriggerInfoTextBox);
             this.recurrenceGroupBox.Controls.Add(this.cronmakerLinkLabel);
             this.recurrenceGroupBox.Controls.Add(this.cronExpressionLabel);
             this.recurrenceGroupBox.Controls.Add(this.cronExpressionTextBox);
@@ -613,18 +613,18 @@ namespace RecurringIntegrationsScheduler.Forms
             this.buildCronLabel.TabIndex = 26;
             this.buildCronLabel.Text = "Build cron expression at";
             // 
-            // cronTriggerInofTextBox
+            // cronTriggerInfoTextBox
             // 
-            this.cronTriggerInofTextBox.BackColor = System.Drawing.SystemColors.Control;
-            this.cronTriggerInofTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.cronTriggerInofTextBox.Location = new System.Drawing.Point(14, 178);
-            this.cronTriggerInofTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cronTriggerInofTextBox.Multiline = true;
-            this.cronTriggerInofTextBox.Name = "cronTriggerInofTextBox";
-            this.cronTriggerInofTextBox.Size = new System.Drawing.Size(312, 238);
-            this.cronTriggerInofTextBox.TabIndex = 25;
-            this.cronTriggerInofTextBox.TabStop = false;
-            this.cronTriggerInofTextBox.Text = resources.GetString("cronTriggerInofTextBox.Text");
+            this.cronTriggerInfoTextBox.BackColor = System.Drawing.SystemColors.Control;
+            this.cronTriggerInfoTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.cronTriggerInfoTextBox.Location = new System.Drawing.Point(14, 178);
+            this.cronTriggerInfoTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cronTriggerInfoTextBox.Multiline = true;
+            this.cronTriggerInfoTextBox.Name = "cronTriggerInfoTextBox";
+            this.cronTriggerInfoTextBox.Size = new System.Drawing.Size(312, 238);
+            this.cronTriggerInfoTextBox.TabIndex = 25;
+            this.cronTriggerInfoTextBox.TabStop = false;
+            this.cronTriggerInfoTextBox.Text = RecurringIntegrationsScheduler.Properties.Resources.cronTriggerInfo;
             // 
             // cronmakerLinkLabel
             // 
@@ -734,7 +734,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.bottomToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cancelButton,
             this.addJobButton});
-            this.bottomToolStrip.Location = new System.Drawing.Point(0, 670);
+            this.bottomToolStrip.Location = new System.Drawing.Point(0, 677);
             this.bottomToolStrip.Name = "bottomToolStrip";
             this.bottomToolStrip.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.bottomToolStrip.Size = new System.Drawing.Size(1074, 32);
@@ -859,7 +859,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1074, 702);
+            this.ClientSize = new System.Drawing.Size(1074, 709);
             this.Controls.Add(this.groupBoxExceptions);
             this.Controls.Add(this.retryPolicyGroupBox);
             this.Controls.Add(this.bottomToolStrip);
@@ -869,9 +869,9 @@ namespace RecurringIntegrationsScheduler.Forms
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(1096, 758);
+            this.MaximumSize = new System.Drawing.Size(1096, 765);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(1096, 758);
+            this.MinimumSize = new System.Drawing.Size(1096, 765);
             this.Name = "ExportJob";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -932,7 +932,7 @@ namespace RecurringIntegrationsScheduler.Forms
         private System.Windows.Forms.Label hoursLabel;
         private System.Windows.Forms.Label startAtLabel;
         private System.Windows.Forms.Label buildCronLabel;
-        private System.Windows.Forms.TextBox cronTriggerInofTextBox;
+        private System.Windows.Forms.TextBox cronTriggerInfoTextBox;
         private System.Windows.Forms.LinkLabel cronmakerLinkLabel;
         private System.Windows.Forms.Label cronExpressionLabel;
         private System.Windows.Forms.TextBox cronExpressionTextBox;

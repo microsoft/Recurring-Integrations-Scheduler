@@ -859,4 +859,9 @@
   <data name="Method_GetMessageStatus_returned_empty_string_Check_previous_errors" xml:space="preserve">
     <value>Method GetMessageStatus returned empty string. Check previous errors.</value>
   </data>
+  <data name="cronTriggerInfo" xml:space="preserve">
+    <value>With cron expression you can specify schedules such as “every Friday at noon”, or “every weekday and 9:30 am”, or even “every 5 minutes between 9:00 am and 10:00 am on every Monday, Wednesday and Friday during January”.
+
+Default example above means: Each working day of the week (MON-FRI) run every 15 minutes (0/15) between 8:00 and 18:45 (8-18 - last run will be at 18:45)</value>
+  </data>
 </root>

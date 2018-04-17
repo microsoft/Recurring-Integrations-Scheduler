@@ -629,6 +629,17 @@ namespace RecurringIntegrationsScheduler.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to With cron expression you can specify schedules such as “every Friday at noon”, or “every weekday and 9:30 am”, or even “every 5 minutes between 9:00 am and 10:00 am on every Monday, Wednesday and Friday during January”.
+        ///
+        ///Default example above means: Each working day of the week (MON-FRI) run every 15 minutes (0/15) between 8:00 and 18:45 (8-18 - last run will be at 18:45).
+        /// </summary>
+        internal static string cronTriggerInfo {
+            get {
+                return ResourceManager.GetString("cronTriggerInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to D365FO instance seems to be up and running..
         /// </summary>
         internal static string D365FO_instance_seems_to_be_up_and_running {
