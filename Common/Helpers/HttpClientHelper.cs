@@ -328,7 +328,6 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         {
             _httpClient.DefaultRequestHeaders.Clear();
             _httpClient.DefaultRequestHeaders.Add("x-ms-date", DateTime.UtcNow.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
-            _httpClient.DefaultRequestHeaders.Add("x-ms-version", "2015-02-21");
             _httpClient.DefaultRequestHeaders.Add("x-ms-blob-type", "BlockBlob");
             _httpClient.DefaultRequestHeaders.Add("Overwrite", "T");
             return await _retryPolicy.ExecuteAsync(() => _httpClient.PutAsync(blobUrl.AbsoluteUri, new StreamContent(stream)));
