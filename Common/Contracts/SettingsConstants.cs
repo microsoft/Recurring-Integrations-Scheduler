@@ -15,6 +15,11 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         public const string AosUri = "AosUri";
 
         /// <summary>
+        /// The relative path to the Odata action
+        /// </summary>
+        public const string OdataActionRelativePath = "OdataActionRelativePath";
+
+        /// <summary>
         /// Azure authentication endpoint
         /// </summary>
         public const string AzureAuthEndpoint = "AzureAuthEndpoint";

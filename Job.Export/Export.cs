@@ -136,7 +136,7 @@ namespace RecurringIntegrationsScheduler.Job
             using (_httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp))
             {
                 var executionId = CreateExecutionId(_settings.DataProject);
-                var responseExportToPackage = await _httpClientHelper.ExportToPackage(_settings.DataProject, executionId, executionId, _settings.Company);
+                var responseExportToPackage = await _httpClientHelper.ExportToPackage(_settings.OdataActionPath, _settings.DataProject, executionId, executionId, _settings.Company);
 
                 if (!responseExportToPackage.IsSuccessStatusCode)
                     throw new Exception(string.Format(Resources.Job_0_Download_failure_1, _context.JobDetail.Key, responseExportToPackage.StatusCode));

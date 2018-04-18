@@ -42,6 +42,7 @@ namespace RecurringIntegrationsScheduler.Forms
         public ITrigger ImportTrigger { get; set; }
         public IJobDetail ExecutionJobDetail { get; set; }
         public ITrigger ExecutionTrigger { get; set; }
+        private JobDataMap OptionsMap { get; set; }
 
         private void ImportJobForm_Load(object sender, EventArgs e)
         {
@@ -83,6 +84,11 @@ namespace RecurringIntegrationsScheduler.Forms
             uploadErrorsFolderTextBox.Text = Properties.Settings.Default.UploadErrorsFolder;
             processingSuccessFolderTextBox.Text = Properties.Settings.Default.ProcessingSuccessFolder;
             processingErrorsFolderTextBox.Text = Properties.Settings.Default.ProcessingErrorsFolder;
+
+            OptionsMap = new JobDataMap
+            {
+                { SettingsConstants.OdataActionRelativePath, OdataActionsConstants.ImportFromPackageActionPath}
+            };
 
             if (ImportJobDetail != null)
             {
@@ -241,6 +247,11 @@ namespace RecurringIntegrationsScheduler.Forms
                 pauseOnExceptionsCheckBox.Checked =
                     (ImportJobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
                     Convert.ToBoolean(ImportJobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
+
+                OptionsMap = new JobDataMap
+                {
+                    { SettingsConstants.OdataActionRelativePath, ImportJobDetail.JobDataMap[SettingsConstants.OdataActionRelativePath].ToString()}
+                };
 
                 Properties.Settings.Default.Save();
             }
@@ -567,7 +578,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.PackageTemplate, packageTemplateTextBox.Text},
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()}
+                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
+                {SettingsConstants.OdataActionRelativePath, OptionsMap.GetString(SettingsConstants.OdataActionRelativePath)}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -791,6 +803,26 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
                 packageTemplateTextBox.Text = openFileDialog.FileName;
+        }
+
+        private void jobOptions_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (ImportJobOptions form = new ImportJobOptions())
+                {
+                    form.OptionsMap = this.OptionsMap.Clone() as JobDataMap;
+                    form.ShowDialog();
+
+                    if (form.Cancelled || (form.OptionsMap == null)) return;
+
+                    this.OptionsMap = form.OptionsMap.Clone() as JobDataMap;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, Resources.Unexpected_error);
+            }
         }
     }
 }
