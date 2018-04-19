@@ -41,6 +41,10 @@ namespace RecurringIntegrationsScheduler.Forms
         public IJobDetail JobDetail { get; set; }
         public ITrigger Trigger { get; set; }
 
+        private string exportToPackagePath;
+        private string getExecutionSummaryStatusPath;
+        private string getExportedPackageUrlPath;
+
         private void ExportJobForm_Load(object sender, EventArgs e)
         {
             Cancelled = false;
@@ -74,6 +78,10 @@ namespace RecurringIntegrationsScheduler.Forms
             startAtDateTimePicker.Value = DateTime.Now;
 
             errorsFolder.Text = Properties.Settings.Default.DownloadErrorsFolder;
+
+            exportToPackagePath = OdataActionsConstants.ExportToPackageActionPath;
+            getExecutionSummaryStatusPath = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
+            getExportedPackageUrlPath = OdataActionsConstants.GetExportedPackageUrlActionPath;
 
             if ((JobDetail != null) && (Trigger != null))
             {
@@ -210,6 +218,10 @@ namespace RecurringIntegrationsScheduler.Forms
                 pauseOnExceptionsCheckBox.Checked =
                     (JobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
                     Convert.ToBoolean(JobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
+
+                exportToPackagePath = JobDetail.JobDataMap[SettingsConstants.ExportToPackageActionPath]?.ToString() ?? OdataActionsConstants.ExportToPackageActionPath;
+                getExecutionSummaryStatusPath = JobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryStatusActionPath;
+                getExportedPackageUrlPath = JobDetail.JobDataMap[SettingsConstants.GetExportedPackageUrlActionPath]?.ToString() ?? OdataActionsConstants.GetExportedPackageUrlActionPath;
 
                 Properties.Settings.Default.Save();
             }
@@ -386,7 +398,10 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.Interval, (interval.Value * 1000).ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()}
+                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
+                {SettingsConstants.ExportToPackageActionPath, exportToPackagePath},
+                {SettingsConstants.GetExecutionSummaryStatusActionPath, getExecutionSummaryStatusPath},
+                {SettingsConstants.GetExportedPackageUrlActionPath, getExportedPackageUrlPath}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -488,6 +503,30 @@ namespace RecurringIntegrationsScheduler.Forms
             aadApplicationComboBox.DisplayMember = "Name";
 
             userComboBox.Enabled = !serviceAuthRadioButton.Checked;
+        }
+
+        private void CustomActionsButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (ExportJobOptions form = new ExportJobOptions())
+                {
+                    form.ExportToPackagePath = exportToPackagePath;
+                    form.GetExecutionSummaryStatusPath = getExecutionSummaryStatusPath;
+                    form.GetExportedPackageUrlPath = getExportedPackageUrlPath;
+                    form.ShowDialog();
+
+                    if (form.Cancelled) return;
+
+                    exportToPackagePath = form.ExportToPackagePath;
+                    getExecutionSummaryStatusPath = form.GetExecutionSummaryStatusPath;
+                    getExportedPackageUrlPath = form.GetExportedPackageUrlPath;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, Resources.Unexpected_error);
+            }
         }
     }
 }

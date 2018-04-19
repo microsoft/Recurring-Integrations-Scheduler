@@ -236,7 +236,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>temp writable cloud url</returns>
         public async Task<string> GetAzureWriteUrl()
         {
-            var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetAzureWriteUrl");
+            var requestUri = GetAosRequestUri(_settings.GetAzureWriteUrlActionPath);
 
             string uniqueFileName = Guid.NewGuid().ToString();
             var parameters = new { uniqueFileName };
@@ -262,7 +262,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>job's execution status</returns>
         public async Task<string> GetExecutionSummaryStatus(string executionId)
         {
-            var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExecutionSummaryStatus");
+            var requestUri = GetAosRequestUri(_settings.GetExecutionSummaryStatusActionPath);
 
             var parameters = new { executionId };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
@@ -283,7 +283,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         {
             try
             {
-                var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExportedPackageUrl");
+                var requestUri = GetAosRequestUri(_settings.GetExportedPackageUrlActionPath);
 
                 var parameters = new { executionId };
                 string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
@@ -307,7 +307,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>execution's summary page Url</returns>
         public async Task<string> GetExecutionSummaryPageUrl(string executionId)
         {
-            var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExecutionSummaryPageUrl");
+            var requestUri = GetAosRequestUri(_settings.GetExecutionSummaryPageUrlActionPath);
 
             var parameters = new { executionId };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
@@ -336,6 +336,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <summary>
         /// Request to import package from specified location
         /// </summary>
+        /// <param name="odataActionPath">Relative path to the Odata action</param>
         /// <param name="packageUrl">Location of uploaded package</param>
         /// <param name="definitionGroupId">Data project name</param>
         /// <param name="executionId">Execution Id</param>
@@ -345,7 +346,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns></returns>
         public async Task<HttpResponseMessage> ImportFromPackage(string packageUrl, string definitionGroupId, string executionId, bool execute, bool overwrite, string legalEntityId)
         {
-            var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ImportFromPackage");
+            var requestUri = GetAosRequestUri(_settings.ImportFromPackageActionPath);
 
             var parameters = new
             {
@@ -367,7 +368,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns></returns>
         public async Task<string> DeleteExecutionHistoryJob(string executionId)
         {
-            var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.DeleteExecutionHistoryJob"); 
+            var requestUri = GetAosRequestUri(_settings.DeleteExecutionHistoryJobActionPath); 
 
             var parameters = new { executionId };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
@@ -381,6 +382,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <summary>
         /// Export a package that has been already uploaded to server
         /// </summary>
+        /// <param name="odataActionPath">Relative path to the Odata action</param>
         /// <param name="definitionGroupId">data project name</param>
         /// <param name="packageName">package name </param>
         /// <param name="executionId">execution id to use for results</param>
@@ -388,8 +390,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <param name="reExecute">reexecute flag</param>
         /// <returns>export package url</returns>
         public async Task<HttpResponseMessage> ExportToPackage(string definitionGroupId, string packageName, string executionId, string legalEntityId, bool reExecute = false)
-        {
-            var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ExportToPackage");
+        {            
+            var requestUri = GetAosRequestUri(_settings.ExportToPackageActionPath);
 
             var parameters = new
             {
@@ -415,7 +417,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>export package url</returns>
         public async Task<HttpResponseMessage> ExportFromPackage(string packageUrl, string definitionGroupId, string executionId, bool execute, bool overwrite, string legalEntityId)
         {
-            var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ExportFromPackage");
+            var requestUri = GetAosRequestUri(_settings.ExportFromPackageActionPath);
 
             var parameters = new
             {
@@ -437,7 +439,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns></returns>
         public async Task<string> GetMessageStatus(string messageId)
         {
-            var requestUri = GetAosRequestUri("data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetMessageStatus");
+            var requestUri = GetAosRequestUri(_settings.GetMessageStatusActionPath);
             var parameters = new
             {
                 messageId

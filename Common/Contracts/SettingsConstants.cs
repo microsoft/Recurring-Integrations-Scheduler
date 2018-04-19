@@ -75,6 +75,51 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         public const string PauseJobOnException = "PauseJobOnException";
 
         /// <summary>
+        /// The relative path to the ImportFromPackage Odata action
+        /// </summary>
+        public const string ImportFromPackageActionPath = "ImportFromPackageActionPath";
+
+        /// <summary>
+        /// The relative path to the GetAzureWriteUrl Odata action
+        /// </summary>
+        public const string GetAzureWriteUrlActionPath = "GetAzureWriteUrlActionPath";
+
+        /// <summary>
+        /// The relative path to the GetExecutionSummaryStatus Odata action
+        /// </summary>
+        public const string GetExecutionSummaryStatusActionPath = "GetExecutionSummaryStatusActionPath";
+
+        /// <summary>
+        /// The relative path to the GetExportedPackageUrl Odata action
+        /// </summary>
+        public const string GetExportedPackageUrlActionPath = "GetExportedPackageUrlActionPath";
+
+        /// <summary>
+        /// The relative path to the GetExecutionSummaryPageUrl Odata action
+        /// </summary>
+        public const string GetExecutionSummaryPageUrlActionPath = "GetExecutionSummaryPageUrlActionPath";
+
+        /// <summary>
+        /// The relative path to the DeleteExecutionHistoryJob Odata action
+        /// </summary>
+        public const string DeleteExecutionHistoryJobActionPath = "DeleteExecutionHistoryJobActionPath";
+
+        /// <summary>
+        /// The relative path to the ExportToPackage Odata action
+        /// </summary>
+        public const string ExportToPackageActionPath = "ExportToPackageActionPath";
+
+        /// <summary>
+        /// The relative path to the ExportFromPackage Odata action
+        /// </summary>
+        public const string ExportFromPackageActionPath = "ExportFromPackageActionPath";
+
+        /// <summary>
+        /// The relative path to the GetMessageStatus Odata action
+        /// </summary>
+        public const string GetMessageStatusActionPath = "GetMessageStatusActionPath";
+
+        /// <summary>
         /// The download job
         /// </summary>
         public const string DownloadJob = "RecurringIntegrationsScheduler.Job.Download";

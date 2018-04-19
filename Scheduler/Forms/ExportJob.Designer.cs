@@ -94,6 +94,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.label1 = new System.Windows.Forms.Label();
             this.groupBoxExceptions = new System.Windows.Forms.GroupBox();
             this.pauseOnExceptionsCheckBox = new System.Windows.Forms.CheckBox();
+            this.customActionsButton = new System.Windows.Forms.ToolStripButton();
             this.jobDetailsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.interval)).BeginInit();
             this.axDetailsGroupBox.SuspendLayout();
@@ -624,7 +625,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.cronTriggerInfoTextBox.Size = new System.Drawing.Size(312, 238);
             this.cronTriggerInfoTextBox.TabIndex = 25;
             this.cronTriggerInfoTextBox.TabStop = false;
-            this.cronTriggerInfoTextBox.Text = RecurringIntegrationsScheduler.Properties.Resources.cronTriggerInfo;
+            this.cronTriggerInfoTextBox.Text = resources.GetString("cronTriggerInfoTextBox.Text");
             // 
             // cronmakerLinkLabel
             // 
@@ -733,7 +734,8 @@ namespace RecurringIntegrationsScheduler.Forms
             this.bottomToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.bottomToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cancelButton,
-            this.addJobButton});
+            this.addJobButton,
+            this.customActionsButton});
             this.bottomToolStrip.Location = new System.Drawing.Point(0, 677);
             this.bottomToolStrip.Name = "bottomToolStrip";
             this.bottomToolStrip.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
@@ -744,7 +746,6 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.cancelButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.cancelButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.cancelButton.Image = ((System.Drawing.Image)(resources.GetObject("cancelButton.Image")));
             this.cancelButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(67, 29);
@@ -755,7 +756,6 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.addJobButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.addJobButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.addJobButton.Image = ((System.Drawing.Image)(resources.GetObject("addJobButton.Image")));
             this.addJobButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addJobButton.Name = "addJobButton";
             this.addJobButton.Size = new System.Drawing.Size(146, 29);
@@ -854,6 +854,15 @@ namespace RecurringIntegrationsScheduler.Forms
             this.pauseOnExceptionsCheckBox.TabIndex = 0;
             this.pauseOnExceptionsCheckBox.Text = "Pause job when exception occurs";
             this.pauseOnExceptionsCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // customActionsButton
+            // 
+            this.customActionsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.customActionsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.customActionsButton.Name = "customActionsButton";
+            this.customActionsButton.Size = new System.Drawing.Size(193, 29);
+            this.customActionsButton.Text = "Custom Odata actions";
+            this.customActionsButton.Click += new System.EventHandler(this.CustomActionsButton_Click);
             // 
             // ExportJob
             // 
@@ -967,5 +976,6 @@ namespace RecurringIntegrationsScheduler.Forms
         private System.Windows.Forms.NumericUpDown retriesCountUpDown;
         private System.Windows.Forms.GroupBox groupBoxExceptions;
         private System.Windows.Forms.CheckBox pauseOnExceptionsCheckBox;
+        private System.Windows.Forms.ToolStripButton customActionsButton;
     }
 }

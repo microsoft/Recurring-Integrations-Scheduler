@@ -43,6 +43,11 @@ namespace RecurringIntegrationsScheduler.Forms
         public IJobDetail ExecutionJobDetail { get; set; }
         public ITrigger ExecutionTrigger { get; set; }
 
+        private string importFromPackagePath;
+        private string getAzureWriteUrlPath;
+        private string getExecutionSummaryStatusPath;
+        private string getExecutionSummaryPageUrlPath;
+
         private void ImportJobForm_Load(object sender, EventArgs e)
         {
             Cancelled = false;
@@ -83,6 +88,11 @@ namespace RecurringIntegrationsScheduler.Forms
             uploadErrorsFolderTextBox.Text = Properties.Settings.Default.UploadErrorsFolder;
             processingSuccessFolderTextBox.Text = Properties.Settings.Default.ProcessingSuccessFolder;
             processingErrorsFolderTextBox.Text = Properties.Settings.Default.ProcessingErrorsFolder;
+
+            importFromPackagePath = OdataActionsConstants.ImportFromPackageActionPath;
+            getAzureWriteUrlPath = OdataActionsConstants.GetAzureWriteUrlActionPath;
+            getExecutionSummaryStatusPath = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
+            getExecutionSummaryPageUrlPath = OdataActionsConstants.GetExecutionSummaryPageUrlActionPath;
 
             if (ImportJobDetail != null)
             {
@@ -242,6 +252,9 @@ namespace RecurringIntegrationsScheduler.Forms
                     (ImportJobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
                     Convert.ToBoolean(ImportJobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
 
+                importFromPackagePath = ImportJobDetail.JobDataMap[SettingsConstants.ImportFromPackageActionPath]?.ToString() ?? OdataActionsConstants.ImportFromPackageActionPath;
+                getAzureWriteUrlPath = ImportJobDetail.JobDataMap[SettingsConstants.GetAzureWriteUrlActionPath]?.ToString() ?? OdataActionsConstants.GetAzureWriteUrlActionPath;
+
                 Properties.Settings.Default.Save();
             }
             if ((ExecutionJobDetail != null) && (ExecutionTrigger != null))
@@ -265,6 +278,9 @@ namespace RecurringIntegrationsScheduler.Forms
                     procJobCronTriggerRadioButton.Checked = true;
                     procJobCronExpressionTextBox.Text = localTrigger.CronExpressionString;
                 }
+
+                getExecutionSummaryStatusPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryStatusActionPath;
+                getExecutionSummaryPageUrlPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryPageUrlActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryPageUrlActionPath;
             }
         }
 
@@ -567,7 +583,9 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.PackageTemplate, packageTemplateTextBox.Text},
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()}
+                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
+                {SettingsConstants.GetAzureWriteUrlActionPath, getAzureWriteUrlPath},
+                {SettingsConstants.ImportFromPackageActionPath, importFromPackagePath}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -600,7 +618,9 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.UseServiceAuthentication, serviceAuthRadioButton.Checked.ToString()},
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()}
+                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
+                {SettingsConstants.GetExecutionSummaryStatusActionPath, getExecutionSummaryStatusPath},
+                {SettingsConstants.GetExecutionSummaryPageUrlActionPath, getExecutionSummaryPageUrlPath}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -791,6 +811,32 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
                 packageTemplateTextBox.Text = openFileDialog.FileName;
+        }
+
+        private void CustomActionsButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (ImportJobOptions form = new ImportJobOptions())
+                {
+                    form.GetAzureWriteUrlPath = getAzureWriteUrlPath;
+                    form.ImportFromPackagePath = importFromPackagePath;
+                    form.GetExecutionSummaryStatusPath = getExecutionSummaryStatusPath;
+                    form.GetExecutionSummaryPageUrlPath = getExecutionSummaryPageUrlPath;
+                    form.ShowDialog();
+
+                    if (form.Cancelled) return;
+
+                    getAzureWriteUrlPath = form.GetAzureWriteUrlPath;
+                    importFromPackagePath = form.ImportFromPackagePath;
+                    getExecutionSummaryStatusPath = form.GetExecutionSummaryStatusPath;
+                    getExecutionSummaryPageUrlPath = form.GetExecutionSummaryPageUrlPath;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, Resources.Unexpected_error);
+            }
         }
     }
 }

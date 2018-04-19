@@ -98,6 +98,60 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             }
 
             PauseJobOnException = Convert.ToBoolean(dataMap.GetString(SettingsConstants.PauseJobOnException));
+
+            ImportFromPackageActionPath = dataMap.GetString(SettingsConstants.ImportFromPackageActionPath);
+            if (string.IsNullOrEmpty(ImportFromPackageActionPath))
+            {
+                ImportFromPackageActionPath = OdataActionsConstants.ImportFromPackageActionPath;
+            }
+
+            GetAzureWriteUrlActionPath = dataMap.GetString(SettingsConstants.GetAzureWriteUrlActionPath);
+            if (string.IsNullOrEmpty(GetAzureWriteUrlActionPath))
+            {
+                GetAzureWriteUrlActionPath = OdataActionsConstants.GetAzureWriteUrlActionPath;
+            }
+
+            GetExecutionSummaryStatusActionPath = dataMap.GetString(SettingsConstants.GetExecutionSummaryStatusActionPath);
+            if (string.IsNullOrEmpty(GetExecutionSummaryStatusActionPath))
+            {
+                GetExecutionSummaryStatusActionPath = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
+            }
+
+            GetExportedPackageUrlActionPath = dataMap.GetString(SettingsConstants.GetExportedPackageUrlActionPath);
+            if (string.IsNullOrEmpty(GetExportedPackageUrlActionPath))
+            {
+                GetExportedPackageUrlActionPath = OdataActionsConstants.GetExportedPackageUrlActionPath;
+            }
+
+            GetExecutionSummaryPageUrlActionPath = dataMap.GetString(SettingsConstants.GetExecutionSummaryPageUrlActionPath);
+            if (string.IsNullOrEmpty(GetExecutionSummaryPageUrlActionPath))
+            {
+                GetExecutionSummaryPageUrlActionPath = OdataActionsConstants.GetExecutionSummaryPageUrlActionPath;
+            }
+
+            DeleteExecutionHistoryJobActionPath = dataMap.GetString(SettingsConstants.DeleteExecutionHistoryJobActionPath);
+            if (string.IsNullOrEmpty(DeleteExecutionHistoryJobActionPath))
+            {
+                DeleteExecutionHistoryJobActionPath = OdataActionsConstants.DeleteExecutionHistoryJobActionPath;
+            }
+
+            ExportToPackageActionPath = dataMap.GetString(SettingsConstants.ExportToPackageActionPath);
+            if (string.IsNullOrEmpty(ExportToPackageActionPath))
+            {
+                ExportToPackageActionPath = OdataActionsConstants.ExportToPackageActionPath;
+            }
+
+            ExportFromPackageActionPath = dataMap.GetString(SettingsConstants.ExportFromPackageActionPath);
+            if (string.IsNullOrEmpty(ExportFromPackageActionPath))
+            {
+                ExportFromPackageActionPath = OdataActionsConstants.ExportFromPackageActionPath;
+            }
+
+            GetMessageStatusActionPath = dataMap.GetString(SettingsConstants.GetMessageStatusActionPath);
+            if (string.IsNullOrEmpty(GetMessageStatusActionPath))
+            {
+                GetMessageStatusActionPath = OdataActionsConstants.GetMessageStatusActionPath;
+            }
         }
 
         #region Members
@@ -197,6 +251,78 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <c>true</c> if [pause job when exception occurs]; otherwise, <c>false</c>.
         /// </value>
         public bool PauseJobOnException { get; set; }
+
+        /// <summary>
+        /// Get the ImportFromPackage Odata action relative path
+        /// </summary>
+        /// <value>
+        /// The relative path to the ImportFromPackage Odata action
+        /// </value>
+        public string ImportFromPackageActionPath { get; private set; }
+
+        /// <summary>
+        /// Get the GetAzureWriteUrl Odata action relative path
+        /// </summary>
+        /// <value>
+        /// The relative path to the GetAzureWriteUrl Odata action
+        /// </value>
+        public string GetAzureWriteUrlActionPath { get; private set; }
+
+        /// <summary>
+        /// Get the GetExecutionSummaryStatus Odata action relative path
+        /// </summary>
+        /// <value>
+        /// The relative path to the GetExecutionSummaryStatus Odata action
+        /// </value>
+        public string GetExecutionSummaryStatusActionPath { get; private set; }
+
+        /// <summary>
+        /// Get the GetExportedPackageUrl Odata action relative path
+        /// </summary>
+        /// <value>
+        /// The relative path to the GetExportedPackageUrl Odata action
+        /// </value>
+        public string GetExportedPackageUrlActionPath { get; private set; }
+
+        /// <summary>
+        /// Get the GetExecutionSummaryPageUrl Odata action relative path
+        /// </summary>
+        /// <value>
+        /// The relative path to the GetExecutionSummaryPageUrl Odata action
+        /// </value>
+        public string GetExecutionSummaryPageUrlActionPath { get; private set; }
+
+        /// <summary>
+        /// Get the DeleteExecutionHistoryJob Odata action relative path
+        /// </summary>
+        /// <value>
+        /// The relative path to the DeleteExecutionHistoryJob Odata action
+        /// </value>
+        public string DeleteExecutionHistoryJobActionPath { get; private set; }
+
+        /// <summary>
+        /// Get the ExportToPackage Odata action relative path
+        /// </summary>
+        /// <value>
+        /// The relative path to the ExportToPackage Odata action
+        /// </value>
+        public string ExportToPackageActionPath { get; private set; }
+
+        /// <summary>
+        /// Get the ExportFromPackage Odata action relative path
+        /// </summary>
+        /// <value>
+        /// The relative path to the ExportFromPackage Odata action
+        /// </value>
+        public string ExportFromPackageActionPath { get; private set; }
+
+        /// <summary>
+        /// Get the GetMessageStatus Odata action relative path
+        /// </summary>
+        /// <value>
+        /// The relative path to the GetMessageStatus Odata action
+        /// </value>
+        public string GetMessageStatusActionPath { get; private set; }
 
         #endregion
     }
