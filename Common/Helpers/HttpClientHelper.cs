@@ -237,7 +237,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>temp writable cloud url</returns>
         public async Task<string> GetAzureWriteUrl()
         {
-            var requestUri = GetAosRequestUri(OdataActionsConstants.GetAzureWriteUrlActionPath);
+            var requestUri = GetAosRequestUri(_settings.GetAzureWriteUrlActionPath);
 
             string uniqueFileName = Guid.NewGuid().ToString();
             var parameters = new { uniqueFileName };
@@ -263,7 +263,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>job's execution status</returns>
         public async Task<string> GetExecutionSummaryStatus(string executionId)
         {
-            var requestUri = GetAosRequestUri(OdataActionsConstants.GetExecutionSummaryStatusActionPath);
+            var requestUri = GetAosRequestUri(_settings.GetExecutionSummaryStatusActionPath);
 
             var parameters = new { executionId };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
@@ -284,7 +284,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         {
             try
             {
-                var requestUri = GetAosRequestUri(OdataActionsConstants.GetExportedPackageUrlActionPath);
+                var requestUri = GetAosRequestUri(_settings.GetExportedPackageUrlActionPath);
 
                 var parameters = new { executionId };
                 string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
@@ -308,7 +308,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>execution's summary page Url</returns>
         public async Task<string> GetExecutionSummaryPageUrl(string executionId)
         {
-            var requestUri = GetAosRequestUri(OdataActionsConstants.GetExecutionSummaryPageUrlActionPath);
+            var requestUri = GetAosRequestUri(_settings.GetExecutionSummaryPageUrlActionPath);
 
             var parameters = new { executionId };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
@@ -345,9 +345,9 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <param name="overwrite">Flag whether to overwrite data project</param>
         /// <param name="legalEntityId">Target legal entity</param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> ImportFromPackage(string odataActionPath, string packageUrl, string definitionGroupId, string executionId, bool execute, bool overwrite, string legalEntityId)
+        public async Task<HttpResponseMessage> ImportFromPackage(string packageUrl, string definitionGroupId, string executionId, bool execute, bool overwrite, string legalEntityId)
         {
-            var requestUri = GetAosRequestUri(string.IsNullOrEmpty(odataActionPath) ? OdataActionsConstants.ImportFromPackageActionPath : odataActionPath);
+            var requestUri = GetAosRequestUri(_settings.ImportFromPackageActionPath);
 
             var parameters = new
             {
@@ -369,7 +369,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns></returns>
         public async Task<string> DeleteExecutionHistoryJob(string executionId)
         {
-            var requestUri = GetAosRequestUri(OdataActionsConstants.DeleteExecutionHistoryJobActionPath); 
+            var requestUri = GetAosRequestUri(_settings.DeleteExecutionHistoryJobActionPath); 
 
             var parameters = new { executionId };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
@@ -390,9 +390,9 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <param name="legalEntityId">the company to pull</param>
         /// <param name="reExecute">reexecute flag</param>
         /// <returns>export package url</returns>
-        public async Task<HttpResponseMessage> ExportToPackage(string odataActionPath, string definitionGroupId, string packageName, string executionId, string legalEntityId, bool reExecute = false)
+        public async Task<HttpResponseMessage> ExportToPackage(string definitionGroupId, string packageName, string executionId, string legalEntityId, bool reExecute = false)
         {            
-            var requestUri = GetAosRequestUri(string.IsNullOrEmpty(odataActionPath) ? OdataActionsConstants.ExportToPackageActionPath : odataActionPath);
+            var requestUri = GetAosRequestUri(_settings.ExportToPackageActionPath);
 
             var parameters = new
             {
@@ -418,7 +418,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>export package url</returns>
         public async Task<HttpResponseMessage> ExportFromPackage(string packageUrl, string definitionGroupId, string executionId, bool execute, bool overwrite, string legalEntityId)
         {
-            var requestUri = GetAosRequestUri(OdataActionsConstants.ExportFromPackageActionPath);
+            var requestUri = GetAosRequestUri(_settings.ExportFromPackageActionPath);
 
             var parameters = new
             {
@@ -440,7 +440,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns></returns>
         public async Task<string> GetMessageStatus(string messageId)
         {
-            var requestUri = GetAosRequestUri(OdataActionsConstants.GetMessageStatusActionPath);
+            var requestUri = GetAosRequestUri(_settings.GetMessageStatusActionPath);
             var parameters = new
             {
                 messageId

@@ -28,12 +28,6 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
 
             base.Initialize(context);
 
-            OdataActionPath = dataMap.GetString(SettingsConstants.OdataActionRelativePath);
-            if (string.IsNullOrEmpty(OdataActionPath))
-            {
-                OdataActionPath = string.Empty;
-            }
-
             DownloadSuccessDir = dataMap.GetString(SettingsConstants.DownloadSuccessDir);
             if (!string.IsNullOrEmpty(DownloadSuccessDir))
             {
@@ -90,14 +84,6 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         }
 
         #region Members
-
-        /// <summary>
-        /// Get the Odata action relative path
-        /// </summary>
-        /// <value>
-        /// The relative path to the Odata action
-        /// </value>
-        public string OdataActionPath { get; private set; }
 
         /// <summary>
         /// Gets the download success dir.

@@ -40,7 +40,10 @@ namespace RecurringIntegrationsScheduler.Forms
         public bool Cancelled { get; private set; }
         public IJobDetail JobDetail { get; set; }
         public ITrigger Trigger { get; set; }
-        private JobDataMap OptionsMap { get; set; }
+
+        private string exportToPackagePath;
+        private string getExecutionSummaryStatusPath;
+        private string getExportedPackageUrlPath;
 
         private void ExportJobForm_Load(object sender, EventArgs e)
         {
@@ -76,10 +79,9 @@ namespace RecurringIntegrationsScheduler.Forms
 
             errorsFolder.Text = Properties.Settings.Default.DownloadErrorsFolder;
 
-            OptionsMap = new JobDataMap
-            {
-                { SettingsConstants.OdataActionRelativePath, OdataActionsConstants.ExportToPackageActionPath}
-            };
+            exportToPackagePath = OdataActionsConstants.ExportToPackageActionPath;
+            getExecutionSummaryStatusPath = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
+            getExportedPackageUrlPath = OdataActionsConstants.GetExportedPackageUrlActionPath;
 
             if ((JobDetail != null) && (Trigger != null))
             {
@@ -217,10 +219,9 @@ namespace RecurringIntegrationsScheduler.Forms
                     (JobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
                     Convert.ToBoolean(JobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
 
-                OptionsMap = new JobDataMap
-                {
-                    { SettingsConstants.OdataActionRelativePath, JobDetail.JobDataMap[SettingsConstants.OdataActionRelativePath].ToString()}
-                };
+                exportToPackagePath = JobDetail.JobDataMap[SettingsConstants.ExportToPackageActionPath]?.ToString() ?? OdataActionsConstants.ExportToPackageActionPath;
+                getExecutionSummaryStatusPath = JobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryStatusActionPath;
+                getExportedPackageUrlPath = JobDetail.JobDataMap[SettingsConstants.GetExportedPackageUrlActionPath]?.ToString() ?? OdataActionsConstants.GetExportedPackageUrlActionPath;
 
                 Properties.Settings.Default.Save();
             }
@@ -398,7 +399,9 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
-                {SettingsConstants.OdataActionRelativePath, OptionsMap.GetString(SettingsConstants.OdataActionRelativePath)}
+                {SettingsConstants.ExportToPackageActionPath, exportToPackagePath},
+                {SettingsConstants.GetExecutionSummaryStatusActionPath, getExecutionSummaryStatusPath},
+                {SettingsConstants.GetExportedPackageUrlActionPath, getExportedPackageUrlPath}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -502,18 +505,22 @@ namespace RecurringIntegrationsScheduler.Forms
             userComboBox.Enabled = !serviceAuthRadioButton.Checked;
         }
 
-        private void jobOptions_Click(object sender, EventArgs e)
+        private void CustomActionsButton_Click(object sender, EventArgs e)
         {
             try
             {
                 using (ExportJobOptions form = new ExportJobOptions())
                 {
-                    form.OptionsMap = this.OptionsMap.Clone() as JobDataMap;
+                    form.ExportToPackagePath = exportToPackagePath;
+                    form.GetExecutionSummaryStatusPath = getExecutionSummaryStatusPath;
+                    form.GetExportedPackageUrlPath = getExportedPackageUrlPath;
                     form.ShowDialog();
 
-                    if (form.Cancelled || (form.OptionsMap == null)) return;
+                    if (form.Cancelled) return;
 
-                    this.OptionsMap = form.OptionsMap.Clone() as JobDataMap;
+                    exportToPackagePath = form.ExportToPackagePath;
+                    getExecutionSummaryStatusPath = form.GetExecutionSummaryStatusPath;
+                    getExportedPackageUrlPath = form.GetExportedPackageUrlPath;
                 }
             }
             catch (Exception ex)

@@ -1,12 +1,7 @@
 ﻿/* Copyright (c) Microsoft Corporation. All rights reserved.
    Licensed under the MIT License. */
 
-using Quartz;
-using RecurringIntegrationsScheduler.Common.Contracts;
-using RecurringIntegrationsScheduler.Properties;
-using RecurringIntegrationsScheduler.Settings;
 using System;
-using System.Text;
 using System.Windows.Forms;
 
 namespace RecurringIntegrationsScheduler.Forms
@@ -19,7 +14,10 @@ namespace RecurringIntegrationsScheduler.Forms
         }
 
         public bool Cancelled { get; private set; }
-        public JobDataMap OptionsMap {get; set;} 
+        public string ImportFromPackagePath;
+        public string GetAzureWriteUrlPath;
+        public string GetExecutionSummaryStatusPath;
+        public string GetExecutionSummaryPageUrlPath;
 
         private bool InputIsValid()
         {
@@ -31,16 +29,15 @@ namespace RecurringIntegrationsScheduler.Forms
             Cancelled = false;
             if (InputIsValid())
             {
-                OptionsMap = new JobDataMap
-                {               
-                    {SettingsConstants.OdataActionRelativePath, odataActionRelativePathTextBox.Text}
-                };
-            }
+                ImportFromPackagePath = ImportFromPackageTextBox.Text;
+                GetAzureWriteUrlPath = GetAzureWriteUrlTextBox.Text;
+                GetExecutionSummaryStatusPath = GetExecutionSummaryStatusTextBox.Text;
+                GetExecutionSummaryPageUrlPath = GetExecutionSummaryPageUrlTextBox.Text;
+    }
             else
             {
                 DialogResult = DialogResult.None;
             }
-                
         }
 
         private void ButtonCancel_Click(object sender, EventArgs e)
@@ -52,9 +49,10 @@ namespace RecurringIntegrationsScheduler.Forms
         private void ImportJobOptions_Load(object sender, EventArgs e)
         {
             Cancelled = false;
-
-            string odataActionRelativePath = OptionsMap.GetString(SettingsConstants.OdataActionRelativePath);
-            odataActionRelativePathTextBox.Text = string.IsNullOrEmpty(odataActionRelativePath) ? OdataActionsConstants.ImportFromPackageActionPath : odataActionRelativePath;
+            ImportFromPackageTextBox.Text = ImportFromPackagePath;
+            GetAzureWriteUrlTextBox.Text = GetAzureWriteUrlPath;
+            GetExecutionSummaryStatusTextBox.Text = GetExecutionSummaryStatusPath;
+            GetExecutionSummaryPageUrlTextBox.Text = GetExecutionSummaryPageUrlPath;
         }
     }
 }

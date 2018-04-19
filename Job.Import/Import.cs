@@ -260,7 +260,7 @@ namespace RecurringIntegrationsScheduler.Job
                         if (uploadResponse.IsSuccessStatusCode)
                         {
                             //Now send import request
-                            var importResponse = await _httpClientHelper.ImportFromPackage(_settings.OdataActionPath, blobUri.AbsoluteUri, _settings.DataProject, CreateExecutionId(_settings.DataProject), _settings.ExecuteImport, _settings.OverwriteDataProject, _settings.Company);
+                            var importResponse = await _httpClientHelper.ImportFromPackage(blobUri.AbsoluteUri, _settings.DataProject, CreateExecutionId(_settings.DataProject), _settings.ExecuteImport, _settings.OverwriteDataProject, _settings.Company);
 
                             if (importResponse.IsSuccessStatusCode)
                             {
