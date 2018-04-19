@@ -42,7 +42,6 @@ namespace RecurringIntegrationsScheduler.Forms
         public ITrigger ImportTrigger { get; set; }
         public IJobDetail ExecutionJobDetail { get; set; }
         public ITrigger ExecutionTrigger { get; set; }
-        private JobDataMap OptionsMap { get; set; }
 
         private string importFromPackagePath;
         private string getAzureWriteUrlPath;

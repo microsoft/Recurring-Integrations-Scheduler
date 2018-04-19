@@ -6,7 +6,6 @@ using Newtonsoft.Json.Linq;
 using Polly;
 using RecurringIntegrationsScheduler.Common.JobSettings;
 using RecurringIntegrationsScheduler.Common.Properties;
-using RecurringIntegrationsScheduler.Common.Contracts;
 using System;
 using System.IO;
 using System.Net;
