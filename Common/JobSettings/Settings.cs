@@ -154,6 +154,57 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             }
         }
 
+        /// <summary>
+        /// This method can be used to initialize default Odata action path values when there is no context to use.
+        /// </summary>
+        public void InitializeDefaultOdataActionPath()
+        {
+            if (string.IsNullOrEmpty(ImportFromPackageActionPath))
+            {
+                ImportFromPackageActionPath = OdataActionsConstants.ImportFromPackageActionPath;
+            }
+
+            if (string.IsNullOrEmpty(GetAzureWriteUrlActionPath))
+            {
+                GetAzureWriteUrlActionPath = OdataActionsConstants.GetAzureWriteUrlActionPath;
+            }
+
+            if (string.IsNullOrEmpty(GetExecutionSummaryStatusActionPath))
+            {
+                GetExecutionSummaryStatusActionPath = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
+            }
+
+            if (string.IsNullOrEmpty(GetExportedPackageUrlActionPath))
+            {
+                GetExportedPackageUrlActionPath = OdataActionsConstants.GetExportedPackageUrlActionPath;
+            }
+
+            if (string.IsNullOrEmpty(GetExecutionSummaryPageUrlActionPath))
+            {
+                GetExecutionSummaryPageUrlActionPath = OdataActionsConstants.GetExecutionSummaryPageUrlActionPath;
+            }
+
+            if (string.IsNullOrEmpty(DeleteExecutionHistoryJobActionPath))
+            {
+                DeleteExecutionHistoryJobActionPath = OdataActionsConstants.DeleteExecutionHistoryJobActionPath;
+            }
+
+            if (string.IsNullOrEmpty(ExportToPackageActionPath))
+            {
+                ExportToPackageActionPath = OdataActionsConstants.ExportToPackageActionPath;
+            }
+
+            if (string.IsNullOrEmpty(ExportFromPackageActionPath))
+            {
+                ExportFromPackageActionPath = OdataActionsConstants.ExportFromPackageActionPath;
+            }
+
+            if (string.IsNullOrEmpty(GetMessageStatusActionPath))
+            {
+                GetMessageStatusActionPath = OdataActionsConstants.GetMessageStatusActionPath;
+            }
+        }
+
         #region Members
 
         /// <summary>

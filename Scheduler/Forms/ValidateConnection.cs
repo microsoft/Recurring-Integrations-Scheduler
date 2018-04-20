@@ -68,6 +68,9 @@ namespace RecurringIntegrationsScheduler.Forms
 
             var settings = new Common.JobSettings.DownloadJobSettings();
 
+            // Initialize default Odata action path as we do not have any context to use
+            settings.InitializeDefaultOdataActionPath();
+
             Guid.TryParse(application.ClientId, out Guid aadClientGuid);
             settings.AadClientId = aadClientGuid;
             settings.AadClientSecret = EncryptDecrypt.Decrypt(application.Secret);
