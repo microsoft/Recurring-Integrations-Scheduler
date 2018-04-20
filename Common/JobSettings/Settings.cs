@@ -258,7 +258,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the ImportFromPackage Odata action
         /// </value>
-        public string ImportFromPackageActionPath { get; private set; }
+        public string ImportFromPackageActionPath { get; private set; } = OdataActionsConstants.ImportFromPackageActionPath;
 
         /// <summary>
         /// Get the GetAzureWriteUrl Odata action relative path
@@ -266,7 +266,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the GetAzureWriteUrl Odata action
         /// </value>
-        public string GetAzureWriteUrlActionPath { get; private set; }
+        public string GetAzureWriteUrlActionPath { get; private set; } = OdataActionsConstants.GetAzureWriteUrlActionPath;
 
         /// <summary>
         /// Get the GetExecutionSummaryStatus Odata action relative path
@@ -274,7 +274,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the GetExecutionSummaryStatus Odata action
         /// </value>
-        public string GetExecutionSummaryStatusActionPath { get; private set; }
+        public string GetExecutionSummaryStatusActionPath { get; private set; } = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
 
         /// <summary>
         /// Get the GetExportedPackageUrl Odata action relative path
@@ -282,7 +282,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the GetExportedPackageUrl Odata action
         /// </value>
-        public string GetExportedPackageUrlActionPath { get; private set; }
+        public string GetExportedPackageUrlActionPath { get; private set; } = OdataActionsConstants.GetExportedPackageUrlActionPath;
 
         /// <summary>
         /// Get the GetExecutionSummaryPageUrl Odata action relative path
@@ -290,7 +290,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the GetExecutionSummaryPageUrl Odata action
         /// </value>
-        public string GetExecutionSummaryPageUrlActionPath { get; private set; }
+        public string GetExecutionSummaryPageUrlActionPath { get; private set; } = OdataActionsConstants.GetExecutionSummaryPageUrlActionPath;
 
         /// <summary>
         /// Get the DeleteExecutionHistoryJob Odata action relative path
@@ -298,7 +298,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the DeleteExecutionHistoryJob Odata action
         /// </value>
-        public string DeleteExecutionHistoryJobActionPath { get; private set; }
+        public string DeleteExecutionHistoryJobActionPath { get; private set; } = OdataActionsConstants.DeleteExecutionHistoryJobActionPath;
 
         /// <summary>
         /// Get the ExportToPackage Odata action relative path
@@ -306,7 +306,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the ExportToPackage Odata action
         /// </value>
-        public string ExportToPackageActionPath { get; private set; }
+        public string ExportToPackageActionPath { get; private set; } = OdataActionsConstants.ExportToPackageActionPath;
 
         /// <summary>
         /// Get the ExportFromPackage Odata action relative path
@@ -314,7 +314,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the ExportFromPackage Odata action
         /// </value>
-        public string ExportFromPackageActionPath { get; private set; }
+        public string ExportFromPackageActionPath { get; private set; } = OdataActionsConstants.ExportFromPackageActionPath;
 
         /// <summary>
         /// Get the GetMessageStatus Odata action relative path
@@ -322,7 +322,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the GetMessageStatus Odata action
         /// </value>
-        public string GetMessageStatusActionPath { get; private set; }
+        public string GetMessageStatusActionPath { get; private set; } = OdataActionsConstants.GetMessageStatusActionPath;
 
         #endregion
     }

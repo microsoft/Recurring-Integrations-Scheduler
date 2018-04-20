@@ -1407,11 +1407,11 @@ namespace RecurringIntegrationsScheduler.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method GetMessageStatus returned empty string. Check previous errors..
+        ///   Looks up a localized string similar to Method GetMessageStatus returned empty string. KB4058074 is not installed..
         /// </summary>
-        internal static string Method_GetMessageStatus_returned_empty_string_Check_previous_errors {
+        internal static string Method_GetMessageStatus_returned_empty_string_KB4058074_is_not_installed {
             get {
-                return ResourceManager.GetString("Method_GetMessageStatus_returned_empty_string_Check_previous_errors", resourceCulture);
+                return ResourceManager.GetString("Method_GetMessageStatus_returned_empty_string_KB4058074_is_not_installed", resourceCulture);
             }
         }
         

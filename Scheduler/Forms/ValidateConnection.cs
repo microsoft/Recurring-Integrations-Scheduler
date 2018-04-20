@@ -169,7 +169,7 @@ namespace RecurringIntegrationsScheduler.Forms
                 if (string.IsNullOrEmpty(checkKb4058074.Result))
                 {
                     //TODO
-                    messagesTextBox.Text += Resources.Method_GetMessageStatus_returned_empty_string_Check_previous_errors + Environment.NewLine;
+                    messagesTextBox.Text += Resources.Method_GetMessageStatus_returned_empty_string_KB4058074_is_not_installed + Environment.NewLine;
                 }
                 else
                 {
