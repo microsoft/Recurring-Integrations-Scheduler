@@ -122,7 +122,13 @@ namespace RecurringIntegrationsScheduler.Job
                 if (Log.IsDebugEnabled)
                 {
                     if (!string.IsNullOrEmpty(ex.Message))
+                    {
                         Log.Error(ex.Message, ex);
+                    }
+                    else
+                    {
+                        Log.Error("Uknown exception", ex);
+                    }
 
                     while (ex.InnerException != null)
                     {
