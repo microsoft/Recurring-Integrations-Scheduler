@@ -20,77 +20,73 @@
     <Setting Name="ProcessingErrorsFolder" Roaming="true" Type="System.String" Scope="User">
       <Value Profile="(Default)">ProcessingErrors</Value>
     </Setting>
-	<Setting Name="UpdateSettings" Roaming="true" Type="System.Boolean" Scope="User">
+    <Setting Name="UpdateSettings" Roaming="true" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="DataJobs" Roaming="true" Type="RecurringIntegrationsScheduler.Settings.DataJobs" Scope="User">
-      <Value Profile="(Default)">
-        &lt;?xml version="1.0" encoding="utf-16"?&gt;
-        &lt;ArrayOfDataJob xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-        &lt;DataJob&gt;
-        &lt;Name&gt;Customers import&lt;/Name&gt;
-        &lt;ActivityId&gt;00000000-0000-0000-0000-000000000000&lt;/ActivityId&gt;
-        &lt;EntityName&gt;Customers&lt;/EntityName&gt;
-        &lt;Type&gt;Download&lt;/Type&gt;
-        &lt;/DataJob&gt;
-        &lt;/ArrayOfDataJob&gt;
-      </Value>
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfDataJob xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;DataJob&gt;
+    &lt;Name&gt;Customers import&lt;/Name&gt;
+    &lt;ActivityId&gt;00000000-0000-0000-0000-000000000000&lt;/ActivityId&gt;
+    &lt;EntityName&gt;Customers&lt;/EntityName&gt;
+    &lt;Type&gt;Download&lt;/Type&gt;
+  &lt;/DataJob&gt;
+&lt;/ArrayOfDataJob&gt;</Value>
     </Setting>
     <Setting Name="Instances" Roaming="true" Type="RecurringIntegrationsScheduler.Settings.Instances" Scope="User">
-      <Value Profile="(Default)">
-        &lt;?xml version="1.0" encoding="utf-16"?&gt;
-        &lt;ArrayOfAxInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-        &lt;Instance&gt;
-        &lt;Name&gt;Contoso PROD&lt;/Name&gt;
-        &lt;AosUri&gt;https://contoso.production.axcloud.dynamics.com&lt;/AosUri&gt;
-        &lt;AzureAuthEndpoint&gt;https://login.microsoftonline.com&lt;/AzureAuthEndpoint&gt;
-        &lt;AadTenant&gt;contoso.com&lt;/AadTenant&gt;
-        &lt;/Instance&gt;
-        &lt;/ArrayOfInstance&gt;
-      </Value>
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfInstance xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Instance&gt;
+    &lt;Name&gt;Contoso PROD&lt;/Name&gt;
+    &lt;AosUri&gt;https://contoso.production.operations.dynamics.com&lt;/AosUri&gt;
+    &lt;AzureAuthEndpoint&gt;https://login.microsoftonline.com&lt;/AzureAuthEndpoint&gt;
+    &lt;AadTenant&gt;contoso.com&lt;/AadTenant&gt;
+  &lt;/Instance&gt;
+&lt;/ArrayOfInstance&gt;</Value>
     </Setting>
     <Setting Name="Users" Roaming="true" Type="RecurringIntegrationsScheduler.Settings.Users" Scope="User">
-      <Value Profile="(Default)">
-        &lt;?xml version="1.0" encoding="utf-16"?&gt;
-        &lt;ArrayOfUser xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-        &lt;User&gt;
-        &lt;Login&gt;admin@contoso.com&lt;/Login&gt;
-        &lt;Password&gt;pass@word1&lt;/Password&gt;
-        &lt;/User&gt;
-        &lt;/ArrayOfUser&gt;
-      </Value>
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfUser xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;User&gt;
+    &lt;Login&gt;admin@contoso.com&lt;/Login&gt;
+    &lt;Password&gt;pass@word1&lt;/Password&gt;
+  &lt;/User&gt;
+&lt;/ArrayOfUser&gt;</Value>
     </Setting>
     <Setting Name="JobGroups" Roaming="true" Type="RecurringIntegrationsScheduler.Settings.JobGroups" Scope="User">
-      <Value Profile="(Default)">
-        &lt;?xml version="1.0" encoding="utf-16"?&gt;
-        &lt;ArrayOfJobGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-        &lt;JobGroup&gt;
-        &lt;Name&gt;Download jobs&lt;/Name&gt;
-        &lt;/JobGroup&gt;
-        &lt;JobGroup&gt;
-        &lt;Name&gt;Upload jobs&lt;/Name&gt;
-        &lt;/JobGroup&gt;
-        &lt;/ArrayOfJobGroup&gt;
-      </Value>
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfJobGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;JobGroup&gt;
+    &lt;Name&gt;Import jobs&lt;/Name&gt;
+  &lt;/JobGroup&gt;
+  &lt;JobGroup&gt;
+    &lt;Name&gt;Export jobs&lt;/Name&gt;
+  &lt;/JobGroup&gt;
+  &lt;JobGroup&gt;
+    &lt;Name&gt;Download jobs&lt;/Name&gt;
+  &lt;/JobGroup&gt;
+  &lt;JobGroup&gt;
+    &lt;Name&gt;Upload jobs&lt;/Name&gt;
+  &lt;/JobGroup&gt;
+&lt;/ArrayOfJobGroup&gt;</Value>
     </Setting>
     <Setting Name="AadApplications" Roaming="true" Type="RecurringIntegrationsScheduler.Settings.AadApplications" Scope="User">
-      <Value Profile="(Default)">
-        &lt;?xml version="1.0" encoding="utf-16"?&gt;
-        &lt;ArrayOfAadApplication xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-        &lt;AadApplication&gt;
-        &lt;Name&gt;User impersonation&lt;/Name&gt;
-        &lt;ClientId&gt;00000000-0000-0000-0000-000000000000&lt;/ClientId&gt;
-        &lt;Secret /&gt;
-        &lt;AuthenticationType&gt;User&lt;/AuthenticationType&gt;
-        &lt;/AadApplication&gt;
-        &lt;AadApplication&gt;
-        &lt;Name&gt;Service to Service&lt;/Name&gt;
-        &lt;ClientId&gt;00000000-0000-0000-0000-000000000000&lt;/ClientId&gt;
-        &lt;Secret /&gt;
-        &lt;AuthenticationType&gt;Service&lt;/AuthenticationType&gt;
-        &lt;/AadApplication&gt;
-        &lt;/ArrayOfAadApplication&gt;
-      </Value>
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfAadApplication xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;AadApplication&gt;
+    &lt;Name&gt;User impersonation&lt;/Name&gt;
+    &lt;ClientId&gt;00000000-0000-0000-0000-000000000000&lt;/ClientId&gt;
+    &lt;Secret /&gt;
+    &lt;AuthenticationType&gt;User&lt;/AuthenticationType&gt;
+  &lt;/AadApplication&gt;
+  &lt;AadApplication&gt;
+    &lt;Name&gt;Service to Service&lt;/Name&gt;
+    &lt;ClientId&gt;00000000-0000-0000-0000-000000000000&lt;/ClientId&gt;
+    &lt;Secret /&gt;
+    &lt;AuthenticationType&gt;Service&lt;/AuthenticationType&gt;
+  &lt;/AadApplication&gt;
+&lt;/ArrayOfAadApplication&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>
