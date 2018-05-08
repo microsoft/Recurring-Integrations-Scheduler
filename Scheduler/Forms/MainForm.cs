@@ -211,6 +211,22 @@ namespace RecurringIntegrationsScheduler.Forms
             }
         }
 
+        private void SaveStandaloneSchedule()
+        {
+            try
+            {
+                var standaloneSchedulePath = Path.Combine(Directory.GetCurrentDirectory(),
+                                                "Standalone_schedule.xml");
+                var file = new FileInfo(standaloneSchedulePath);
+
+                Scheduler.Instance.BackupToFile(file);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, Resources.Unexpected_error);
+            }
+        }
+
         private void SaveScheduleButton_Click(object sender, EventArgs e)
         {
             try
@@ -258,7 +274,7 @@ namespace RecurringIntegrationsScheduler.Forms
                 Scheduler.Instance.Connect();
                 if (Scheduler.Instance.GetScheduler() != null)
                 {
-                    Scheduler.Instance.GetScheduler().Start();
+                    Scheduler.Instance.GetScheduler().Start().Wait();
                     toolStripConnectionStatus.Text = Resources.Connected_to_standalone_scheduler;
                     connectToServerButton.Enabled = false;
                     privateSchedulerButton.Enabled = false;
@@ -282,6 +298,8 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             if (_privateScheduler)
             {
+                SaveStandaloneSchedule();
+
                 var executing = Scheduler.Instance.GetScheduler().GetCurrentlyExecutingJobs().Result;
                 if (executing.Count > 0)
                 {
