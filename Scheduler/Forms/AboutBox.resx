@@ -510,7 +510,7 @@ Copyright 2007-2016 Travis Smith, Chris Patterson, Dru Sellers, Henrik Feldtet a
 Apache Log4Net versions 2.0.8
 Copyright 2004-2017 The Apache Software Foundation
 
-Quartz / 3.0.4 / https://www.nuget.org/packages/Quartz/3.0.4
+Quartz / 3.0.6 / https://www.nuget.org/packages/Quartz/3.0.4
 Copyright (c) Marko Lahma
 
 Apache 2.0 License 
@@ -589,7 +589,7 @@ purpose and non-infringement.
 -------------------------------- END OF LICENSE --------------------------------
 
 ------------------------------- START OF LICENSE -------------------------------
-Polly, ver. / 5.8.0 / https://www.nuget.org/packages/Polly/5.8.0
+Polly, ver. / 6.0.1 / https://www.nuget.org/packages/Polly/5.8.0
 Copyright (c) 2015-2018, App vNext, All rights reserved.
 
 PROVIDED FOR INFORMATIONAL PURPOSE ONLY

@@ -262,16 +262,23 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>job's execution status</returns>
         public async Task<string> GetExecutionSummaryStatus(string executionId)
         {
-            var requestUri = GetAosRequestUri(_settings.GetExecutionSummaryStatusActionPath);
+            try
+            {
+                var requestUri = GetAosRequestUri(_settings.GetExecutionSummaryStatusActionPath);
 
-            var parameters = new { executionId };
-            string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+                var parameters = new { executionId };
+                string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
 
-            var response = await PostStringRequestAsync(requestUri, parametersJson);
+                var response = await PostStringRequestAsync(requestUri, parametersJson);
 
-            string result = response.Content.ReadAsStringAsync().Result;
-            JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
-            return jsonResponse["value"].ToString();
+                string result = response.Content.ReadAsStringAsync().Result;
+                JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
+                return jsonResponse["value"].ToString();
+            }
+            catch
+            {
+                return "Bad request";
+            }
         }
 
         /// <summary>

@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace RecurringIntegrationsScheduler.Job
 {
     /// <summary>
-    /// Job that is used to request export of data using new mothod introduced in platform update 5
+    /// Job that is used to request export of data using new method introduced in platform update 5
     /// </summary>
     /// <seealso cref="IJob" />
     [DisallowConcurrentExecution]
@@ -149,27 +149,33 @@ namespace RecurringIntegrationsScheduler.Job
 
                 string executionStatus;
                 var attempt = 0;
-                do //Potentially endless loop
+                do
                 {
                     attempt++;
-                    System.Threading.Thread.Sleep(_settings.Interval);
+                    if(attempt != 1)
+                        System.Threading.Thread.Sleep(_settings.Interval);
                     executionStatus = await _httpClientHelper.GetExecutionSummaryStatus(executionId);
                     if (Log.IsDebugEnabled)
-                        Log.Debug(string.Format(Resources.Job_0_Checking_if_export_is_completed_Try_1, _context.JobDetail.Key, attempt));
+                        Log.Debug(string.Format(Resources.Job_0_Checking_if_export_is_completed_Try_1_Status_2, _context.JobDetail.Key, attempt, executionStatus));
+                    if (attempt == 1000)
+                        break;
                 }
-                while ((executionStatus == "NotRun" || executionStatus == "Executing"));
+                while ((executionStatus == "NotRun" || executionStatus == "Executing" || executionStatus == "Bad request"));
 
                 if (executionStatus == "Succeeded" || executionStatus == "PartiallySucceeded")
                 {
                     attempt = 0;
                     Uri packageUrl = null;
-                    do //Potentially endless loop
+                    do
                     {
                         attempt++;
-                        System.Threading.Thread.Sleep(_settings.Interval);
+                        if (attempt != 1)
+                            System.Threading.Thread.Sleep(_settings.Interval);
                         packageUrl = await _httpClientHelper.GetExportedPackageUrl(executionId);
                         if (Log.IsDebugEnabled)
                             Log.Debug(string.Format(Resources.Job_0_Trying_to_get_exported_package_URL_Try_1, _context.JobDetail.Key, attempt));
+                        if (attempt == 100)
+                            break;
                     }
                     while (packageUrl == null);
 

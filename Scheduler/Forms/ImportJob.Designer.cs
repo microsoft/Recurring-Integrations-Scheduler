@@ -30,7 +30,6 @@ namespace RecurringIntegrationsScheduler.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImportJob));
             this.jobDetailsGroupBox = new System.Windows.Forms.GroupBox();
             this.PackageTemplateFileBrowserButton = new System.Windows.Forms.Button();
             this.packageTemplateTextBox = new System.Windows.Forms.TextBox();
@@ -98,6 +97,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.bottomToolStrip = new System.Windows.Forms.ToolStrip();
             this.cancelButton = new System.Windows.Forms.ToolStripButton();
             this.addJobButton = new System.Windows.Forms.ToolStripButton();
+            this.customActionsButton = new System.Windows.Forms.ToolStripButton();
             this.downloadFolderLabel = new System.Windows.Forms.Label();
             this.processingJobGroupBox = new System.Windows.Forms.GroupBox();
             this.procJobTriggerTypePanel = new System.Windows.Forms.Panel();
@@ -134,7 +134,6 @@ namespace RecurringIntegrationsScheduler.Forms
             this.label1 = new System.Windows.Forms.Label();
             this.groupBoxExceptions = new System.Windows.Forms.GroupBox();
             this.pauseOnExceptionsCheckBox = new System.Windows.Forms.CheckBox();
-            this.customActionsButton = new System.Windows.Forms.ToolStripButton();
             this.jobDetailsGroupBox.SuspendLayout();
             this.axDetailsGroupBox.SuspendLayout();
             this.authMethodPanel.SuspendLayout();
@@ -790,7 +789,6 @@ namespace RecurringIntegrationsScheduler.Forms
             this.cronTriggerInfoTextBox.Size = new System.Drawing.Size(322, 226);
             this.cronTriggerInfoTextBox.TabIndex = 4;
             this.cronTriggerInfoTextBox.TabStop = false;
-            this.cronTriggerInfoTextBox.Text = resources.GetString("cronTriggerInfoTextBox.Text");
             // 
             // cronmakerLinkLabel
             // 
@@ -927,6 +925,15 @@ namespace RecurringIntegrationsScheduler.Forms
             this.addJobButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Add_to_schedule;
             this.addJobButton.Click += new System.EventHandler(this.AddJobButton_Click);
             // 
+            // customActionsButton
+            // 
+            this.customActionsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.customActionsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.customActionsButton.Name = "customActionsButton";
+            this.customActionsButton.Size = new System.Drawing.Size(193, 29);
+            this.customActionsButton.Text = "Custom Odata actions";
+            this.customActionsButton.Click += new System.EventHandler(this.CustomActionsButton_Click);
+            // 
             // downloadFolderLabel
             // 
             this.downloadFolderLabel.AutoSize = true;
@@ -934,7 +941,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.downloadFolderLabel.Name = "downloadFolderLabel";
             this.downloadFolderLabel.Size = new System.Drawing.Size(90, 13);
             this.downloadFolderLabel.TabIndex = 8;
-            this.downloadFolderLabel.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Top_upload_folder;
+            this.downloadFolderLabel.Text = "Top upload folder";
             // 
             // processingJobGroupBox
             // 
@@ -1345,15 +1352,6 @@ namespace RecurringIntegrationsScheduler.Forms
             this.pauseOnExceptionsCheckBox.Text = "Pause job when exception occurs";
             this.pauseOnExceptionsCheckBox.UseVisualStyleBackColor = true;
             // 
-            // customActionsButton
-            // 
-            this.customActionsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.customActionsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.customActionsButton.Name = "customActionsButton";
-            this.customActionsButton.Size = new System.Drawing.Size(193, 29);
-            this.customActionsButton.Text = "Custom Odata actions";
-            this.customActionsButton.Click += new System.EventHandler(this.CustomActionsButton_Click);
-            // 
             // ImportJob
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -1372,7 +1370,6 @@ namespace RecurringIntegrationsScheduler.Forms
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(1098, 1107);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(1098, 925);
             this.Name = "ImportJob";

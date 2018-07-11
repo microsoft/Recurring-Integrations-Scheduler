@@ -157,15 +157,18 @@ namespace RecurringIntegrationsScheduler
                         row["Instance"] = detail.JobDataMap["AosUri"];
 
                         var triggers = GetScheduler().GetTriggersOfJob(jobKey).Result;
-                        var nextFireTime = triggers.First().GetNextFireTimeUtc();
-                        if (nextFireTime.HasValue)
-                            row["NextFireTime"] = TimeZone.CurrentTimeZone.ToLocalTime(nextFireTime.Value.DateTime);
+                        if (triggers.Count > 0)
+                        {
+                            var nextFireTime = triggers.First().GetNextFireTimeUtc();
+                            if (nextFireTime.HasValue)
+                                row["NextFireTime"] = TimeZone.CurrentTimeZone.ToLocalTime(nextFireTime.Value.DateTime);
 
-                        var previousFireTime = triggers.First().GetPreviousFireTimeUtc();
-                        if (previousFireTime.HasValue)
-                            row["PreviousFireTime"] =
-                                TimeZone.CurrentTimeZone.ToLocalTime(previousFireTime.Value.DateTime);
-                        row["JobStatus"] = GetScheduler().GetTriggerState(triggers.First().Key).Result.ToString();
+                            var previousFireTime = triggers.First().GetPreviousFireTimeUtc();
+                            if (previousFireTime.HasValue)
+                                row["PreviousFireTime"] =
+                                    TimeZone.CurrentTimeZone.ToLocalTime(previousFireTime.Value.DateTime);
+                            row["JobStatus"] = GetScheduler().GetTriggerState(triggers.First().Key).Result.ToString();
+                        }
                         table.Rows.Add(row);
                     }
                 }

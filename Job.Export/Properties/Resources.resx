@@ -165,8 +165,8 @@
   <data name="Export_execution_failed_for_job_0_Status_1" xml:space="preserve">
     <value>Export execution failed for job: {0}. Execution status: {1}</value>
   </data>
-  <data name="Job_0_Checking_if_export_is_completed_Try_1" xml:space="preserve">
-    <value>Job: {0} Checking if export is completed. Try: {1}</value>
+  <data name="Job_0_Checking_if_export_is_completed_Try_1_Status_2" xml:space="preserve">
+    <value>Job: {0} Checking if export is completed. Try: {1}. Status: {2}</value>
   </data>
   <data name="Job_0_Execution_status_1_Execution_Id_2" xml:space="preserve">
     <value>Job: {0} Execution status: {1} Execution Id {2}</value>

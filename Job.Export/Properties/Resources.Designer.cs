@@ -88,11 +88,11 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Job: {0} Checking if export is completed. Try: {1}.
+        ///   Looks up a localized string similar to Job: {0} Checking if export is completed. Try: {1}. Status: {2}.
         /// </summary>
-        internal static string Job_0_Checking_if_export_is_completed_Try_1 {
+        internal static string Job_0_Checking_if_export_is_completed_Try_1_Status_2 {
             get {
-                return ResourceManager.GetString("Job_0_Checking_if_export_is_completed_Try_1", resourceCulture);
+                return ResourceManager.GetString("Job_0_Checking_if_export_is_completed_Try_1_Status_2", resourceCulture);
             }
         }
         
