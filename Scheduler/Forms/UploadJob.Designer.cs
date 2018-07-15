@@ -783,7 +783,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.cronTriggerInfoTextBox.Size = new System.Drawing.Size(322, 226);
             this.cronTriggerInfoTextBox.TabIndex = 25;
             this.cronTriggerInfoTextBox.TabStop = false;
-            this.cronTriggerInfoTextBox.Text = RecurringIntegrationsScheduler.Properties.Resources.cronTriggerInfo;
+            this.cronTriggerInfoTextBox.Text = resources.GetString("cronTriggerInfoTextBox.Text");
             // 
             // cronmakerLinkLabel
             // 
@@ -904,7 +904,6 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.cancelButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.cancelButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.cancelButton.Image = ((System.Drawing.Image)(resources.GetObject("cancelButton.Image")));
             this.cancelButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(67, 29);
@@ -915,7 +914,6 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.addJobButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.addJobButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.addJobButton.Image = ((System.Drawing.Image)(resources.GetObject("addJobButton.Image")));
             this.addJobButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addJobButton.Name = "addJobButton";
             this.addJobButton.Size = new System.Drawing.Size(146, 29);
@@ -1191,7 +1189,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.retryPolicyGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.retryPolicyGroupBox.Name = "retryPolicyGroupBox";
             this.retryPolicyGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.retryPolicyGroupBox.Size = new System.Drawing.Size(346, 103);
+            this.retryPolicyGroupBox.Size = new System.Drawing.Size(346, 143);
             this.retryPolicyGroupBox.TabIndex = 6;
             this.retryPolicyGroupBox.TabStop = false;
             this.retryPolicyGroupBox.Text = "Retry policy";
@@ -1278,10 +1276,11 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1078, 814);
+            this.Controls.Add(this.bottomToolStrip);
             this.Controls.Add(this.groupBoxExceptions);
             this.Controls.Add(this.retryPolicyGroupBox);
-            this.Controls.Add(this.bottomToolStrip);
             this.Controls.Add(this.fileSelectionGroupBox);
             this.Controls.Add(this.processingJobGroupBox);
             this.Controls.Add(this.recurrenceGroupBox);

@@ -30,6 +30,7 @@ namespace RecurringIntegrationsScheduler.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImportJob));
             this.jobDetailsGroupBox = new System.Windows.Forms.GroupBox();
             this.PackageTemplateFileBrowserButton = new System.Windows.Forms.Button();
             this.packageTemplateTextBox = new System.Windows.Forms.TextBox();
@@ -682,7 +683,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.getCronScheduleForProcButton.Name = "getCronScheduleForProcButton";
             this.getCronScheduleForProcButton.Size = new System.Drawing.Size(158, 55);
             this.getCronScheduleForProcButton.TabIndex = 13;
-            this.getCronScheduleForProcButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Get_cron_schedule_for_monitor_job;
+            this.getCronScheduleForProcButton.Text = "Get cron schedule for monitoring job ";
             this.getCronScheduleForProcButton.UseVisualStyleBackColor = true;
             this.getCronScheduleForProcButton.Click += new System.EventHandler(this.GetCronScheduleForProcButton_Click);
             // 
@@ -717,7 +718,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.getCronScheduleForUploadButton.Name = "getCronScheduleForUploadButton";
             this.getCronScheduleForUploadButton.Size = new System.Drawing.Size(158, 55);
             this.getCronScheduleForUploadButton.TabIndex = 12;
-            this.getCronScheduleForUploadButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Get_cron_schedule_for_upload_job;
+            this.getCronScheduleForUploadButton.Text = "Get cron schedule for import job ";
             this.getCronScheduleForUploadButton.UseVisualStyleBackColor = true;
             this.getCronScheduleForUploadButton.Click += new System.EventHandler(this.GetCronScheduleForUploadButton_Click);
             // 
@@ -789,6 +790,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.cronTriggerInfoTextBox.Size = new System.Drawing.Size(322, 226);
             this.cronTriggerInfoTextBox.TabIndex = 4;
             this.cronTriggerInfoTextBox.TabStop = false;
+            this.cronTriggerInfoTextBox.Text = resources.GetString("cronTriggerInfoTextBox.Text");
             // 
             // cronmakerLinkLabel
             // 
@@ -1265,7 +1267,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.retryPolicyGroupBox.Controls.Add(this.label2);
             this.retryPolicyGroupBox.Controls.Add(this.retriesCountUpDown);
             this.retryPolicyGroupBox.Controls.Add(this.label1);
-            this.retryPolicyGroupBox.Location = new System.Drawing.Point(729, 663);
+            this.retryPolicyGroupBox.Location = new System.Drawing.Point(729, 660);
             this.retryPolicyGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.retryPolicyGroupBox.Name = "retryPolicyGroupBox";
             this.retryPolicyGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -1333,9 +1335,9 @@ namespace RecurringIntegrationsScheduler.Forms
             // groupBoxExceptions
             // 
             this.groupBoxExceptions.Controls.Add(this.pauseOnExceptionsCheckBox);
-            this.groupBoxExceptions.Location = new System.Drawing.Point(729, 775);
+            this.groupBoxExceptions.Location = new System.Drawing.Point(729, 770);
             this.groupBoxExceptions.Name = "groupBoxExceptions";
-            this.groupBoxExceptions.Size = new System.Drawing.Size(345, 58);
+            this.groupBoxExceptions.Size = new System.Drawing.Size(345, 113);
             this.groupBoxExceptions.TabIndex = 9;
             this.groupBoxExceptions.TabStop = false;
             this.groupBoxExceptions.Text = "Exceptions";
@@ -1356,10 +1358,10 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1076, 883);
-            this.Controls.Add(this.groupBoxExceptions);
-            this.Controls.Add(this.retryPolicyGroupBox);
             this.Controls.Add(this.bottomToolStrip);
+            this.Controls.Add(this.groupBoxExceptions);
             this.Controls.Add(this.importDetailsGroupBox);
             this.Controls.Add(this.fileSelectionGroupBox);
             this.Controls.Add(this.processingJobGroupBox);
@@ -1367,6 +1369,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.Controls.Add(this.axDetailsGroupBox);
             this.Controls.Add(this.jobDetailsGroupBox);
             this.Controls.Add(this.useMonitoringJobCheckBox);
+            this.Controls.Add(this.retryPolicyGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;

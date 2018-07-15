@@ -87,6 +87,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.bottomToolStrip = new System.Windows.Forms.ToolStrip();
             this.cancelButton = new System.Windows.Forms.ToolStripButton();
             this.addJobButton = new System.Windows.Forms.ToolStripButton();
+            this.customActionsButton = new System.Windows.Forms.ToolStripButton();
             this.retryPolicyGroupBox = new System.Windows.Forms.GroupBox();
             this.retriesDelayUpDown = new System.Windows.Forms.NumericUpDown();
             this.retriesCountUpDown = new System.Windows.Forms.NumericUpDown();
@@ -94,7 +95,6 @@ namespace RecurringIntegrationsScheduler.Forms
             this.label1 = new System.Windows.Forms.Label();
             this.groupBoxExceptions = new System.Windows.Forms.GroupBox();
             this.pauseOnExceptionsCheckBox = new System.Windows.Forms.CheckBox();
-            this.customActionsButton = new System.Windows.Forms.ToolStripButton();
             this.jobDetailsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.interval)).BeginInit();
             this.axDetailsGroupBox.SuspendLayout();
@@ -762,6 +762,15 @@ namespace RecurringIntegrationsScheduler.Forms
             this.addJobButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Add_to_schedule;
             this.addJobButton.Click += new System.EventHandler(this.AddJobButton_Click);
             // 
+            // customActionsButton
+            // 
+            this.customActionsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.customActionsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.customActionsButton.Name = "customActionsButton";
+            this.customActionsButton.Size = new System.Drawing.Size(193, 29);
+            this.customActionsButton.Text = "Custom Odata actions";
+            this.customActionsButton.Click += new System.EventHandler(this.CustomActionsButton_Click);
+            // 
             // retryPolicyGroupBox
             // 
             this.retryPolicyGroupBox.Controls.Add(this.retriesDelayUpDown);
@@ -855,23 +864,15 @@ namespace RecurringIntegrationsScheduler.Forms
             this.pauseOnExceptionsCheckBox.Text = "Pause job when exception occurs";
             this.pauseOnExceptionsCheckBox.UseVisualStyleBackColor = true;
             // 
-            // customActionsButton
-            // 
-            this.customActionsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.customActionsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.customActionsButton.Name = "customActionsButton";
-            this.customActionsButton.Size = new System.Drawing.Size(193, 29);
-            this.customActionsButton.Text = "Custom Odata actions";
-            this.customActionsButton.Click += new System.EventHandler(this.CustomActionsButton_Click);
-            // 
             // ExportJob
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1074, 709);
+            this.Controls.Add(this.bottomToolStrip);
             this.Controls.Add(this.groupBoxExceptions);
             this.Controls.Add(this.retryPolicyGroupBox);
-            this.Controls.Add(this.bottomToolStrip);
             this.Controls.Add(this.recurrenceGroupBox);
             this.Controls.Add(this.axDetailsGroupBox);
             this.Controls.Add(this.jobDetailsGroupBox);

@@ -30,6 +30,7 @@ namespace RecurringIntegrationsScheduler.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DownloadJob));
             this.jobDetailsGroupBox = new System.Windows.Forms.GroupBox();
             this.deletePackageCheckBox = new System.Windows.Forms.CheckBox();
             this.addTimestampCheckBox = new System.Windows.Forms.CheckBox();
@@ -563,7 +564,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.cronTriggerInfoTextBox.Size = new System.Drawing.Size(312, 238);
             this.cronTriggerInfoTextBox.TabIndex = 25;
             this.cronTriggerInfoTextBox.TabStop = false;
-            this.cronTriggerInfoTextBox.Text = RecurringIntegrationsScheduler.Properties.Resources.cronTriggerInfo;
+            this.cronTriggerInfoTextBox.Text = resources.GetString("cronTriggerInfoTextBox.Text");
             // 
             // cronmakerLinkLabel
             // 
@@ -776,7 +777,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.groupBoxExceptions.Controls.Add(this.pauseOnExceptionsCheckBox);
             this.groupBoxExceptions.Location = new System.Drawing.Point(20, 737);
             this.groupBoxExceptions.Name = "groupBoxExceptions";
-            this.groupBoxExceptions.Size = new System.Drawing.Size(345, 59);
+            this.groupBoxExceptions.Size = new System.Drawing.Size(345, 107);
             this.groupBoxExceptions.TabIndex = 10;
             this.groupBoxExceptions.TabStop = false;
             this.groupBoxExceptions.Text = "Exceptions";
@@ -797,10 +798,11 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(728, 844);
+            this.Controls.Add(this.bottomToolStrip);
             this.Controls.Add(this.groupBoxExceptions);
             this.Controls.Add(this.retryPolicyGroupBox);
-            this.Controls.Add(this.bottomToolStrip);
             this.Controls.Add(this.recurrenceGroupBox);
             this.Controls.Add(this.axDetailsGroupBox);
             this.Controls.Add(this.jobDetailsGroupBox);
