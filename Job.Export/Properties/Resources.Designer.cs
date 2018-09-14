@@ -257,5 +257,14 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
                 return ResourceManager.GetString("Job_0_was_paused_because_of_error", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job: {0} was paused indefinitely..
+        /// </summary>
+        internal static string Job_0_was_paused_indefinitely {
+            get {
+                return ResourceManager.GetString("Job_0_was_paused_indefinitely", resourceCulture);
+            }
+        }
     }
 }
