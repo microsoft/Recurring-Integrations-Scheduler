@@ -228,8 +228,8 @@ namespace RecurringIntegrationsScheduler.Forms
                                                              .ToString());
 
                 pauseIndefinitelyCheckBox.Checked =
-                    (UploadJobDetail.JobDataMap[SettingsConstants.IndefinitePause] != null) &&
-                    Convert.ToBoolean(UploadJobDetail.JobDataMap[SettingsConstants.IndefinitePause].ToString());
+                    (ImportJobDetail.JobDataMap[SettingsConstants.IndefinitePause] != null) &&
+                    Convert.ToBoolean(ImportJobDetail.JobDataMap[SettingsConstants.IndefinitePause].ToString());
 
                 if (ImportTrigger.GetType() == typeof(SimpleTriggerImpl))
                 {
