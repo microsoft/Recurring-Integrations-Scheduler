@@ -227,6 +227,10 @@ namespace RecurringIntegrationsScheduler.Forms
                                                          ImportJobDetail.JobDataMap[SettingsConstants.ReverseOrder]
                                                              .ToString());
 
+                pauseIndefinitelyCheckBox.Checked =
+                    (UploadJobDetail.JobDataMap[SettingsConstants.IndefinitePause] != null) &&
+                    Convert.ToBoolean(UploadJobDetail.JobDataMap[SettingsConstants.IndefinitePause].ToString());
+
                 if (ImportTrigger.GetType() == typeof(SimpleTriggerImpl))
                 {
                     var localTrigger = (SimpleTriggerImpl) ImportTrigger;
@@ -585,7 +589,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
                 {SettingsConstants.GetAzureWriteUrlActionPath, getAzureWriteUrlPath},
-                {SettingsConstants.ImportFromPackageActionPath, importFromPackagePath}
+                {SettingsConstants.ImportFromPackageActionPath, importFromPackagePath},
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -620,7 +625,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
                 {SettingsConstants.GetExecutionSummaryStatusActionPath, getExecutionSummaryStatusPath},
-                {SettingsConstants.GetExecutionSummaryPageUrlActionPath, getExecutionSummaryPageUrlPath}
+                {SettingsConstants.GetExecutionSummaryPageUrlActionPath, getExecutionSummaryPageUrlPath},
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {

@@ -214,6 +214,15 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Job: {0} was paused indefinitely..
+        /// </summary>
+        internal static string Job_0_was_paused_indefinitely {
+            get {
+                return ResourceManager.GetString("Job_0_was_paused_indefinitely", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package template contains input file: {0}. Please remove it from the template..
         /// </summary>
         internal static string Package_template_contains_input_file_0_Please_remove_it_from_the_template {

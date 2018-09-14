@@ -178,6 +178,15 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Job: {0} was paused indefinitely..
+        /// </summary>
+        internal static string Job_0_was_paused_indefinitely {
+            get {
+                return ResourceManager.GetString("Job_0_was_paused_indefinitely", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Processing monitor job: {0} failed.
         /// </summary>
         internal static string Processing_monitor_job_0_failed {
