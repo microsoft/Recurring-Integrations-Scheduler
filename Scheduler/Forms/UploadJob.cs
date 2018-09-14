@@ -231,6 +231,10 @@ namespace RecurringIntegrationsScheduler.Forms
                                                          UploadJobDetail.JobDataMap[SettingsConstants.ReverseOrder]
                                                              .ToString());
 
+                pauseIndefinitelyCheckBox.Checked =
+                    (UploadJobDetail.JobDataMap[SettingsConstants.IndefinitePause] != null) &&
+                    Convert.ToBoolean(UploadJobDetail.JobDataMap[SettingsConstants.IndefinitePause].ToString());
+
                 if (UploadTrigger.GetType() == typeof(SimpleTriggerImpl))
                 {
                     var localTrigger = (SimpleTriggerImpl) UploadTrigger;
@@ -578,7 +582,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.ReverseOrder, orderDescendingRadioButton.Checked.ToString()},
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()}
+                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -613,7 +618,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.UseServiceAuthentication, serviceAuthRadioButton.Checked.ToString()},
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()}
+                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {
