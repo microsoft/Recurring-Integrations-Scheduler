@@ -378,30 +378,6 @@ namespace RecurringIntegrationsScheduler.Forms
             getCronScheduleForUploadButton.Enabled = upJobCronTriggerRadioButton.Checked;
         }
 
-        private void AddJobButton_Click(object sender, EventArgs e)
-        {
-            if (ImportJobDetail == null)
-            {
-                var jobKey = new JobKey(jobName.Text, jobGroupComboBox.Text);
-                if (Scheduler.Instance.GetScheduler().CheckExists(jobKey).Result)
-                    if (
-                        MessageBox.Show(
-                            string.Format(Resources.Job_0_in_group_1_already_exists, jobKey.Name, jobKey.Group),
-                            Resources.Job_already_exists, MessageBoxButtons.YesNo) == DialogResult.No)
-                        return;
-            }
-
-            if (!ValidateJobSettings()) return;
-            ImportJobDetail = GetImportJobDetail();
-            ImportTrigger = GetImportTrigger(ImportJobDetail);
-            if (useMonitoringJobCheckBox.Checked)
-            {
-                ExecutionJobDetail = GetMonitorJobDetail();
-                ExecutionTrigger = GetExecutionTrigger(ExecutionJobDetail);
-            }
-            Close();
-        }
-
         private bool ValidateJobSettings()
         {
             if (upJobCronTriggerRadioButton.Checked)
@@ -714,12 +690,6 @@ namespace RecurringIntegrationsScheduler.Forms
             form.ShowDialog();
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
-        {
-            Cancelled = true;
-            Close();
-        }
-
         private void UseMonitoringJobCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             processingJobGroupBox.Enabled = useMonitoringJobCheckBox.Checked;
@@ -843,6 +813,36 @@ namespace RecurringIntegrationsScheduler.Forms
             {
                 MessageBox.Show(ex.Message, Resources.Unexpected_error);
             }
+        }
+
+        private void AddJobButton_Click(object sender, EventArgs e)
+        {
+            if (ImportJobDetail == null)
+            {
+                var jobKey = new JobKey(jobName.Text, jobGroupComboBox.Text);
+                if (Scheduler.Instance.GetScheduler().CheckExists(jobKey).Result)
+                    if (
+                        MessageBox.Show(
+                            string.Format(Resources.Job_0_in_group_1_already_exists, jobKey.Name, jobKey.Group),
+                            Resources.Job_already_exists, MessageBoxButtons.YesNo) == DialogResult.No)
+                        return;
+            }
+
+            if (!ValidateJobSettings()) return;
+            ImportJobDetail = GetImportJobDetail();
+            ImportTrigger = GetImportTrigger(ImportJobDetail);
+            if (useMonitoringJobCheckBox.Checked)
+            {
+                ExecutionJobDetail = GetMonitorJobDetail();
+                ExecutionTrigger = GetExecutionTrigger(ExecutionJobDetail);
+            }
+            Close();
+        }
+
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            Cancelled = true;
+            Close();
         }
     }
 }
