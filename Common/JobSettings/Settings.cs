@@ -99,6 +99,8 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
 
             PauseJobOnException = Convert.ToBoolean(dataMap.GetString(SettingsConstants.PauseJobOnException));
 
+            IndefinitePause = Convert.ToBoolean(dataMap.GetString(SettingsConstants.IndefinitePause));
+
             ImportFromPackageActionPath = dataMap.GetString(SettingsConstants.ImportFromPackageActionPath);
             if (string.IsNullOrEmpty(ImportFromPackageActionPath))
             {
@@ -251,6 +253,14 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <c>true</c> if [pause job when exception occurs]; otherwise, <c>false</c>.
         /// </value>
         public bool PauseJobOnException { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the job is paused indefinitely or not.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [pause job indefinitely]; otherwise, <c>false</c>.
+        /// </value>
+        public bool IndefinitePause { get; set; }
 
         /// <summary>
         /// Get the ImportFromPackage Odata action relative path

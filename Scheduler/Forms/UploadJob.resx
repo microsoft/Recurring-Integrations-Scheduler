@@ -125,7 +125,4 @@
 
 Default example above means: Each working day of the week (MON-FRI) run every 15 minutes (0/15) between 8:00 and 18:45 (8-18 - last run will be at 18:45)</value>
   </data>
-  <metadata name="bottomToolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>245, 17</value>
-  </metadata>
 </root>

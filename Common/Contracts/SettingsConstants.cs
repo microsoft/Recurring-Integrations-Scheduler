@@ -75,6 +75,11 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         public const string PauseJobOnException = "PauseJobOnException";
 
         /// <summary>
+        /// Pause job indefinitely
+        /// </summary>
+        public const string IndefinitePause = "IndefinitePause";
+
+        /// <summary>
         /// The relative path to the ImportFromPackage Odata action
         /// </summary>
         public const string ImportFromPackageActionPath = "ImportFromPackageActionPath";

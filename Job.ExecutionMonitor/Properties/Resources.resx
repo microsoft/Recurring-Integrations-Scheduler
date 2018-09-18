@@ -159,4 +159,7 @@
   <data name="Job_0_thrown_an_error_1" xml:space="preserve">
     <value>Job: {0} thrown an error. Exception : {1}</value>
   </data>
+  <data name="Job_0_was_paused_indefinitely" xml:space="preserve">
+    <value>Job: {0} was paused indefinitely.</value>
+  </data>
 </root>

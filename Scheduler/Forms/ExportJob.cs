@@ -194,6 +194,10 @@ namespace RecurringIntegrationsScheduler.Forms
                 }
                 instanceComboBox.SelectedItem = axInstance;
 
+                pauseIndefinitelyCheckBox.Checked =
+                    (JobDetail.JobDataMap[SettingsConstants.IndefinitePause] != null) &&
+                    Convert.ToBoolean(JobDetail.JobDataMap[SettingsConstants.IndefinitePause].ToString());
+
                 if (Trigger.GetType() == typeof(SimpleTriggerImpl))
                 {
                     var localTrigger = (SimpleTriggerImpl) Trigger;
@@ -401,7 +405,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
                 {SettingsConstants.ExportToPackageActionPath, exportToPackagePath},
                 {SettingsConstants.GetExecutionSummaryStatusActionPath, getExecutionSummaryStatusPath},
-                {SettingsConstants.GetExportedPackageUrlActionPath, getExportedPackageUrlPath}
+                {SettingsConstants.GetExportedPackageUrlActionPath, getExportedPackageUrlPath},
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {

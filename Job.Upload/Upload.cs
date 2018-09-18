@@ -84,6 +84,14 @@ namespace RecurringIntegrationsScheduler.Job
                 _context = context;
                 _settings.Initialize(context);
 
+                if (_settings.IndefinitePause)
+                {
+                    await context.Scheduler.PauseJob(context.JobDetail.Key);
+                    Log.InfoFormat(CultureInfo.InvariantCulture,
+                        string.Format(Resources.Job_0_was_paused_indefinitely, _context.JobDetail.Key));
+                    return;
+                }
+
                 _retryPolicyForIo = Policy.Handle<IOException>().WaitAndRetry(
                     retryCount: _settings.RetryCount, 
                     sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),

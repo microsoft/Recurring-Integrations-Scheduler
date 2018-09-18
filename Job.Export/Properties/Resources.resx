@@ -183,4 +183,7 @@
   <data name="Job_0_Trying_to_get_exported_package_URL_Try_1" xml:space="preserve">
     <value>Job: {0} Trying to get exported package URL. Try: {1}</value>
   </data>
+  <data name="Job_0_was_paused_indefinitely" xml:space="preserve">
+    <value>Job: {0} was paused indefinitely.</value>
+  </data>
 </root>
