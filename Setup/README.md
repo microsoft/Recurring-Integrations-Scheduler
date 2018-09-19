@@ -8,7 +8,7 @@ Please download the following Quartz.NET server binaries and copy those files to
 * Quartz.Serialization.Json.dll
 * Topshelf.dll
 
-This version of Recurring Integrations Scheduler requires Quartz.NET 3.0.4
+This version of Recurring Integrations Scheduler requires Quartz.NET 3.0.6
 Download zip archive from https://github.com/quartznet/quartznet/releases
 
 
