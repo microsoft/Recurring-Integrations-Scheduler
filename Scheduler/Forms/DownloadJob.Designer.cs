@@ -807,6 +807,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(724, 920);
             this.Controls.Add(this.groupBoxButtons);
             this.Controls.Add(this.groupBoxExceptions);
