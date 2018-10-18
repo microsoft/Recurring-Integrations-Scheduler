@@ -192,9 +192,13 @@ namespace RecurringIntegrationsScheduler.Job
                 FileStream zipToOpen = null;
                 ZipArchive archive = null;
 
-                if (!String.IsNullOrEmpty(_settings.PackageTemplate))
+                if (!string.IsNullOrEmpty(_settings.PackageTemplate))
                 {
                     fileNameInPackage = GetFileNameInPackage();
+                    if (!string.IsNullOrEmpty(fileNameInPackage))
+                    {
+                        throw new Exception(string.Format(Resources.Job_0_Please_check_your_package_template_Input_file_name_in_Manifest_cannot_be_identified, _context.JobDetail.Key));
+                    }
                 }
 
                 while (InputQueue.TryDequeue(out DataMessage dataMessage))
@@ -228,7 +232,7 @@ namespace RecurringIntegrationsScheduler.Job
                                     if (entry != null)
                                     {
                                         entry.Delete();
-                                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Package_template_contains_input_file_0_Please_remove_it_from_the_template, fileNameInPackage));
+                                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Package_template_contains_input_file_1_Please_remove_it_from_the_template, _context.JobDetail.Key, fileNameInPackage));
                                     }
 
                                     // Update Manifest file with the original file name for end-to-end traceability. Use the new file name in the rest of the method.
@@ -435,7 +439,7 @@ namespace RecurringIntegrationsScheduler.Job
             if (entry != null)
             {
                 entry.Delete();
-                Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Package_template_contains_input_file_0_Please_remove_it_from_the_template, fileNameInPackage));
+                Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Package_template_contains_input_file_1_Please_remove_it_from_the_template, fileNameInPackage));
             }
 
             return fileNameInPackage;
