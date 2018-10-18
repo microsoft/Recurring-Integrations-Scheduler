@@ -37,13 +37,13 @@ THE SOFTWARE
 -------------------------------- END OF LICENSE --------------------------------
 
 ------------------------------- START OF LICENSE -------------------------------
-Topshelf / 4.0.3 / https://www.nuget.org/packages/Topshelf/4.0.3
+Topshelf / 4.1.0 / https://www.nuget.org/packages/Topshelf/4.1.0
 Copyright 2007-2016 Travis Smith, Chris Patterson, Dru Sellers, Henrik Feldtet al. All rights reserved
 
 Apache Log4Net versions 2.0.8
 Copyright 2004-2017 The Apache Software Foundation
 
-Quartz / 3.0.6 / https://www.nuget.org/packages/Quartz/3.0.4
+Quartz / 3.0.7 / https://www.nuget.org/packages/Quartz/3.0.7
 Copyright (c) Marko Lahma
 
 Apache 2.0 License 
@@ -326,7 +326,7 @@ celles-ci ne le permettent pas.
 -------------------------------- END OF LICENSE --------------------------------
 
 ------------------------------- START OF LICENSE -------------------------------
-PortableSettingsProvider, ver. / 1.1.0 / https://www.codeproject.com/Articles/1238550/Making-Application-Settings-Portable
+PortableSettingsProvider, ver. / 0.1.1 / https://www.codeproject.com/Articles/1238550/Making-Application-Settings-Portable
 Preamble
 This License governs Your use of the Work. This License is intended to allow
 developers to use the Source Code and Executable Files provided as part of
