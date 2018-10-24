@@ -195,7 +195,7 @@ namespace RecurringIntegrationsScheduler.Job
                 if (!string.IsNullOrEmpty(_settings.PackageTemplate))
                 {
                     fileNameInPackage = GetFileNameInPackage();
-                    if (!string.IsNullOrEmpty(fileNameInPackage))
+                    if (string.IsNullOrEmpty(fileNameInPackage))
                     {
                         throw new Exception(string.Format(Resources.Job_0_Please_check_your_package_template_Input_file_name_in_Manifest_cannot_be_identified, _context.JobDetail.Key));
                     }
