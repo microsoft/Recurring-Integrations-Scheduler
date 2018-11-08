@@ -199,7 +199,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.interval.Size = new System.Drawing.Size(111, 26);
             this.interval.TabIndex = 14;
             this.interval.Value = new decimal(new int[] {
-            300,
+            30,
             0,
             0,
             0});
