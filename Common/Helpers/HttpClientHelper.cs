@@ -28,14 +28,14 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
 
         private bool _disposed;
 
-        private readonly Policy _retryPolicy;
+        private readonly Polly.Retry.AsyncRetryPolicy _retryPolicy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpClientHelper"/> class.
         /// </summary>
         /// <param name="jobSettings">Job settings</param>
         /// <param name="retryPolicy">Retry policy</param>
-        public HttpClientHelper(Settings jobSettings, Policy retryPolicy)
+        public HttpClientHelper(Settings jobSettings, Polly.Retry.AsyncRetryPolicy retryPolicy)
         {
             _settings = jobSettings;
             _retryPolicy = retryPolicy;
@@ -467,6 +467,64 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 return "";
             }
 
+        }
+
+        /// <summary>
+        /// Generate error keys file for data entity import
+        /// </summary>
+        /// <param name="executionId">Execution Id</param>
+        /// <param name="entityName">Entity name</param>
+        /// <returns></returns>
+        public async Task<bool> GenerateImportTargetErrorKeysFile(string executionId, string entityName)
+        {
+            var requestUri = GetAosRequestUri(_settings.GenerateImportTargetErrorKeysFilePath);
+
+            var parameters = new
+            {
+                executionId,
+                entityName
+            };
+            string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
+            if (response.IsSuccessStatusCode)
+            {
+                string result = response.Content.ReadAsStringAsync().Result;
+                JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
+                return Convert.ToBoolean(jsonResponse["value"].ToString());
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Get error keys file URL for data entity import
+        /// </summary>
+        /// <param name="executionId">Execution Id</param>
+        /// <param name="entityName">Entity name</param>
+        /// <returns></returns>
+        public async Task<string> GetImportTargetErrorKeysFileUrl(string executionId, string entityName)
+        {
+            var requestUri = GetAosRequestUri(_settings.GetImportTargetErrorKeysFileUrlPath);
+
+            var parameters = new
+            {
+                executionId,
+                entityName
+            };
+            string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
+            if (response.IsSuccessStatusCode)
+            {
+                string result = response.Content.ReadAsStringAsync().Result;
+                JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
+                return jsonResponse["value"].ToString();
+            }
+            else
+            {
+                return "";
+            }
         }
 
         private Uri GetAosRequestUri(string requestRelativePath) 

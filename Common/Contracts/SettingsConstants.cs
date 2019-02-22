@@ -125,6 +125,16 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         public const string GetMessageStatusActionPath = "GetMessageStatusActionPath";
 
         /// <summary>
+        /// The relative path to the GenerateImportTargetErrorKeysFile Odata action
+        /// </summary>
+        public const string GenerateImportTargetErrorKeysFilePath = "GenerateImportTargetErrorKeysFilePath";
+
+        /// <summary>
+        /// The relative path to the GetImportTargetErrorKeysFileUrl Odata action
+        /// </summary>
+        public const string GetImportTargetErrorKeysFileUrlPath = "GetImportTargetErrorKeysFileUrlPath";
+
+        /// <summary>
         /// The download job
         /// </summary>
         public const string DownloadJob = "RecurringIntegrationsScheduler.Job.Download";
@@ -281,7 +291,13 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         /// Package template
         /// </summary>
         public const string PackageTemplate = "PackageTemplate";
+        #endregion
 
+        #region Execution Job settings
+        /// <summary>
+        /// Get import target error keys file
+        /// </summary>
+        public const string GetImportTargetErrorKeysFile = "GetImportTargetErrorKeysFile";
         #endregion
     }
 }

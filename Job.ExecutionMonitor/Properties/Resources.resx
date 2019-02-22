@@ -162,4 +162,7 @@
   <data name="Job_0_was_paused_indefinitely" xml:space="preserve">
     <value>Job: {0} was paused indefinitely.</value>
   </data>
+  <data name="Job_0_download_of_error_keys_file_failed_1" xml:space="preserve">
+    <value>Job: {0} Download of error keys file failed. Exception : {1}</value>
+  </data>
 </root>

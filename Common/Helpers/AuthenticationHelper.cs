@@ -17,14 +17,14 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
     {
         private readonly Settings _settings;
         private string _authorizationHeader;
-        private readonly Policy _retryPolicy;
+        private readonly Polly.Retry.AsyncRetryPolicy _retryPolicy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticationHelper"/> class.
         /// </summary>
         /// <param name="jobSettings">Job settings</param>
         /// <param name="retryPolicy">Retry policy</param>
-        public AuthenticationHelper(Settings jobSettings, Policy retryPolicy)
+        public AuthenticationHelper(Settings jobSettings, Polly.Retry.AsyncRetryPolicy retryPolicy)
         {
             _settings = jobSettings;
             _retryPolicy = retryPolicy;
@@ -55,21 +55,18 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             var aosUriAuthUri = new Uri(_settings.AosUri); 
             string aosUriAuth = aosUriAuthUri.GetLeftPart(UriPartial.Authority);
 
-            //var authenticationContext = new AuthenticationContext(uri.ToString());
             var authenticationContext = new AuthenticationContext(uri.ToString(), validateAuthority: false);
 
             if (_settings.UseServiceAuthentication)
             {
                 var credentials = new ClientCredential(_settings.AadClientId.ToString(), _settings.AadClientSecret);
 
-                //AuthenticationResult = await _retryPolicy.ExecuteAsync(() => authenticationContext.AcquireTokenAsync(_settings.AosUri, credentials));
                 AuthenticationResult = await _retryPolicy.ExecuteAsync(() => authenticationContext.AcquireTokenAsync(aosUriAuth, credentials));
             }
             else
             {
                 var credentials = new UserPasswordCredential(_settings.UserName, _settings.UserPassword);
 
-                //AuthenticationResult = await _retryPolicy.ExecuteAsync(() => authenticationContext.AcquireTokenAsync(_settings.AosUri, _settings.AadClientId.ToString(), credentials));
                 AuthenticationResult = await _retryPolicy.ExecuteAsync(() => authenticationContext.AcquireTokenAsync(aosUriAuth, _settings.AadClientId.ToString(), credentials));
             }
 

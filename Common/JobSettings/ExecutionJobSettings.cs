@@ -84,6 +84,8 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             {
                 throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Extension_of_status_files_is_missing_in_job_configuration));
             }
+
+            GetImportTargetErrorKeysFile = Convert.ToBoolean(dataMap.GetString(SettingsConstants.GetImportTargetErrorKeysFile));
         }
 
         #region Members
@@ -119,6 +121,14 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// The status file extension.
         /// </value>
         public string StatusFileExtension { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether to download [error keys file].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [GetImportTargetErrorKeysFile] is set otherwise, <c>false</c>.
+        /// </value>
+        public bool GetImportTargetErrorKeysFile { get; private set; }
 
         #endregion
     }

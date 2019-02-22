@@ -17,6 +17,8 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         public const string ExportToPackageActionPath = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ExportToPackage";
         public const string ExportFromPackageActionPath = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.ExportFromPackage";
         public const string GetMessageStatusActionPath =  "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetMessageStatus";
+        public const string GetImportTargetErrorKeysFileUrlPath = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetImportTargetErrorKeysFileUrl";
+        public const string GenerateImportTargetErrorKeysFilePath = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GenerateImportTargetErrorKeysFile";
 
     }
 }

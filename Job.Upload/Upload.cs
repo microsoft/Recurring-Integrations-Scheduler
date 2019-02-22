@@ -60,7 +60,7 @@ namespace RecurringIntegrationsScheduler.Job
         /// <summary>
         /// Retry policy for HTTP operations
         /// </summary>
-        private Policy _retryPolicyForHttp;
+        private Polly.Retry.AsyncRetryPolicy _retryPolicyForHttp;
 
         /// <summary>
         /// Called by the <see cref="T:Quartz.IScheduler" /> when a <see cref="T:Quartz.ITrigger" />

@@ -98,6 +98,8 @@ namespace RecurringIntegrationsScheduler.Forms
             this.upJobHoursDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.downloadFolderLabel = new System.Windows.Forms.Label();
             this.processingJobGroupBox = new System.Windows.Forms.GroupBox();
+            this.groupBoxErrorKeysFile = new System.Windows.Forms.GroupBox();
+            this.downloadErrorKeysFileCheckBox = new System.Windows.Forms.CheckBox();
             this.procJobTriggerTypePanel = new System.Windows.Forms.Panel();
             this.procJobCronTriggerRadioButton = new System.Windows.Forms.RadioButton();
             this.procJobSimpleTriggerRadioButton = new System.Windows.Forms.RadioButton();
@@ -142,6 +144,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.recurrenceGroupBox.SuspendLayout();
             this.upJobTriggerTypePanel.SuspendLayout();
             this.processingJobGroupBox.SuspendLayout();
+            this.groupBoxErrorKeysFile.SuspendLayout();
             this.procJobTriggerTypePanel.SuspendLayout();
             this.fileSelectionGroupBox.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -916,6 +919,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             // processingJobGroupBox
             // 
+            this.processingJobGroupBox.Controls.Add(this.groupBoxErrorKeysFile);
             this.processingJobGroupBox.Controls.Add(this.procJobTriggerTypePanel);
             this.processingJobGroupBox.Controls.Add(this.procJobCronExpressionLabel);
             this.processingJobGroupBox.Controls.Add(this.procJobCronExpressionTextBox);
@@ -930,10 +934,30 @@ namespace RecurringIntegrationsScheduler.Forms
             this.processingJobGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.processingJobGroupBox.Name = "processingJobGroupBox";
             this.processingJobGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.processingJobGroupBox.Size = new System.Drawing.Size(345, 194);
+            this.processingJobGroupBox.Size = new System.Drawing.Size(345, 251);
             this.processingJobGroupBox.TabIndex = 5;
             this.processingJobGroupBox.TabStop = false;
             this.processingJobGroupBox.Text = "Execution monitoring job";
+            // 
+            // groupBoxErrorKeysFile
+            // 
+            this.groupBoxErrorKeysFile.Controls.Add(this.downloadErrorKeysFileCheckBox);
+            this.groupBoxErrorKeysFile.Location = new System.Drawing.Point(13, 186);
+            this.groupBoxErrorKeysFile.Name = "groupBoxErrorKeysFile";
+            this.groupBoxErrorKeysFile.Size = new System.Drawing.Size(321, 57);
+            this.groupBoxErrorKeysFile.TabIndex = 10;
+            this.groupBoxErrorKeysFile.TabStop = false;
+            this.groupBoxErrorKeysFile.Text = "Error keys file";
+            // 
+            // downloadErrorKeysFileCheckBox
+            // 
+            this.downloadErrorKeysFileCheckBox.AutoSize = true;
+            this.downloadErrorKeysFileCheckBox.Location = new System.Drawing.Point(14, 26);
+            this.downloadErrorKeysFileCheckBox.Name = "downloadErrorKeysFileCheckBox";
+            this.downloadErrorKeysFileCheckBox.Size = new System.Drawing.Size(259, 24);
+            this.downloadErrorKeysFileCheckBox.TabIndex = 0;
+            this.downloadErrorKeysFileCheckBox.Text = "Download import errors keys file";
+            this.downloadErrorKeysFileCheckBox.UseVisualStyleBackColor = true;
             // 
             // procJobTriggerTypePanel
             // 
@@ -1304,9 +1328,9 @@ namespace RecurringIntegrationsScheduler.Forms
             // groupBoxExceptions
             // 
             this.groupBoxExceptions.Controls.Add(this.pauseOnExceptionsCheckBox);
-            this.groupBoxExceptions.Location = new System.Drawing.Point(375, 766);
+            this.groupBoxExceptions.Location = new System.Drawing.Point(375, 824);
             this.groupBoxExceptions.Name = "groupBoxExceptions";
-            this.groupBoxExceptions.Size = new System.Drawing.Size(345, 72);
+            this.groupBoxExceptions.Size = new System.Drawing.Size(345, 62);
             this.groupBoxExceptions.TabIndex = 9;
             this.groupBoxExceptions.TabStop = false;
             this.groupBoxExceptions.Text = "Exceptions";
@@ -1328,7 +1352,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.groupBoxButtons.Controls.Add(this.addJobButton);
             this.groupBoxButtons.Controls.Add(this.cancelButton);
             this.groupBoxButtons.Controls.Add(this.customActionsButton);
-            this.groupBoxButtons.Location = new System.Drawing.Point(20, 844);
+            this.groupBoxButtons.Location = new System.Drawing.Point(20, 890);
             this.groupBoxButtons.Name = "groupBoxButtons";
             this.groupBoxButtons.Size = new System.Drawing.Size(1055, 71);
             this.groupBoxButtons.TabIndex = 10;
@@ -1370,7 +1394,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1082, 927);
+            this.ClientSize = new System.Drawing.Size(1082, 968);
             this.Controls.Add(this.groupBoxButtons);
             this.Controls.Add(this.groupBoxExceptions);
             this.Controls.Add(this.importDetailsGroupBox);
@@ -1404,6 +1428,8 @@ namespace RecurringIntegrationsScheduler.Forms
             this.upJobTriggerTypePanel.PerformLayout();
             this.processingJobGroupBox.ResumeLayout(false);
             this.processingJobGroupBox.PerformLayout();
+            this.groupBoxErrorKeysFile.ResumeLayout(false);
+            this.groupBoxErrorKeysFile.PerformLayout();
             this.procJobTriggerTypePanel.ResumeLayout(false);
             this.procJobTriggerTypePanel.PerformLayout();
             this.fileSelectionGroupBox.ResumeLayout(false);
@@ -1531,5 +1557,7 @@ namespace RecurringIntegrationsScheduler.Forms
         private System.Windows.Forms.Button addJobButton;
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Button customActionsButton;
+        private System.Windows.Forms.GroupBox groupBoxErrorKeysFile;
+        private System.Windows.Forms.CheckBox downloadErrorKeysFileCheckBox;
     }
 }

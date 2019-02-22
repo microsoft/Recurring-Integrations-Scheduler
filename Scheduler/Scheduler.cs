@@ -167,7 +167,10 @@ namespace RecurringIntegrationsScheduler
                             if (previousFireTime.HasValue)
                                 row["PreviousFireTime"] =
                                     TimeZone.CurrentTimeZone.ToLocalTime(previousFireTime.Value.DateTime);
-                            row["JobStatus"] = GetScheduler().GetTriggerState(triggers.First().Key).Result.ToString();
+                            var status = GetScheduler().GetTriggerState(triggers.First().Key).Result.ToString();
+                            if (status == "Blocked") 
+                                status = "Executing";
+                            row["JobStatus"] = status;
                         }
                         table.Rows.Add(row);
                     }

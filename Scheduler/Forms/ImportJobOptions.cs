@@ -18,6 +18,8 @@ namespace RecurringIntegrationsScheduler.Forms
         public string GetAzureWriteUrlPath;
         public string GetExecutionSummaryStatusPath;
         public string GetExecutionSummaryPageUrlPath;
+        public string GetImportTargetErrorKeysFileUrlPath;
+        public string GenerateImportTargetErrorKeysFilePath;
 
         private bool InputIsValid()
         {
@@ -33,6 +35,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 GetAzureWriteUrlPath = GetAzureWriteUrlTextBox.Text;
                 GetExecutionSummaryStatusPath = GetExecutionSummaryStatusTextBox.Text;
                 GetExecutionSummaryPageUrlPath = GetExecutionSummaryPageUrlTextBox.Text;
+                GetImportTargetErrorKeysFileUrlPath = GetImportTargetErrorKeysFileUrlTextBox.Text;
+                GenerateImportTargetErrorKeysFilePath = GenerateImportTargetErrorKeysFileTextBox.Text;
     }
             else
             {
@@ -53,6 +57,8 @@ namespace RecurringIntegrationsScheduler.Forms
             GetAzureWriteUrlTextBox.Text = GetAzureWriteUrlPath;
             GetExecutionSummaryStatusTextBox.Text = GetExecutionSummaryStatusPath;
             GetExecutionSummaryPageUrlTextBox.Text = GetExecutionSummaryPageUrlPath;
+            GetImportTargetErrorKeysFileUrlTextBox.Text = GetImportTargetErrorKeysFileUrlPath;
+            GenerateImportTargetErrorKeysFileTextBox.Text = GenerateImportTargetErrorKeysFilePath;
         }
     }
 }

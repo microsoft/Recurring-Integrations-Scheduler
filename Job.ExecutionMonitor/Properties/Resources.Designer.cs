@@ -19,7 +19,7 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -66,6 +66,15 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         internal static string Execution_monitor_job_0_failed {
             get {
                 return ResourceManager.GetString("Execution_monitor_job_0_failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job: {0} Download of error keys file failed. Exception : {1}.
+        /// </summary>
+        internal static string Job_0_download_of_error_keys_file_failed_1 {
+            get {
+                return ResourceManager.GetString("Job_0_download_of_error_keys_file_failed_1", resourceCulture);
             }
         }
         

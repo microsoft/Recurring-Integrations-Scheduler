@@ -133,49 +133,6 @@ namespace RecurringIntegrationsScheduler.Forms
                     //TODO: Investigate better approach
                     messagesTextBox.Text += Resources.Access_to_D365FO_instance_was_successful + Environment.NewLine;
                 }
-
-                var checkPackageApi = Task.Run(async () =>
-                {
-                    var result = await httpClientHelper.GetAzureWriteUrl();
-                    return result;
-                });
-                checkPackageApi.Wait();
-                if (string.IsNullOrEmpty(checkPackageApi.Result))
-                {
-                    messagesTextBox.Text += Resources.GetAzureWriteUrl_returned_empty_string_Check_previous_errors;
-                }
-                else
-                {
-                    var blobInfo = (JObject)JsonConvert.DeserializeObject(checkPackageApi.Result);
-                    var blobId = blobInfo["BlobId"].ToString();
-
-                    if (!string.IsNullOrEmpty(blobId))
-                    {
-                        messagesTextBox.Text += Resources.D365FO_instance_seems_to_support_package_API + Environment.NewLine;
-                    }
-                    else
-                    {
-                        messagesTextBox.Text += Resources.D365FO_instance_seems_to_not_support_package_API + Environment.NewLine;
-                        return; //we should not check further.
-                    }
-                }
-
-                var checkKb4058074 = Task.Run(async () =>
-                {
-                    var result = await httpClientHelper.GetMessageStatus(new Guid().ToString());
-                    return result;
-                });
-                checkKb4058074.Wait();
-                if (string.IsNullOrEmpty(checkKb4058074.Result))
-                {
-                    //TODO
-                    messagesTextBox.Text += Resources.Method_GetMessageStatus_returned_empty_string_KB4058074_is_not_installed + Environment.NewLine;
-                }
-                else
-                {
-                    //TODO
-                    messagesTextBox.Text += Resources.Instance_seems_to_support_GetMessageStatus_method + Environment.NewLine;
-                }
             }
             catch (Exception ex)
             {
