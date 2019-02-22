@@ -207,7 +207,7 @@ namespace RecurringIntegrationsScheduler.Job
         {
             if (Log.IsDebugEnabled)
                 Log.DebugFormat(CultureInfo.InvariantCulture,
-                    string.Format(Resources.Job_0_Execution_1_status_check_returned_2, _context.JobDetail.Key, dataMessage.MessageId, executionStatus));
+                    string.Format(Resources.Job_0_ExecutionId_1_status_check_returned_2, _context.JobDetail.Key, dataMessage.MessageId, executionStatus));
             switch (executionStatus)
             {
                 case "Succeeded":

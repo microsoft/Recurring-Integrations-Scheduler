@@ -97,6 +97,15 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Job: {0} ExecutionId: {1} import status check returned: {2}.
+        /// </summary>
+        internal static string Job_0_ExecutionId_1_status_check_returned_2 {
+            get {
+                return ResourceManager.GetString("Job_0_ExecutionId_1_status_check_returned_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Job: {0}. Failure during moving files. Exception : {1}.
         /// </summary>
         internal static string Job_0_Failure_during_moving_files_Exception_1 {

@@ -165,4 +165,7 @@
   <data name="Job_0_download_of_error_keys_file_failed_1" xml:space="preserve">
     <value>Job: {0} Download of error keys file failed. Exception : {1}</value>
   </data>
+  <data name="Job_0_ExecutionId_1_status_check_returned_2" xml:space="preserve">
+    <value>Job: {0} ExecutionId: {1} import status check returned: {2}</value>
+  </data>
 </root>
