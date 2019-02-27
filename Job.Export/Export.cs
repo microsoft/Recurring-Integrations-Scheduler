@@ -134,7 +134,7 @@ namespace RecurringIntegrationsScheduler.Job
                     }
                 }
                 if (context.Scheduler.SchedulerName != "Private")
-                    throw new JobExecutionException(string.Format(Resources.Download_job_0_failed, _context.JobDetail.Key), ex, false);
+                    throw new JobExecutionException(string.Format(Resources.Job_0_failed, _context.JobDetail.Key), ex, false);
 
                 if (!Log.IsDebugEnabled)
                     Log.Error(string.Format(Resources.Job_0_thrown_an_error_1, _context.JobDetail.Key, ex.Message));
@@ -166,9 +166,11 @@ namespace RecurringIntegrationsScheduler.Job
                     if (Log.IsDebugEnabled)
                         Log.Debug(string.Format(Resources.Job_0_Checking_if_export_is_completed_Try_1_Status_2, _context.JobDetail.Key, attempt, executionStatus));
                     if (attempt == 1000)
-                        break;
+                    {
+                        throw new Exception(string.Format(Resources.Job_0_Checking_for_status_reached_1_attempts_Status_is_2_Exiting, _context.JobDetail.Key, attempt, executionStatus));
+                    }
                 }
-                while ((executionStatus == "NotRun" || executionStatus == "Executing" || executionStatus == "Bad request"));
+                while (executionStatus == "NotRun" || executionStatus == "Executing" || executionStatus == "Bad request");
 
                 if (executionStatus == "Succeeded" || executionStatus == "PartiallySucceeded")
                 {
@@ -183,7 +185,9 @@ namespace RecurringIntegrationsScheduler.Job
                         if (Log.IsDebugEnabled)
                             Log.Debug(string.Format(Resources.Job_0_Trying_to_get_exported_package_URL_Try_1, _context.JobDetail.Key, attempt));
                         if (attempt == 100)
-                            break;
+                        {
+                            throw new Exception(string.Format(Resources.Job_0_Request_to_download_exported_package_reached_1_attempts_Exiting, _context.JobDetail.Key, attempt));
+                        }
                     }
                     while (packageUrl == null);
 

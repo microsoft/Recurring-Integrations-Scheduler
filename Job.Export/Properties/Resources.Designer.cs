@@ -61,15 +61,6 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export job: {0} failed.
-        /// </summary>
-        internal static string Download_job_0_failed {
-            get {
-                return ResourceManager.GetString("Download_job_0_failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Export execution failed for job: {0}. Execution status: {1}.
         /// </summary>
         internal static string Export_execution_failed_for_job_0_Status_1 {
@@ -84,6 +75,15 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         internal static string Job_0_Acknowledgment_failure_response {
             get {
                 return ResourceManager.GetString("Job_0_Acknowledgment_failure_response", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job: {0}. Checking for status reached {1} attempts. Status is {2}. Exiting....
+        /// </summary>
+        internal static string Job_0_Checking_for_status_reached_1_attempts_Status_is_2_Exiting {
+            get {
+                return ResourceManager.GetString("Job_0_Checking_for_status_reached_1_attempts_Status_is_2_Exiting", resourceCulture);
             }
         }
         
@@ -129,6 +129,15 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         internal static string Job_0_Execution_status_1_Execution_Id_2 {
             get {
                 return ResourceManager.GetString("Job_0_Execution_status_1_Execution_Id_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job: {0} failed.
+        /// </summary>
+        internal static string Job_0_failed {
+            get {
+                return ResourceManager.GetString("Job_0_failed", resourceCulture);
             }
         }
         
@@ -201,6 +210,15 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         internal static string Job_0_File_dequeued_successfully_Download_location_1 {
             get {
                 return ResourceManager.GetString("Job_0_File_dequeued_successfully_Download_location_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job: {0}. Request to download exported package reached {1} attempts. Exiting....
+        /// </summary>
+        internal static string Job_0_Request_to_download_exported_package_reached_1_attempts_Exiting {
+            get {
+                return ResourceManager.GetString("Job_0_Request_to_download_exported_package_reached_1_attempts_Exiting", resourceCulture);
             }
         }
         
