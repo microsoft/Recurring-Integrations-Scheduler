@@ -186,8 +186,6 @@ namespace RecurringIntegrationsScheduler.Job
                 // If status was found and is not null,
                 if (jobStatusDetail != null)
                     PostProcessMessage(jobStatusDetail, dataMessage);
-
-                System.Threading.Thread.Sleep(_settings.Interval);
             }
         }
 

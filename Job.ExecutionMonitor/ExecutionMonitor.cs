@@ -192,8 +192,6 @@ namespace RecurringIntegrationsScheduler.Job
                 // If status was found and is not null,
                 if (jobStatusDetail != null)
                     await PostProcessMessage(jobStatusDetail, dataMessage);
-
-                System.Threading.Thread.Sleep(_settings.Interval);
             }
         }
 
@@ -228,9 +226,22 @@ namespace RecurringIntegrationsScheduler.Job
                         await CreateLinkToExecutionSummaryPage(dataMessage.MessageId, processingErrorDestination);
                         if (_settings.GetImportTargetErrorKeysFile)
                         {
-                            var entitiesInPackage = GetEntitiesNamesInPackage(processingErrorDestination);
+                            if (Log.IsDebugEnabled)
+                            {
+                                Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Checking_if_error_keys_file_was_generated, _context.JobDetail.Key));
+                            }
+                            var fileWithManifest = processingErrorDestination;
+                            if(!string.IsNullOrEmpty(_settings.PackageTemplate))
+                            {
+                                fileWithManifest = _settings.PackageTemplate;
+                            }
+                            var entitiesInPackage = GetEntitiesNamesInPackage(fileWithManifest);
                             foreach(var entity in entitiesInPackage)
                             {
+                                if (Log.IsDebugEnabled)
+                                {
+                                    Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Checking_for_error_keys_for_data_entity_1, _context.JobDetail.Key, entity));
+                                }
                                 var errorsExist = await _httpClientHelper.GenerateImportTargetErrorKeysFile(dataMessage.MessageId, entity);
                                 if (errorsExist)
                                 {
@@ -295,6 +306,10 @@ namespace RecurringIntegrationsScheduler.Job
         private List<string> GetEntitiesNamesInPackage(string fileName)
         {
             var manifestPath = "";
+            if (Log.IsDebugEnabled)
+            {
+                Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Looking_for_data_entities_in_manifest_file_1, _context.JobDetail.Key, fileName));
+            }
             using (var package = ZipFile.OpenRead(fileName))
             {
                 foreach (var entry in package.Entries)

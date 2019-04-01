@@ -615,7 +615,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
                 {SettingsConstants.GetImportTargetErrorKeysFile, downloadErrorKeysFileCheckBox.Checked.ToString()},
                 {SettingsConstants.GetImportTargetErrorKeysFileUrlPath, getImportTargetErrorKeysFileUrlPath},
-                {SettingsConstants.GenerateImportTargetErrorKeysFilePath, generateImportTargetErrorKeysFilePath}
+                {SettingsConstants.GenerateImportTargetErrorKeysFilePath, generateImportTargetErrorKeysFilePath},
+                {SettingsConstants.PackageTemplate, packageTemplateTextBox.Text}
             };
             if (serviceAuthRadioButton.Checked)
             {

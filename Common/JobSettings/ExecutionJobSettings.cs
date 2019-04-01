@@ -86,6 +86,8 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             }
 
             GetImportTargetErrorKeysFile = Convert.ToBoolean(dataMap.GetString(SettingsConstants.GetImportTargetErrorKeysFile));
+
+            PackageTemplate = dataMap.GetString(SettingsConstants.PackageTemplate);
         }
 
         #region Members
@@ -129,6 +131,14 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <c>true</c> if [GetImportTargetErrorKeysFile] is set otherwise, <c>false</c>.
         /// </value>
         public bool GetImportTargetErrorKeysFile { get; private set; }
+
+        /// <summary>
+        /// Package template location.
+        /// </summary>
+        /// <value>
+        /// Package template location.
+        /// </value>
+        public string PackageTemplate { get; private set; }
 
         #endregion
     }
