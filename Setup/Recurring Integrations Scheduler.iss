@@ -37,11 +37,11 @@ Name: Scheduler; Description: Recurring Integrations Scheduler Service; Types: f
 ; Quartz
 Source: "..\Output\Release\Quartz.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
 Source: "..\Output\Release\log4net.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
-Source: ".\Quartz.Plugins.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
-Source: ".\Quartz.Jobs.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
-Source: ".\Quartz.Serialization.Json.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
+Source: "..\Output\Release\Quartz.Plugins.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
+Source: "..\Output\Release\Quartz.Jobs.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
+Source: "..\Output\Release\Quartz.Serialization.Json.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
+Source: "..\Output\Release\Topshelf.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: Scheduler
 Source: ".\Quartz.Server.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: Scheduler
-Source: ".\Topshelf.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: Scheduler
 ; Common
 Source: "..\Output\Release\RecurringIntegrationsScheduler.Common.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
 ; Jobs
