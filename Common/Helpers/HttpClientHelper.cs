@@ -3,7 +3,7 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Polly;
+using Polly.Retry;
 using RecurringIntegrationsScheduler.Common.JobSettings;
 using RecurringIntegrationsScheduler.Common.Properties;
 using System;
@@ -28,7 +28,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
 
         private bool _disposed;
 
-        private readonly Polly.Retry.AsyncRetryPolicy _retryPolicy;
+        private readonly AsyncRetryPolicy _retryPolicy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpClientHelper"/> class.
@@ -67,7 +67,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         public async Task<HttpResponseMessage> PostStreamRequestAsync(Uri uri, Stream bodyStream, string externalCorrelationHeaderValue = null)
         {
             _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Authorization = await _authenticationHelper.GetValidAuthenticationHeader();
+            _httpClient.DefaultRequestHeaders.Add("Authorization", await _authenticationHelper.GetValidAuthenticationHeader());
 
             // Add external correlation id header if specified and valid
             if (!string.IsNullOrEmpty(externalCorrelationHeaderValue))
@@ -99,7 +99,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         public async Task<HttpResponseMessage> PostStringRequestAsync(Uri uri, string bodyString, string externalCorrelationHeaderValue = null)
         {
             _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Authorization = await _authenticationHelper.GetValidAuthenticationHeader();
+            _httpClient.DefaultRequestHeaders.Add("Authorization", await _authenticationHelper.GetValidAuthenticationHeader());
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             // Add external correlation id header if specified and valid
@@ -133,7 +133,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             _httpClient.DefaultRequestHeaders.Clear();
             if(addAuthorization)
             {
-                _httpClient.DefaultRequestHeaders.Authorization = await _authenticationHelper.GetValidAuthenticationHeader();
+                _httpClient.DefaultRequestHeaders.Add("Authorization", await _authenticationHelper.GetValidAuthenticationHeader());
             }
             return await _retryPolicy.ExecuteAsync(() => _httpClient.GetAsync(uri));
         }

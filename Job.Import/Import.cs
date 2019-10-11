@@ -222,7 +222,7 @@ namespace RecurringIntegrationsScheduler.Job
                         {
                             using (zipToOpen = new FileStream(_settings.PackageTemplate, FileMode.Open))
                             {
-                                tempFileName = Path.GetTempFileName();
+                                tempFileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                                 _retryPolicyForIo.Execute(() => FileOperationsHelper.Create(zipToOpen, tempFileName));
                                 var tempZipStream = _retryPolicyForIo.Execute(() => FileOperationsHelper.Read(tempFileName));
                                 using (archive = new ZipArchive(tempZipStream, ZipArchiveMode.Update))
@@ -399,8 +399,8 @@ namespace RecurringIntegrationsScheduler.Job
             ZipArchiveEntry manifestEntry = archive.GetEntry("Manifest.xml");
 
             // Save the Manifest.xml as temporary file
-            string tempManifestFileName = Path.GetTempFileName();
-            string tempManifestFileNameNew = Path.GetTempFileName();
+            string tempManifestFileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            string tempManifestFileNameNew = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
             manifestEntry.ExtractToFile(tempManifestFileName, true);
 

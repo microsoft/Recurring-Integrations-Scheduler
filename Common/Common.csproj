@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -49,6 +51,7 @@
     </Compile>
     <Compile Include="Contracts\ContractEnums.cs" />
     <Compile Include="Contracts\OdataActionsConstants.cs" />
+    <Compile Include="Helpers\AuthenticationHelper.cs" />
     <Compile Include="Helpers\FileOperationsHelper.cs" />
     <Compile Include="JobSettings\ExportJobSettings.cs" />
     <Compile Include="JobSettings\ImportJobSettings.cs" />
@@ -63,7 +66,6 @@
     <Compile Include="Contracts\DequeueResponse.cs" />
     <Compile Include="Contracts\DataMessage.cs" />
     <Compile Include="Contracts\SettingsConstants.cs" />
-    <Compile Include="Helpers\AuthenticationHelper.cs" />
     <Compile Include="Helpers\EncryptDecrypt.cs" />
     <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Helpers\HttpClientHelper.cs" />
@@ -81,14 +83,14 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory">
-      <Version>5.2.0</Version>
+    <PackageReference Include="Microsoft.Identity.Client">
+      <Version>4.4.0</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.2</Version>
     </PackageReference>
     <PackageReference Include="Polly">
-      <Version>7.1.0</Version>
+      <Version>7.1.1</Version>
     </PackageReference>
     <PackageReference Include="Quartz">
       <Version>3.0.7</Version>
