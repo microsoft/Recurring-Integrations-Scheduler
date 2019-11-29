@@ -116,6 +116,9 @@ namespace RecurringIntegrationsScheduler.Forms
                                                   UploadJobDetail.JobDataMap[SettingsConstants.IsDataPackage].ToString());
                 statusFileExtensionTextBox.Text =
                     UploadJobDetail.JobDataMap[SettingsConstants.StatusFileExtension]?.ToString() ?? ".Status";
+                
+                numericUpDownInterval.Value = Math.Round(Convert.ToDecimal(UploadJobDetail.JobDataMap[SettingsConstants.Interval]));
+
                 serviceAuthRadioButton.Checked =
                     (UploadJobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication] != null) &&
                     Convert.ToBoolean(UploadJobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication].ToString());
@@ -583,7 +586,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
-                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
+                {SettingsConstants.Interval, numericUpDownInterval.Value.ToString(CultureInfo.InvariantCulture)}
             };
             if (serviceAuthRadioButton.Checked)
             {

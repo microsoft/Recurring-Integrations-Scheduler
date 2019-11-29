@@ -207,7 +207,6 @@ namespace RecurringIntegrationsScheduler.Job
                         throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Failure_response_Status_1_2_Reason_3, _context.JobDetail.Key, response.StatusCode, response.StatusCode, response.ReasonPhrase)));
                         
                 }
-                System.Threading.Thread.Sleep(_settings.Interval);
             }
             if (!DownloadQueue.IsEmpty)
             {
@@ -257,7 +256,7 @@ namespace RecurringIntegrationsScheduler.Job
                 if (_settings.UnzipPackage)
                     _retryPolicyForIo.Execute(() => FileOperationsHelper.UnzipPackage(dataMessage.FullPath, _settings.DeletePackage, _settings.AddTimestamp));
 
-                System.Threading.Thread.Sleep(_settings.Interval);
+                System.Threading.Thread.Sleep(_settings.Interval * 1000);
             }
         }
 

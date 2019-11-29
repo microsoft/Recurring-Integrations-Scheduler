@@ -88,6 +88,12 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             GetImportTargetErrorKeysFile = Convert.ToBoolean(dataMap.GetString(SettingsConstants.GetImportTargetErrorKeysFile));
 
             PackageTemplate = dataMap.GetString(SettingsConstants.PackageTemplate);
+
+            StatusCheckInterval = dataMap.GetInt(SettingsConstants.StatusCheckInterval);
+            if (StatusCheckInterval < 1) //Default status check interval is 1 second.
+            {
+                StatusCheckInterval = 1;
+            }
         }
 
         #region Members
@@ -139,6 +145,14 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// Package template location.
         /// </value>
         public string PackageTemplate { get; private set; }
+
+        /// <summary>
+        /// Gets or sets delay between status check.
+        /// </summary>
+        /// <value>
+        /// Delay between status checks.
+        /// </value>
+        public int StatusCheckInterval { get; private set; }
 
         #endregion
     }

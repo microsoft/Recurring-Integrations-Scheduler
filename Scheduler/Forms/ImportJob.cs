@@ -137,6 +137,8 @@ namespace RecurringIntegrationsScheduler.Forms
                     (ImportJobDetail.JobDataMap[SettingsConstants.ExecuteImport] != null) &&
                     Convert.ToBoolean(ImportJobDetail.JobDataMap[SettingsConstants.ExecuteImport].ToString());
 
+                numericUpDownInterval.Value = Math.Round(Convert.ToDecimal(ImportJobDetail.JobDataMap[SettingsConstants.Interval]));
+
                 serviceAuthRadioButton.Checked =
                     (ImportJobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication] != null) &&
                     Convert.ToBoolean(ImportJobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication].ToString());
@@ -295,6 +297,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 downloadErrorKeysFileCheckBox.Checked =
                     (ExecutionJobDetail.JobDataMap[SettingsConstants.GetImportTargetErrorKeysFile] != null) &&
                     Convert.ToBoolean(ExecutionJobDetail.JobDataMap[SettingsConstants.GetImportTargetErrorKeysFile].ToString());
+
+               numericUpDownStatusCheckInterval.Value = Math.Round(Convert.ToDecimal(ExecutionJobDetail.JobDataMap[SettingsConstants.StatusCheckInterval]));
             }
         }
 
@@ -576,7 +580,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
                 {SettingsConstants.GetAzureWriteUrlActionPath, getAzureWriteUrlPath},
                 {SettingsConstants.ImportFromPackageActionPath, importFromPackagePath},
-                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
+                {SettingsConstants.Interval, numericUpDownInterval.Value.ToString(CultureInfo.InvariantCulture)}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -616,7 +621,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.GetImportTargetErrorKeysFile, downloadErrorKeysFileCheckBox.Checked.ToString()},
                 {SettingsConstants.GetImportTargetErrorKeysFileUrlPath, getImportTargetErrorKeysFileUrlPath},
                 {SettingsConstants.GenerateImportTargetErrorKeysFilePath, generateImportTargetErrorKeysFilePath},
-                {SettingsConstants.PackageTemplate, packageTemplateTextBox.Text}
+                {SettingsConstants.PackageTemplate, packageTemplateTextBox.Text},
+                {SettingsConstants.StatusCheckInterval, numericUpDownStatusCheckInterval.Value.ToString(CultureInfo.InvariantCulture)}
             };
             if (serviceAuthRadioButton.Checked)
             {

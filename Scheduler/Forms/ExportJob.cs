@@ -117,7 +117,9 @@ namespace RecurringIntegrationsScheduler.Forms
 
                 legalEntity.Text = JobDetail.JobDataMap[SettingsConstants.Company]?.ToString() ?? string.Empty;
 
-                interval.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.Interval]) / 1000);
+                statusCheckInterval.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.StatusCheckInterval]));
+
+                numericUpDownInterval.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.Interval]));
 
                 if (!serviceAuthRadioButton.Checked)
                 {
@@ -399,7 +401,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.DeletePackage, deletePackageCheckBox.Checked.ToString()},
                 {SettingsConstants.DataProject, dataProject.Text},
                 {SettingsConstants.Company, legalEntity.Text},
-                {SettingsConstants.Interval, (interval.Value * 1000).ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.Interval, numericUpDownInterval.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.StatusCheckInterval, statusCheckInterval.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},

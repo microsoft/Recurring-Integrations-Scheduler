@@ -208,7 +208,7 @@ namespace RecurringIntegrationsScheduler.Job
                         string tempFileName = "";
                         if (!firstFile)
                         {
-                            System.Threading.Thread.Sleep(_settings.Interval);
+                            System.Threading.Thread.Sleep(_settings.Interval * 1000);
                         }
                         else
                         {

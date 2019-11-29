@@ -80,9 +80,9 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             }
 
             Interval = dataMap.GetInt(SettingsConstants.Interval);
-            if (Interval < 100) //Default execution interval is 100 ms.
+            if (Interval < 1) //Default execution interval is 1 second.
             {
-                Interval = 100;
+                Interval = 1;
             }
 
             RetryCount = dataMap.GetInt(SettingsConstants.RetryCount);

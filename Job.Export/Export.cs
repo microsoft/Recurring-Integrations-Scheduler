@@ -161,11 +161,11 @@ namespace RecurringIntegrationsScheduler.Job
                 {
                     attempt++;
                     if(attempt != 1)
-                        System.Threading.Thread.Sleep(_settings.Interval);
+                        System.Threading.Thread.Sleep(_settings.StatusCheckInterval * 1000);
                     executionStatus = await _httpClientHelper.GetExecutionSummaryStatus(executionId);
                     if (Log.IsDebugEnabled)
                         Log.Debug(string.Format(Resources.Job_0_Checking_if_export_is_completed_Try_1_Status_2, _context.JobDetail.Key, attempt, executionStatus));
-                    if (attempt == 1000)
+                    if (attempt == 1000)//TODO hardcoded
                     {
                         throw new Exception(string.Format(Resources.Job_0_Checking_for_status_reached_1_attempts_Status_is_2_Exiting, _context.JobDetail.Key, attempt, executionStatus));
                     }
@@ -180,11 +180,11 @@ namespace RecurringIntegrationsScheduler.Job
                     {
                         attempt++;
                         if (attempt != 1)
-                            System.Threading.Thread.Sleep(_settings.Interval);
+                            System.Threading.Thread.Sleep(_settings.Interval * 1000);
                         packageUrl = await _httpClientHelper.GetExportedPackageUrl(executionId);
                         if (Log.IsDebugEnabled)
                             Log.Debug(string.Format(Resources.Job_0_Trying_to_get_exported_package_URL_Try_1, _context.JobDetail.Key, attempt));
-                        if (attempt == 100)
+                        if (attempt == 100)//TODO hardcoded
                         {
                             throw new Exception(string.Format(Resources.Job_0_Request_to_download_exported_package_reached_1_attempts_Exiting, _context.JobDetail.Key, attempt));
                         }

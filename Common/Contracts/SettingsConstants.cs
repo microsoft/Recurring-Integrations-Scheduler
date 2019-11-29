@@ -55,9 +55,14 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         public const string ActivityId = "ActivityId";
 
         /// <summary>
-        /// The execution interval
+        /// The delay between files processing
         /// </summary>
         public const string Interval = "Interval";
+
+        /// <summary>
+        /// The delay between status check of export job
+        /// </summary>
+        public const string StatusCheckInterval = "StatusCheckInterval";
 
         /// <summary>
         /// The retry count
