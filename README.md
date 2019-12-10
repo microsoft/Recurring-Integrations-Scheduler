@@ -1,4 +1,4 @@
-# Recurring Integrations Scheduler
+# Recurring Integrations Scheduler RIS
 
 This tool helps to quickly set up and orchestrate file based integration scenarios to and from Dynamics 365 for Finance and Operations. We see this tool to be a good implementation accelerator for use during the implementation phase of the project for data migration, ad hoc file integration needs and to be used as a proof of concept validator among others. 
 
