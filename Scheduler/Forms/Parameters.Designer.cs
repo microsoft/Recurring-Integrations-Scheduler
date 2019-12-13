@@ -84,15 +84,15 @@ namespace RecurringIntegrationsScheduler.Forms
             this.foldersGroupBox = new System.Windows.Forms.GroupBox();
             this.applicationsGroupBox = new System.Windows.Forms.GroupBox();
             this.applicationsGrid = new System.Windows.Forms.DataGridView();
+            this.applicationName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.applicationType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.applicationClientId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.applicationSecret = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.applicationsToolStrip = new System.Windows.Forms.ToolStrip();
             this.applicationsAddButton = new System.Windows.Forms.ToolStripButton();
             this.applicationsDeleteButton = new System.Windows.Forms.ToolStripButton();
             this.applicationsEditButton = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.applicationName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.applicationType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.applicationClientId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.applicationSecret = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.instancesToolStrip.SuspendLayout();
             this.usersToolStrip.SuspendLayout();
             this.dataJobsToolStrip.SuspendLayout();
@@ -125,10 +125,10 @@ namespace RecurringIntegrationsScheduler.Forms
             this.instancesDeleteButton,
             this.instancesEditButton,
             this.instancesValidateButton});
-            this.instancesToolStrip.Location = new System.Drawing.Point(6, 365);
+            this.instancesToolStrip.Location = new System.Drawing.Point(7, 436);
             this.instancesToolStrip.Name = "instancesToolStrip";
             this.instancesToolStrip.Padding = new System.Windows.Forms.Padding(0);
-            this.instancesToolStrip.Size = new System.Drawing.Size(638, 32);
+            this.instancesToolStrip.Size = new System.Drawing.Size(780, 40);
             this.instancesToolStrip.TabIndex = 2;
             // 
             // instancesAddButton
@@ -136,7 +136,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.instancesAddButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Add_16xMD;
             this.instancesAddButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.instancesAddButton.Name = "instancesAddButton";
-            this.instancesAddButton.Size = new System.Drawing.Size(70, 29);
+            this.instancesAddButton.Size = new System.Drawing.Size(75, 34);
             this.instancesAddButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Add;
             this.instancesAddButton.Click += new System.EventHandler(this.AxInstancesAddButton_Click);
             // 
@@ -146,7 +146,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.instancesDeleteButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Remove_16xMD;
             this.instancesDeleteButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.instancesDeleteButton.Name = "instancesDeleteButton";
-            this.instancesDeleteButton.Size = new System.Drawing.Size(86, 29);
+            this.instancesDeleteButton.Size = new System.Drawing.Size(97, 34);
             this.instancesDeleteButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Delete;
             this.instancesDeleteButton.Click += new System.EventHandler(this.AxInstancesDeleteButton_Click);
             // 
@@ -156,7 +156,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.instancesEditButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Edit_16xMD;
             this.instancesEditButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.instancesEditButton.Name = "instancesEditButton";
-            this.instancesEditButton.Size = new System.Drawing.Size(66, 29);
+            this.instancesEditButton.Size = new System.Drawing.Size(72, 34);
             this.instancesEditButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Edit;
             this.instancesEditButton.Click += new System.EventHandler(this.InstancesEditButton_Click);
             // 
@@ -166,7 +166,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.instancesValidateButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.ValidateDocument_16x;
             this.instancesValidateButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.instancesValidateButton.Name = "instancesValidateButton";
-            this.instancesValidateButton.Size = new System.Drawing.Size(98, 29);
+            this.instancesValidateButton.Size = new System.Drawing.Size(110, 34);
             this.instancesValidateButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Validate;
             this.instancesValidateButton.Click += new System.EventHandler(this.InstancesValidateButton_Click);
             // 
@@ -179,10 +179,10 @@ namespace RecurringIntegrationsScheduler.Forms
             this.usersAddButton,
             this.usersDeleteButton,
             this.usersEditButton});
-            this.usersToolStrip.Location = new System.Drawing.Point(6, 365);
+            this.usersToolStrip.Location = new System.Drawing.Point(7, 437);
             this.usersToolStrip.Name = "usersToolStrip";
             this.usersToolStrip.Padding = new System.Windows.Forms.Padding(0);
-            this.usersToolStrip.Size = new System.Drawing.Size(310, 32);
+            this.usersToolStrip.Size = new System.Drawing.Size(379, 40);
             this.usersToolStrip.TabIndex = 3;
             // 
             // usersAddButton
@@ -190,7 +190,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.usersAddButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Add_16xMD;
             this.usersAddButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.usersAddButton.Name = "usersAddButton";
-            this.usersAddButton.Size = new System.Drawing.Size(70, 29);
+            this.usersAddButton.Size = new System.Drawing.Size(75, 34);
             this.usersAddButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Add;
             this.usersAddButton.Click += new System.EventHandler(this.UsersAddButton_Click);
             // 
@@ -200,7 +200,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.usersDeleteButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Remove_16xMD;
             this.usersDeleteButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.usersDeleteButton.Name = "usersDeleteButton";
-            this.usersDeleteButton.Size = new System.Drawing.Size(86, 29);
+            this.usersDeleteButton.Size = new System.Drawing.Size(97, 34);
             this.usersDeleteButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Delete;
             this.usersDeleteButton.Click += new System.EventHandler(this.UsersDeleteButton_Click);
             // 
@@ -210,7 +210,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.usersEditButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Edit_16xMD;
             this.usersEditButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.usersEditButton.Name = "usersEditButton";
-            this.usersEditButton.Size = new System.Drawing.Size(66, 29);
+            this.usersEditButton.Size = new System.Drawing.Size(72, 34);
             this.usersEditButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Edit;
             this.usersEditButton.Click += new System.EventHandler(this.UsersEditButton_Click);
             // 
@@ -223,10 +223,10 @@ namespace RecurringIntegrationsScheduler.Forms
             this.dataJobsAddButton,
             this.dataJobsDeleteButton,
             this.dataJobsEditButton});
-            this.dataJobsToolStrip.Location = new System.Drawing.Point(6, 365);
+            this.dataJobsToolStrip.Location = new System.Drawing.Point(7, 436);
             this.dataJobsToolStrip.Name = "dataJobsToolStrip";
             this.dataJobsToolStrip.Padding = new System.Windows.Forms.Padding(0);
-            this.dataJobsToolStrip.Size = new System.Drawing.Size(307, 32);
+            this.dataJobsToolStrip.Size = new System.Drawing.Size(376, 40);
             this.dataJobsToolStrip.TabIndex = 3;
             // 
             // dataJobsAddButton
@@ -234,7 +234,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.dataJobsAddButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Add_16xMD;
             this.dataJobsAddButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.dataJobsAddButton.Name = "dataJobsAddButton";
-            this.dataJobsAddButton.Size = new System.Drawing.Size(70, 29);
+            this.dataJobsAddButton.Size = new System.Drawing.Size(75, 34);
             this.dataJobsAddButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Add;
             this.dataJobsAddButton.Click += new System.EventHandler(this.DataJobsAddButton_Click);
             // 
@@ -244,7 +244,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.dataJobsDeleteButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Remove_16xMD;
             this.dataJobsDeleteButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.dataJobsDeleteButton.Name = "dataJobsDeleteButton";
-            this.dataJobsDeleteButton.Size = new System.Drawing.Size(86, 29);
+            this.dataJobsDeleteButton.Size = new System.Drawing.Size(97, 34);
             this.dataJobsDeleteButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Delete;
             this.dataJobsDeleteButton.Click += new System.EventHandler(this.DataJobsDeleteButton_Click);
             // 
@@ -254,7 +254,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.dataJobsEditButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Edit_16xMD;
             this.dataJobsEditButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.dataJobsEditButton.Name = "dataJobsEditButton";
-            this.dataJobsEditButton.Size = new System.Drawing.Size(66, 29);
+            this.dataJobsEditButton.Size = new System.Drawing.Size(72, 34);
             this.dataJobsEditButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Edit;
             this.dataJobsEditButton.Click += new System.EventHandler(this.DataJobsEditButton_Click);
             // 
@@ -267,10 +267,10 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobGroupsAddButton,
             this.jobGroupsDeleteButton,
             this.jobGroupsEditButton});
-            this.jobGroupsToolStrip.Location = new System.Drawing.Point(6, 365);
+            this.jobGroupsToolStrip.Location = new System.Drawing.Point(7, 437);
             this.jobGroupsToolStrip.Name = "jobGroupsToolStrip";
             this.jobGroupsToolStrip.Padding = new System.Windows.Forms.Padding(0);
-            this.jobGroupsToolStrip.Size = new System.Drawing.Size(307, 32);
+            this.jobGroupsToolStrip.Size = new System.Drawing.Size(376, 40);
             this.jobGroupsToolStrip.TabIndex = 4;
             // 
             // jobGroupsAddButton
@@ -278,7 +278,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobGroupsAddButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Add_16xMD;
             this.jobGroupsAddButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.jobGroupsAddButton.Name = "jobGroupsAddButton";
-            this.jobGroupsAddButton.Size = new System.Drawing.Size(70, 29);
+            this.jobGroupsAddButton.Size = new System.Drawing.Size(75, 34);
             this.jobGroupsAddButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Add;
             this.jobGroupsAddButton.Click += new System.EventHandler(this.JobGroupsAddButton_Click);
             // 
@@ -288,7 +288,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobGroupsDeleteButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Remove_16xMD;
             this.jobGroupsDeleteButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.jobGroupsDeleteButton.Name = "jobGroupsDeleteButton";
-            this.jobGroupsDeleteButton.Size = new System.Drawing.Size(86, 29);
+            this.jobGroupsDeleteButton.Size = new System.Drawing.Size(97, 34);
             this.jobGroupsDeleteButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Delete;
             this.jobGroupsDeleteButton.Click += new System.EventHandler(this.JobGroupsDeleteButton_Click);
             // 
@@ -298,7 +298,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobGroupsEditButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Edit_16xMD;
             this.jobGroupsEditButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.jobGroupsEditButton.Name = "jobGroupsEditButton";
-            this.jobGroupsEditButton.Size = new System.Drawing.Size(66, 29);
+            this.jobGroupsEditButton.Size = new System.Drawing.Size(72, 34);
             this.jobGroupsEditButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Edit;
             this.jobGroupsEditButton.Click += new System.EventHandler(this.JobGroupsEditButton_Click);
             // 
@@ -308,14 +308,14 @@ namespace RecurringIntegrationsScheduler.Forms
             this.instancesGroupBox.Controls.Add(this.instancesGrid);
             this.instancesGroupBox.Controls.Add(this.instancesToolStrip);
             this.instancesGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.instancesGroupBox.Location = new System.Drawing.Point(4, 5);
-            this.instancesGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.instancesGroupBox.Location = new System.Drawing.Point(5, 6);
+            this.instancesGroupBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.instancesGroupBox.Name = "instancesGroupBox";
-            this.instancesGroupBox.Padding = new System.Windows.Forms.Padding(6, 12, 6, 6);
-            this.instancesGroupBox.Size = new System.Drawing.Size(650, 403);
+            this.instancesGroupBox.Padding = new System.Windows.Forms.Padding(7, 14, 7, 7);
+            this.instancesGroupBox.Size = new System.Drawing.Size(794, 483);
             this.instancesGroupBox.TabIndex = 1;
             this.instancesGroupBox.TabStop = false;
-            this.instancesGroupBox.Text = Resources.Dynamics_365_for_Operations_instances;
+            this.instancesGroupBox.Text = "Dynamics 365 for Finance and Operations instances";
             // 
             // instancesGrid
             // 
@@ -333,15 +333,15 @@ namespace RecurringIntegrationsScheduler.Forms
             this.instanceAadTenant,
             this.instanceAzureAuthEndpoint});
             this.instancesGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.instancesGrid.Location = new System.Drawing.Point(6, 31);
-            this.instancesGrid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.instancesGrid.Location = new System.Drawing.Point(7, 36);
+            this.instancesGrid.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.instancesGrid.MultiSelect = false;
             this.instancesGrid.Name = "instancesGrid";
             this.instancesGrid.ReadOnly = true;
             this.instancesGrid.RowHeadersVisible = false;
             this.instancesGrid.RowHeadersWidth = 4;
             this.instancesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.instancesGrid.Size = new System.Drawing.Size(638, 334);
+            this.instancesGrid.Size = new System.Drawing.Size(780, 400);
             this.instancesGrid.TabIndex = 0;
             this.instancesGrid.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.InstancesGrid_CellContentDoubleClick);
             this.instancesGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.InstancesDataGridView_RowsRemoved);
@@ -352,7 +352,8 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.instanceName.DataPropertyName = "Name";
             this.instanceName.FillWeight = 40F;
-            this.instanceName.HeaderText = Resources.NameLabel;
+            this.instanceName.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.NameLabel;
+            this.instanceName.MinimumWidth = 9;
             this.instanceName.Name = "instanceName";
             this.instanceName.ReadOnly = true;
             this.instanceName.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Friendly_name_used_only_in_Recurring_Integrations_App;
@@ -362,6 +363,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.instanceAosUri.DataPropertyName = "AosUri";
             this.instanceAosUri.FillWeight = 40F;
             this.instanceAosUri.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.AOS_URL;
+            this.instanceAosUri.MinimumWidth = 9;
             this.instanceAosUri.Name = "instanceAosUri";
             this.instanceAosUri.ReadOnly = true;
             // 
@@ -370,6 +372,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.instanceAadTenant.DataPropertyName = "AadTenant";
             this.instanceAadTenant.FillWeight = 20F;
             this.instanceAadTenant.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.Tenant;
+            this.instanceAadTenant.MinimumWidth = 9;
             this.instanceAadTenant.Name = "instanceAadTenant";
             this.instanceAadTenant.ReadOnly = true;
             this.instanceAadTenant.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Uri_or_Guid;
@@ -378,6 +381,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.instanceAzureAuthEndpoint.DataPropertyName = "AzureAuthEndpoint";
             this.instanceAzureAuthEndpoint.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.Authentication_endpoint;
+            this.instanceAzureAuthEndpoint.MinimumWidth = 9;
             this.instanceAzureAuthEndpoint.Name = "instanceAzureAuthEndpoint";
             this.instanceAzureAuthEndpoint.ReadOnly = true;
             this.instanceAzureAuthEndpoint.Visible = false;
@@ -387,14 +391,14 @@ namespace RecurringIntegrationsScheduler.Forms
             this.usersGroupBox.Controls.Add(this.usersDataGrid);
             this.usersGroupBox.Controls.Add(this.usersToolStrip);
             this.usersGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.usersGroupBox.Location = new System.Drawing.Point(332, 418);
-            this.usersGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.usersGroupBox.Location = new System.Drawing.Point(406, 501);
+            this.usersGroupBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.usersGroupBox.Name = "usersGroupBox";
-            this.usersGroupBox.Padding = new System.Windows.Forms.Padding(6, 12, 6, 6);
-            this.usersGroupBox.Size = new System.Drawing.Size(322, 403);
+            this.usersGroupBox.Padding = new System.Windows.Forms.Padding(7, 14, 7, 7);
+            this.usersGroupBox.Size = new System.Drawing.Size(393, 484);
             this.usersGroupBox.TabIndex = 0;
             this.usersGroupBox.TabStop = false;
-            this.usersGroupBox.Text = Resources.User_credentials;
+            this.usersGroupBox.Text = "User credentials";
             // 
             // usersDataGrid
             // 
@@ -410,15 +414,15 @@ namespace RecurringIntegrationsScheduler.Forms
             this.userLogin,
             this.userPassword});
             this.usersDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.usersDataGrid.Location = new System.Drawing.Point(6, 31);
-            this.usersDataGrid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.usersDataGrid.Location = new System.Drawing.Point(7, 36);
+            this.usersDataGrid.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.usersDataGrid.MultiSelect = false;
             this.usersDataGrid.Name = "usersDataGrid";
             this.usersDataGrid.ReadOnly = true;
             this.usersDataGrid.RowHeadersVisible = false;
             this.usersDataGrid.RowHeadersWidth = 4;
             this.usersDataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.usersDataGrid.Size = new System.Drawing.Size(310, 334);
+            this.usersDataGrid.Size = new System.Drawing.Size(379, 401);
             this.usersDataGrid.TabIndex = 1;
             this.usersDataGrid.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.UsersDataGrid_CellContentDoubleClick);
             this.usersDataGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.UsersDataGridView_RowsRemoved);
@@ -428,6 +432,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.userLogin.DataPropertyName = "Login";
             this.userLogin.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.User_login_UPN;
+            this.userLogin.MinimumWidth = 9;
             this.userLogin.Name = "userLogin";
             this.userLogin.ReadOnly = true;
             this.userLogin.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.User_login_like_admin_contoso_com;
@@ -436,6 +441,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.userPassword.DataPropertyName = "Password";
             this.userPassword.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.Password;
+            this.userPassword.MinimumWidth = 9;
             this.userPassword.Name = "userPassword";
             this.userPassword.ReadOnly = true;
             this.userPassword.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Password;
@@ -446,14 +452,14 @@ namespace RecurringIntegrationsScheduler.Forms
             this.dataJobsGroupBox.Controls.Add(this.dataJobsGrid);
             this.dataJobsGroupBox.Controls.Add(this.dataJobsToolStrip);
             this.dataJobsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataJobsGroupBox.Location = new System.Drawing.Point(662, 5);
-            this.dataJobsGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.dataJobsGroupBox.Location = new System.Drawing.Point(809, 6);
+            this.dataJobsGroupBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.dataJobsGroupBox.Name = "dataJobsGroupBox";
-            this.dataJobsGroupBox.Padding = new System.Windows.Forms.Padding(6, 12, 6, 6);
-            this.dataJobsGroupBox.Size = new System.Drawing.Size(319, 403);
+            this.dataJobsGroupBox.Padding = new System.Windows.Forms.Padding(7, 14, 7, 7);
+            this.dataJobsGroupBox.Size = new System.Drawing.Size(390, 483);
             this.dataJobsGroupBox.TabIndex = 0;
             this.dataJobsGroupBox.TabStop = false;
-            this.dataJobsGroupBox.Text = Resources.Data_jobs;
+            this.dataJobsGroupBox.Text = "Data jobs";
             // 
             // dataJobsGrid
             // 
@@ -471,15 +477,15 @@ namespace RecurringIntegrationsScheduler.Forms
             this.dataJobActivityId,
             this.dataJobEntityName});
             this.dataJobsGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataJobsGrid.Location = new System.Drawing.Point(6, 31);
-            this.dataJobsGrid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.dataJobsGrid.Location = new System.Drawing.Point(7, 36);
+            this.dataJobsGrid.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.dataJobsGrid.MultiSelect = false;
             this.dataJobsGrid.Name = "dataJobsGrid";
             this.dataJobsGrid.ReadOnly = true;
             this.dataJobsGrid.RowHeadersVisible = false;
             this.dataJobsGrid.RowHeadersWidth = 4;
             this.dataJobsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataJobsGrid.Size = new System.Drawing.Size(307, 334);
+            this.dataJobsGrid.Size = new System.Drawing.Size(376, 400);
             this.dataJobsGrid.TabIndex = 0;
             this.dataJobsGrid.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataJobsGrid_CellContentDoubleClick);
             this.dataJobsGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.DataJobsDataGridView_RowsRemoved);
@@ -488,7 +494,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // dataJobName
             // 
             this.dataJobName.DataPropertyName = "Name";
-            this.dataJobName.HeaderText = Resources.NameLabel;
+            this.dataJobName.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.NameLabel;
             this.dataJobName.MinimumWidth = 50;
             this.dataJobName.Name = "dataJobName";
             this.dataJobName.ReadOnly = true;
@@ -506,6 +512,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.dataJobActivityId.DataPropertyName = "ActivityId";
             this.dataJobActivityId.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.Activity_Id;
+            this.dataJobActivityId.MinimumWidth = 9;
             this.dataJobActivityId.Name = "dataJobActivityId";
             this.dataJobActivityId.ReadOnly = true;
             this.dataJobActivityId.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Activity_Id_Guid_of_this_data_job_configured_in_Dynamics;
@@ -515,6 +522,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.dataJobEntityName.DataPropertyName = "EntityName";
             this.dataJobEntityName.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.Entity_name;
+            this.dataJobEntityName.MinimumWidth = 9;
             this.dataJobEntityName.Name = "dataJobEntityName";
             this.dataJobEntityName.ReadOnly = true;
             this.dataJobEntityName.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Entity_name_for_this_data_job_configured_in_Dynamics;
@@ -524,32 +532,32 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.downloadJobsFolderGroupBox.Controls.Add(this.downloadErrorsFolderLabel);
             this.downloadJobsFolderGroupBox.Controls.Add(this.downloadErrorsFolder);
-            this.downloadJobsFolderGroupBox.Location = new System.Drawing.Point(10, 325);
-            this.downloadJobsFolderGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.downloadJobsFolderGroupBox.Location = new System.Drawing.Point(12, 390);
+            this.downloadJobsFolderGroupBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.downloadJobsFolderGroupBox.Name = "downloadJobsFolderGroupBox";
-            this.downloadJobsFolderGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.downloadJobsFolderGroupBox.Size = new System.Drawing.Size(260, 72);
+            this.downloadJobsFolderGroupBox.Padding = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.downloadJobsFolderGroupBox.Size = new System.Drawing.Size(318, 86);
             this.downloadJobsFolderGroupBox.TabIndex = 2;
             this.downloadJobsFolderGroupBox.TabStop = false;
-            this.downloadJobsFolderGroupBox.Text = Resources.Download_jobs_folders_names;
+            this.downloadJobsFolderGroupBox.Text = "Download/export folders names";
             // 
             // downloadErrorsFolderLabel
             // 
             this.downloadErrorsFolderLabel.AutoSize = true;
-            this.downloadErrorsFolderLabel.Location = new System.Drawing.Point(55, 32);
-            this.downloadErrorsFolderLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.downloadErrorsFolderLabel.Location = new System.Drawing.Point(67, 38);
+            this.downloadErrorsFolderLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.downloadErrorsFolderLabel.Name = "downloadErrorsFolderLabel";
-            this.downloadErrorsFolderLabel.Size = new System.Drawing.Size(52, 20);
+            this.downloadErrorsFolderLabel.Size = new System.Drawing.Size(64, 25);
             this.downloadErrorsFolderLabel.TabIndex = 7;
-            this.downloadErrorsFolderLabel.Text = Resources.Errors;
+            this.downloadErrorsFolderLabel.Text = "Errors";
             // 
             // downloadErrorsFolder
             // 
             this.downloadErrorsFolder.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::RecurringIntegrationsScheduler.Properties.Settings.Default, "DownloadErrorsFolder", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.downloadErrorsFolder.Location = new System.Drawing.Point(118, 29);
-            this.downloadErrorsFolder.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.downloadErrorsFolder.Location = new System.Drawing.Point(144, 35);
+            this.downloadErrorsFolder.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.downloadErrorsFolder.Name = "downloadErrorsFolder";
-            this.downloadErrorsFolder.Size = new System.Drawing.Size(127, 26);
+            this.downloadErrorsFolder.Size = new System.Drawing.Size(154, 29);
             this.downloadErrorsFolder.TabIndex = 9;
             this.downloadErrorsFolder.Text = global::RecurringIntegrationsScheduler.Properties.Settings.Default.DownloadErrorsFolder;
             // 
@@ -559,52 +567,52 @@ namespace RecurringIntegrationsScheduler.Forms
             this.processingJobsFoldersGroupBox.Controls.Add(this.processingSuccessFolder);
             this.processingJobsFoldersGroupBox.Controls.Add(this.processingErrorsFolderLabel);
             this.processingJobsFoldersGroupBox.Controls.Add(this.processingErrorsFolder);
-            this.processingJobsFoldersGroupBox.Location = new System.Drawing.Point(10, 199);
-            this.processingJobsFoldersGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.processingJobsFoldersGroupBox.Location = new System.Drawing.Point(12, 239);
+            this.processingJobsFoldersGroupBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.processingJobsFoldersGroupBox.Name = "processingJobsFoldersGroupBox";
-            this.processingJobsFoldersGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.processingJobsFoldersGroupBox.Size = new System.Drawing.Size(260, 116);
+            this.processingJobsFoldersGroupBox.Padding = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.processingJobsFoldersGroupBox.Size = new System.Drawing.Size(318, 139);
             this.processingJobsFoldersGroupBox.TabIndex = 1;
             this.processingJobsFoldersGroupBox.TabStop = false;
-            this.processingJobsFoldersGroupBox.Text = Resources.Monitoring_jobs_folders_names;
+            this.processingJobsFoldersGroupBox.Text = "Monitoring jobs folders names";
             // 
             // processingSuccessFolderLabel
             // 
             this.processingSuccessFolderLabel.AutoSize = true;
-            this.processingSuccessFolderLabel.Location = new System.Drawing.Point(39, 39);
-            this.processingSuccessFolderLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.processingSuccessFolderLabel.Location = new System.Drawing.Point(48, 47);
+            this.processingSuccessFolderLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.processingSuccessFolderLabel.Name = "processingSuccessFolderLabel";
-            this.processingSuccessFolderLabel.Size = new System.Drawing.Size(70, 20);
+            this.processingSuccessFolderLabel.Size = new System.Drawing.Size(88, 25);
             this.processingSuccessFolderLabel.TabIndex = 9;
-            this.processingSuccessFolderLabel.Text = Resources.Success;
+            this.processingSuccessFolderLabel.Text = "Success";
             // 
             // processingSuccessFolder
             // 
             this.processingSuccessFolder.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::RecurringIntegrationsScheduler.Properties.Settings.Default, "ProcessingSuccessFolder", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.processingSuccessFolder.Location = new System.Drawing.Point(118, 35);
-            this.processingSuccessFolder.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.processingSuccessFolder.Location = new System.Drawing.Point(144, 42);
+            this.processingSuccessFolder.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.processingSuccessFolder.Name = "processingSuccessFolder";
-            this.processingSuccessFolder.Size = new System.Drawing.Size(127, 26);
+            this.processingSuccessFolder.Size = new System.Drawing.Size(154, 29);
             this.processingSuccessFolder.TabIndex = 12;
             this.processingSuccessFolder.Text = global::RecurringIntegrationsScheduler.Properties.Settings.Default.ProcessingSuccessFolder;
             // 
             // processingErrorsFolderLabel
             // 
             this.processingErrorsFolderLabel.AutoSize = true;
-            this.processingErrorsFolderLabel.Location = new System.Drawing.Point(55, 76);
-            this.processingErrorsFolderLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.processingErrorsFolderLabel.Location = new System.Drawing.Point(67, 91);
+            this.processingErrorsFolderLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.processingErrorsFolderLabel.Name = "processingErrorsFolderLabel";
-            this.processingErrorsFolderLabel.Size = new System.Drawing.Size(52, 20);
+            this.processingErrorsFolderLabel.Size = new System.Drawing.Size(64, 25);
             this.processingErrorsFolderLabel.TabIndex = 13;
-            this.processingErrorsFolderLabel.Text = Resources.Errors;
+            this.processingErrorsFolderLabel.Text = "Errors";
             // 
             // processingErrorsFolder
             // 
             this.processingErrorsFolder.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::RecurringIntegrationsScheduler.Properties.Settings.Default, "ProcessingErrorsFolder", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.processingErrorsFolder.Location = new System.Drawing.Point(118, 72);
-            this.processingErrorsFolder.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.processingErrorsFolder.Location = new System.Drawing.Point(144, 86);
+            this.processingErrorsFolder.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.processingErrorsFolder.Name = "processingErrorsFolder";
-            this.processingErrorsFolder.Size = new System.Drawing.Size(127, 26);
+            this.processingErrorsFolder.Size = new System.Drawing.Size(154, 29);
             this.processingErrorsFolder.TabIndex = 14;
             this.processingErrorsFolder.Text = global::RecurringIntegrationsScheduler.Properties.Settings.Default.ProcessingErrorsFolder;
             // 
@@ -616,72 +624,72 @@ namespace RecurringIntegrationsScheduler.Forms
             this.uploadJobsFoldersGroupBox.Controls.Add(this.uploadSuccessFolder);
             this.uploadJobsFoldersGroupBox.Controls.Add(this.uploadErrorsFolderLabel);
             this.uploadJobsFoldersGroupBox.Controls.Add(this.uploadErrorsFolder);
-            this.uploadJobsFoldersGroupBox.Location = new System.Drawing.Point(10, 31);
-            this.uploadJobsFoldersGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.uploadJobsFoldersGroupBox.Location = new System.Drawing.Point(12, 37);
+            this.uploadJobsFoldersGroupBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.uploadJobsFoldersGroupBox.Name = "uploadJobsFoldersGroupBox";
-            this.uploadJobsFoldersGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.uploadJobsFoldersGroupBox.Size = new System.Drawing.Size(260, 158);
+            this.uploadJobsFoldersGroupBox.Padding = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.uploadJobsFoldersGroupBox.Size = new System.Drawing.Size(318, 190);
             this.uploadJobsFoldersGroupBox.TabIndex = 0;
             this.uploadJobsFoldersGroupBox.TabStop = false;
-            this.uploadJobsFoldersGroupBox.Text = Resources.Upload_jobs_folders_names;
+            this.uploadJobsFoldersGroupBox.Text = "Upload/import jobs folders names";
             // 
             // uploadInputFolderLabel
             // 
             this.uploadInputFolderLabel.AutoSize = true;
-            this.uploadInputFolderLabel.Location = new System.Drawing.Point(19, 42);
-            this.uploadInputFolderLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.uploadInputFolderLabel.Location = new System.Drawing.Point(23, 50);
+            this.uploadInputFolderLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.uploadInputFolderLabel.Name = "uploadInputFolderLabel";
-            this.uploadInputFolderLabel.Size = new System.Drawing.Size(90, 20);
+            this.uploadInputFolderLabel.Size = new System.Drawing.Size(108, 25);
             this.uploadInputFolderLabel.TabIndex = 0;
-            this.uploadInputFolderLabel.Text = Resources.Input_folder;
+            this.uploadInputFolderLabel.Text = "Input folder";
             // 
             // uploadInputFolder
             // 
             this.uploadInputFolder.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::RecurringIntegrationsScheduler.Properties.Settings.Default, "UploadInputFolder", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.uploadInputFolder.Location = new System.Drawing.Point(118, 39);
-            this.uploadInputFolder.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.uploadInputFolder.Location = new System.Drawing.Point(144, 47);
+            this.uploadInputFolder.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.uploadInputFolder.Name = "uploadInputFolder";
-            this.uploadInputFolder.Size = new System.Drawing.Size(127, 26);
+            this.uploadInputFolder.Size = new System.Drawing.Size(154, 29);
             this.uploadInputFolder.TabIndex = 4;
             this.uploadInputFolder.Text = global::RecurringIntegrationsScheduler.Properties.Settings.Default.UploadInputFolder;
             // 
             // uploadSuccessFolderLabel
             // 
             this.uploadSuccessFolderLabel.AutoSize = true;
-            this.uploadSuccessFolderLabel.Location = new System.Drawing.Point(30, 80);
-            this.uploadSuccessFolderLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.uploadSuccessFolderLabel.Location = new System.Drawing.Point(37, 96);
+            this.uploadSuccessFolderLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.uploadSuccessFolderLabel.Name = "uploadSuccessFolderLabel";
-            this.uploadSuccessFolderLabel.Size = new System.Drawing.Size(70, 20);
+            this.uploadSuccessFolderLabel.Size = new System.Drawing.Size(88, 25);
             this.uploadSuccessFolderLabel.TabIndex = 1;
-            this.uploadSuccessFolderLabel.Text = Resources.Success;
+            this.uploadSuccessFolderLabel.Text = "Success";
             // 
             // uploadSuccessFolder
             // 
             this.uploadSuccessFolder.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::RecurringIntegrationsScheduler.Properties.Settings.Default, "UploadSuccessFolder", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.uploadSuccessFolder.Location = new System.Drawing.Point(118, 76);
-            this.uploadSuccessFolder.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.uploadSuccessFolder.Location = new System.Drawing.Point(144, 91);
+            this.uploadSuccessFolder.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.uploadSuccessFolder.Name = "uploadSuccessFolder";
-            this.uploadSuccessFolder.Size = new System.Drawing.Size(127, 26);
+            this.uploadSuccessFolder.Size = new System.Drawing.Size(154, 29);
             this.uploadSuccessFolder.TabIndex = 5;
             this.uploadSuccessFolder.Text = global::RecurringIntegrationsScheduler.Properties.Settings.Default.UploadSuccessFolder;
             // 
             // uploadErrorsFolderLabel
             // 
             this.uploadErrorsFolderLabel.AutoSize = true;
-            this.uploadErrorsFolderLabel.Location = new System.Drawing.Point(55, 118);
-            this.uploadErrorsFolderLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.uploadErrorsFolderLabel.Location = new System.Drawing.Point(67, 142);
+            this.uploadErrorsFolderLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.uploadErrorsFolderLabel.Name = "uploadErrorsFolderLabel";
-            this.uploadErrorsFolderLabel.Size = new System.Drawing.Size(52, 20);
+            this.uploadErrorsFolderLabel.Size = new System.Drawing.Size(64, 25);
             this.uploadErrorsFolderLabel.TabIndex = 3;
-            this.uploadErrorsFolderLabel.Text = Resources.Errors;
+            this.uploadErrorsFolderLabel.Text = "Errors";
             // 
             // uploadErrorsFolder
             // 
             this.uploadErrorsFolder.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::RecurringIntegrationsScheduler.Properties.Settings.Default, "UploadErrorsFolder", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.uploadErrorsFolder.Location = new System.Drawing.Point(118, 114);
-            this.uploadErrorsFolder.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.uploadErrorsFolder.Location = new System.Drawing.Point(144, 137);
+            this.uploadErrorsFolder.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.uploadErrorsFolder.Name = "uploadErrorsFolder";
-            this.uploadErrorsFolder.Size = new System.Drawing.Size(127, 26);
+            this.uploadErrorsFolder.Size = new System.Drawing.Size(154, 29);
             this.uploadErrorsFolder.TabIndex = 7;
             this.uploadErrorsFolder.Text = global::RecurringIntegrationsScheduler.Properties.Settings.Default.UploadErrorsFolder;
             // 
@@ -690,14 +698,14 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobGroupsGroupBox.Controls.Add(this.jobGroupsGrid);
             this.jobGroupsGroupBox.Controls.Add(this.jobGroupsToolStrip);
             this.jobGroupsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.jobGroupsGroupBox.Location = new System.Drawing.Point(662, 418);
-            this.jobGroupsGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.jobGroupsGroupBox.Location = new System.Drawing.Point(809, 501);
+            this.jobGroupsGroupBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.jobGroupsGroupBox.Name = "jobGroupsGroupBox";
-            this.jobGroupsGroupBox.Padding = new System.Windows.Forms.Padding(6, 12, 6, 6);
-            this.jobGroupsGroupBox.Size = new System.Drawing.Size(319, 403);
+            this.jobGroupsGroupBox.Padding = new System.Windows.Forms.Padding(7, 14, 7, 7);
+            this.jobGroupsGroupBox.Size = new System.Drawing.Size(390, 484);
             this.jobGroupsGroupBox.TabIndex = 1;
             this.jobGroupsGroupBox.TabStop = false;
-            this.jobGroupsGroupBox.Text = Resources.Job_groups;
+            this.jobGroupsGroupBox.Text = "Job groups";
             // 
             // jobGroupsGrid
             // 
@@ -712,15 +720,15 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobGroupsGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.jobGroupName});
             this.jobGroupsGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.jobGroupsGrid.Location = new System.Drawing.Point(6, 31);
-            this.jobGroupsGrid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.jobGroupsGrid.Location = new System.Drawing.Point(7, 36);
+            this.jobGroupsGrid.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.jobGroupsGrid.MultiSelect = false;
             this.jobGroupsGrid.Name = "jobGroupsGrid";
             this.jobGroupsGrid.ReadOnly = true;
             this.jobGroupsGrid.RowHeadersVisible = false;
             this.jobGroupsGrid.RowHeadersWidth = 4;
             this.jobGroupsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.jobGroupsGrid.Size = new System.Drawing.Size(307, 334);
+            this.jobGroupsGrid.Size = new System.Drawing.Size(376, 401);
             this.jobGroupsGrid.TabIndex = 1;
             this.jobGroupsGrid.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.JobGroupsGrid_CellContentDoubleClick);
             this.jobGroupsGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.JobGroupsDataGridView_RowsRemoved);
@@ -730,6 +738,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.jobGroupName.DataPropertyName = "Name";
             this.jobGroupName.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.Group_name;
+            this.jobGroupName.MinimumWidth = 9;
             this.jobGroupName.Name = "jobGroupName";
             this.jobGroupName.ReadOnly = true;
             // 
@@ -738,29 +747,29 @@ namespace RecurringIntegrationsScheduler.Forms
             this.foldersGroupBox.Controls.Add(this.uploadJobsFoldersGroupBox);
             this.foldersGroupBox.Controls.Add(this.processingJobsFoldersGroupBox);
             this.foldersGroupBox.Controls.Add(this.downloadJobsFolderGroupBox);
-            this.foldersGroupBox.Location = new System.Drawing.Point(988, 4);
-            this.foldersGroupBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.foldersGroupBox.Location = new System.Drawing.Point(1208, 5);
+            this.foldersGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.foldersGroupBox.Name = "foldersGroupBox";
-            this.foldersGroupBox.Padding = new System.Windows.Forms.Padding(6, 12, 6, 6);
+            this.foldersGroupBox.Padding = new System.Windows.Forms.Padding(7, 14, 7, 7);
             this.tableLayoutPanel1.SetRowSpan(this.foldersGroupBox, 2);
-            this.foldersGroupBox.Size = new System.Drawing.Size(282, 410);
+            this.foldersGroupBox.Size = new System.Drawing.Size(345, 492);
             this.foldersGroupBox.TabIndex = 2;
             this.foldersGroupBox.TabStop = false;
-            this.foldersGroupBox.Text = Resources.Default_folder_names;
+            this.foldersGroupBox.Text = "Default folder names";
             // 
             // applicationsGroupBox
             // 
             this.applicationsGroupBox.Controls.Add(this.applicationsGrid);
             this.applicationsGroupBox.Controls.Add(this.applicationsToolStrip);
             this.applicationsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.applicationsGroupBox.Location = new System.Drawing.Point(4, 418);
-            this.applicationsGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.applicationsGroupBox.Location = new System.Drawing.Point(5, 501);
+            this.applicationsGroupBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.applicationsGroupBox.Name = "applicationsGroupBox";
-            this.applicationsGroupBox.Padding = new System.Windows.Forms.Padding(6, 12, 6, 6);
-            this.applicationsGroupBox.Size = new System.Drawing.Size(320, 403);
+            this.applicationsGroupBox.Padding = new System.Windows.Forms.Padding(7, 14, 7, 7);
+            this.applicationsGroupBox.Size = new System.Drawing.Size(391, 484);
             this.applicationsGroupBox.TabIndex = 8;
             this.applicationsGroupBox.TabStop = false;
-            this.applicationsGroupBox.Text = Resources.Azure_AD_applications;
+            this.applicationsGroupBox.Text = "Azure AD applications";
             // 
             // applicationsGrid
             // 
@@ -778,19 +787,55 @@ namespace RecurringIntegrationsScheduler.Forms
             this.applicationClientId,
             this.applicationSecret});
             this.applicationsGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.applicationsGrid.Location = new System.Drawing.Point(6, 31);
-            this.applicationsGrid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.applicationsGrid.Location = new System.Drawing.Point(7, 36);
+            this.applicationsGrid.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.applicationsGrid.MultiSelect = false;
             this.applicationsGrid.Name = "applicationsGrid";
             this.applicationsGrid.ReadOnly = true;
             this.applicationsGrid.RowHeadersVisible = false;
             this.applicationsGrid.RowHeadersWidth = 4;
             this.applicationsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.applicationsGrid.Size = new System.Drawing.Size(308, 334);
+            this.applicationsGrid.Size = new System.Drawing.Size(377, 401);
             this.applicationsGrid.TabIndex = 1;
             this.applicationsGrid.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ApplicationsGrid_CellContentDoubleClick);
             this.applicationsGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.ApplicationsGrid_RowsRemoved);
             this.applicationsGrid.RowStateChanged += new System.Windows.Forms.DataGridViewRowStateChangedEventHandler(this.ApplicationsGrid_RowStateChanged);
+            // 
+            // applicationName
+            // 
+            this.applicationName.DataPropertyName = "Name";
+            this.applicationName.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.NameLabel;
+            this.applicationName.MinimumWidth = 9;
+            this.applicationName.Name = "applicationName";
+            this.applicationName.ReadOnly = true;
+            // 
+            // applicationType
+            // 
+            this.applicationType.DataPropertyName = "AuthenticationType";
+            this.applicationType.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.Auth_type;
+            this.applicationType.MinimumWidth = 9;
+            this.applicationType.Name = "applicationType";
+            this.applicationType.ReadOnly = true;
+            // 
+            // applicationClientId
+            // 
+            this.applicationClientId.DataPropertyName = "ClientId";
+            this.applicationClientId.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.Client_Id;
+            this.applicationClientId.MinimumWidth = 9;
+            this.applicationClientId.Name = "applicationClientId";
+            this.applicationClientId.ReadOnly = true;
+            this.applicationClientId.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Application_client_Id_GUID;
+            this.applicationClientId.Visible = false;
+            // 
+            // applicationSecret
+            // 
+            this.applicationSecret.DataPropertyName = "Secret";
+            this.applicationSecret.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.Secret;
+            this.applicationSecret.MinimumWidth = 9;
+            this.applicationSecret.Name = "applicationSecret";
+            this.applicationSecret.ReadOnly = true;
+            this.applicationSecret.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Web_application_client_secret;
+            this.applicationSecret.Visible = false;
             // 
             // applicationsToolStrip
             // 
@@ -801,10 +846,10 @@ namespace RecurringIntegrationsScheduler.Forms
             this.applicationsAddButton,
             this.applicationsDeleteButton,
             this.applicationsEditButton});
-            this.applicationsToolStrip.Location = new System.Drawing.Point(6, 365);
+            this.applicationsToolStrip.Location = new System.Drawing.Point(7, 437);
             this.applicationsToolStrip.Name = "applicationsToolStrip";
             this.applicationsToolStrip.Padding = new System.Windows.Forms.Padding(0);
-            this.applicationsToolStrip.Size = new System.Drawing.Size(308, 32);
+            this.applicationsToolStrip.Size = new System.Drawing.Size(377, 40);
             this.applicationsToolStrip.TabIndex = 4;
             // 
             // applicationsAddButton
@@ -812,7 +857,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.applicationsAddButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Add_16xMD;
             this.applicationsAddButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.applicationsAddButton.Name = "applicationsAddButton";
-            this.applicationsAddButton.Size = new System.Drawing.Size(70, 29);
+            this.applicationsAddButton.Size = new System.Drawing.Size(75, 34);
             this.applicationsAddButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Add;
             this.applicationsAddButton.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Add_Azure_application;
             this.applicationsAddButton.Click += new System.EventHandler(this.ApplicationsAddButton_Click);
@@ -823,7 +868,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.applicationsDeleteButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Remove_16xMD;
             this.applicationsDeleteButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.applicationsDeleteButton.Name = "applicationsDeleteButton";
-            this.applicationsDeleteButton.Size = new System.Drawing.Size(86, 29);
+            this.applicationsDeleteButton.Size = new System.Drawing.Size(97, 34);
             this.applicationsDeleteButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Delete;
             this.applicationsDeleteButton.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Delete_Azure_application;
             this.applicationsDeleteButton.Click += new System.EventHandler(this.ApplicationsDeleteButton_Click);
@@ -834,7 +879,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.applicationsEditButton.Image = global::RecurringIntegrationsScheduler.Properties.Resources.Edit_16xMD;
             this.applicationsEditButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.applicationsEditButton.Name = "applicationsEditButton";
-            this.applicationsEditButton.Size = new System.Drawing.Size(66, 29);
+            this.applicationsEditButton.Size = new System.Drawing.Size(72, 34);
             this.applicationsEditButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Edit;
             this.applicationsEditButton.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Edit_Azure_application;
             this.applicationsEditButton.Click += new System.EventHandler(this.ApplicationsEditButton_Click);
@@ -854,61 +899,29 @@ namespace RecurringIntegrationsScheduler.Forms
             this.tableLayoutPanel1.Controls.Add(this.applicationsGroupBox, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1275, 826);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1558, 991);
             this.tableLayoutPanel1.TabIndex = 9;
-            // 
-            // applicationName
-            // 
-            this.applicationName.DataPropertyName = "Name";
-            this.applicationName.HeaderText = Resources.NameLabel;
-            this.applicationName.Name = "applicationName";
-            this.applicationName.ReadOnly = true;
-            // 
-            // applicationType
-            // 
-            this.applicationType.DataPropertyName = "AuthenticationType";
-            this.applicationType.HeaderText = Resources.Auth_type;
-            this.applicationType.Name = "applicationType";
-            this.applicationType.ReadOnly = true;
-            // 
-            // applicationClientId
-            // 
-            this.applicationClientId.DataPropertyName = "ClientId";
-            this.applicationClientId.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.Client_Id;
-            this.applicationClientId.Name = "applicationClientId";
-            this.applicationClientId.ReadOnly = true;
-            this.applicationClientId.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Application_client_Id_GUID;
-            this.applicationClientId.Visible = false;
-            // 
-            // applicationSecret
-            // 
-            this.applicationSecret.DataPropertyName = "Secret";
-            this.applicationSecret.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.Secret;
-            this.applicationSecret.Name = "applicationSecret";
-            this.applicationSecret.ReadOnly = true;
-            this.applicationSecret.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Web_application_client_secret;
-            this.applicationSecret.Visible = false;
             // 
             // Parameters
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1275, 826);
+            this.ClientSize = new System.Drawing.Size(1558, 991);
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(1190, 736);
+            this.MinimumSize = new System.Drawing.Size(1449, 870);
             this.Name = "Parameters";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = Resources.Parameters;
+            this.Text = "Parameters";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Settings_FormClosing);
             this.Load += new System.EventHandler(this.Settings_Load);
             this.instancesToolStrip.ResumeLayout(false);

@@ -133,7 +133,7 @@ namespace RecurringIntegrationsScheduler.Job
                     }
                     else
                     {
-                        Log.Error("Uknown exception", ex);
+                        Log.Error("Unknown exception", ex);
                     }
 
                     while (ex.InnerException != null)
@@ -176,10 +176,17 @@ namespace RecurringIntegrationsScheduler.Job
         /// <returns></returns>
         private async Task ProcessEnqueuedQueue()
         {
+            var fileCount = 0;
             _httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp);
 
             while (EnqueuedJobs.TryDequeue(out DataMessage dataMessage))
             {
+                if (fileCount > 0 && _settings.StatusCheckInterval > 0) //Only delay after first file and never after last.
+                {
+                    System.Threading.Thread.Sleep(_settings.StatusCheckInterval * 1000);
+                }
+                fileCount++;
+
                 // Check status for current item with message id - item.Key
                 var jobStatusDetail = await GetStatus(dataMessage.MessageId);
 
@@ -249,8 +256,11 @@ namespace RecurringIntegrationsScheduler.Job
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Successfully_received_job_status_for_message_id_1, _context.JobDetail.Key, message));
                 return JsonConvert.DeserializeObject<DataJobStatusDetail>(response.Content.ReadAsStringAsync().Result, new StringEnumConverter());
             }
-            Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_data_job_status_check_request_failed_Status_code_1_Reason_2, _context.JobDetail.Key, response.StatusCode, response.ReasonPhrase));
-            return null;
+            else
+            {
+                Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_data_job_status_check_request_failed_Status_code_1_Reason_2, _context.JobDetail.Key, response.StatusCode, response.ReasonPhrase));
+                return null;
+            }
         }
     }
 }

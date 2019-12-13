@@ -131,7 +131,7 @@ namespace RecurringIntegrationsScheduler.Job
                     }
                     else
                     {
-                        Log.Error("Uknown exception", ex);
+                        Log.Error("Unknown exception", ex);
                     }
 
                     while (ex.InnerException != null)
@@ -182,20 +182,17 @@ namespace RecurringIntegrationsScheduler.Job
         {
             using (_httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp))
             {
-                var firstFile = true;
+                var fileCount = 0;
 
                 while (InputQueue.TryDequeue(out DataMessage dataMessage))
                 {
                     try
                     {
-                        if (!firstFile)
+                        if (fileCount > 0 && _settings.Interval > 0) //Only delay after first file and never after last.
                         {
                             System.Threading.Thread.Sleep(_settings.Interval * 1000);
                         }
-                        else
-                        {
-                            firstFile = false;
-                        }
+                        fileCount++;
 
                         var sourceStream = _retryPolicyForIo.Execute(() => FileOperationsHelper.Read(dataMessage.FullPath));
                         if (sourceStream == null) continue;//Nothing to do here

@@ -32,6 +32,8 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DownloadJob));
             this.jobDetailsGroupBox = new System.Windows.Forms.GroupBox();
+            this.intervalLabel = new System.Windows.Forms.Label();
+            this.numericUpDownInterval = new System.Windows.Forms.NumericUpDown();
             this.deletePackageCheckBox = new System.Windows.Forms.CheckBox();
             this.addTimestampCheckBox = new System.Windows.Forms.CheckBox();
             this.unzipCheckBox = new System.Windows.Forms.CheckBox();
@@ -91,9 +93,8 @@ namespace RecurringIntegrationsScheduler.Forms
             this.groupBoxButtons = new System.Windows.Forms.GroupBox();
             this.addJobButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.intervalLabel = new System.Windows.Forms.Label();
-            this.numericUpDownInterval = new System.Windows.Forms.NumericUpDown();
             this.jobDetailsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInterval)).BeginInit();
             this.axDetailsGroupBox.SuspendLayout();
             this.authMethodPanel.SuspendLayout();
             this.recurrenceGroupBox.SuspendLayout();
@@ -103,7 +104,6 @@ namespace RecurringIntegrationsScheduler.Forms
             ((System.ComponentModel.ISupportInitialize)(this.retriesCountUpDown)).BeginInit();
             this.groupBoxExceptions.SuspendLayout();
             this.groupBoxButtons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInterval)).BeginInit();
             this.SuspendLayout();
             // 
             // jobDetailsGroupBox
@@ -135,12 +135,34 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobDetailsGroupBox.TabStop = false;
             this.jobDetailsGroupBox.Text = "Job details";
             // 
+            // intervalLabel
+            // 
+            this.intervalLabel.Location = new System.Drawing.Point(16, 549);
+            this.intervalLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.intervalLabel.Name = "intervalLabel";
+            this.intervalLabel.Size = new System.Drawing.Size(273, 77);
+            this.intervalLabel.TabIndex = 26;
+            this.intervalLabel.Text = "Delay between attempts to download exported files from blob storage (seconds)";
+            // 
+            // numericUpDownInterval
+            // 
+            this.numericUpDownInterval.Location = new System.Drawing.Point(298, 576);
+            this.numericUpDownInterval.Margin = new System.Windows.Forms.Padding(4);
+            this.numericUpDownInterval.Maximum = new decimal(new int[] {
+            3600,
+            0,
+            0,
+            0});
+            this.numericUpDownInterval.Name = "numericUpDownInterval";
+            this.numericUpDownInterval.Size = new System.Drawing.Size(105, 29);
+            this.numericUpDownInterval.TabIndex = 25;
+            // 
             // deletePackageCheckBox
             // 
             this.deletePackageCheckBox.AutoSize = true;
             this.deletePackageCheckBox.Enabled = false;
             this.deletePackageCheckBox.Location = new System.Drawing.Point(22, 510);
-            this.deletePackageCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.deletePackageCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.deletePackageCheckBox.Name = "deletePackageCheckBox";
             this.deletePackageCheckBox.Size = new System.Drawing.Size(203, 29);
             this.deletePackageCheckBox.TabIndex = 14;
@@ -152,7 +174,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.addTimestampCheckBox.AutoSize = true;
             this.addTimestampCheckBox.Enabled = false;
             this.addTimestampCheckBox.Location = new System.Drawing.Point(22, 473);
-            this.addTimestampCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.addTimestampCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.addTimestampCheckBox.Name = "addTimestampCheckBox";
             this.addTimestampCheckBox.Size = new System.Drawing.Size(315, 29);
             this.addTimestampCheckBox.TabIndex = 13;
@@ -163,7 +185,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.unzipCheckBox.AutoSize = true;
             this.unzipCheckBox.Location = new System.Drawing.Point(22, 436);
-            this.unzipCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.unzipCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.unzipCheckBox.Name = "unzipCheckBox";
             this.unzipCheckBox.Size = new System.Drawing.Size(197, 29);
             this.unzipCheckBox.TabIndex = 12;
@@ -475,7 +497,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.pauseIndefinitelyCheckBox.AutoSize = true;
             this.pauseIndefinitelyCheckBox.Location = new System.Drawing.Point(17, 37);
-            this.pauseIndefinitelyCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pauseIndefinitelyCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.pauseIndefinitelyCheckBox.Name = "pauseIndefinitelyCheckBox";
             this.pauseIndefinitelyCheckBox.Size = new System.Drawing.Size(221, 29);
             this.pauseIndefinitelyCheckBox.TabIndex = 0;
@@ -763,9 +785,9 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.groupBoxExceptions.Controls.Add(this.pauseOnExceptionsCheckBox);
             this.groupBoxExceptions.Location = new System.Drawing.Point(24, 969);
-            this.groupBoxExceptions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxExceptions.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxExceptions.Name = "groupBoxExceptions";
-            this.groupBoxExceptions.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxExceptions.Padding = new System.Windows.Forms.Padding(4);
             this.groupBoxExceptions.Size = new System.Drawing.Size(422, 109);
             this.groupBoxExceptions.TabIndex = 10;
             this.groupBoxExceptions.TabStop = false;
@@ -777,7 +799,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.pauseOnExceptionsCheckBox.Checked = true;
             this.pauseOnExceptionsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.pauseOnExceptionsCheckBox.Location = new System.Drawing.Point(17, 31);
-            this.pauseOnExceptionsCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pauseOnExceptionsCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.pauseOnExceptionsCheckBox.Name = "pauseOnExceptionsCheckBox";
             this.pauseOnExceptionsCheckBox.Size = new System.Drawing.Size(329, 29);
             this.pauseOnExceptionsCheckBox.TabIndex = 0;
@@ -789,9 +811,9 @@ namespace RecurringIntegrationsScheduler.Forms
             this.groupBoxButtons.Controls.Add(this.addJobButton);
             this.groupBoxButtons.Controls.Add(this.cancelButton);
             this.groupBoxButtons.Location = new System.Drawing.Point(24, 1075);
-            this.groupBoxButtons.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxButtons.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxButtons.Name = "groupBoxButtons";
-            this.groupBoxButtons.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxButtons.Padding = new System.Windows.Forms.Padding(4);
             this.groupBoxButtons.Size = new System.Drawing.Size(852, 89);
             this.groupBoxButtons.TabIndex = 11;
             this.groupBoxButtons.TabStop = false;
@@ -799,7 +821,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // addJobButton
             // 
             this.addJobButton.Location = new System.Drawing.Point(430, 30);
-            this.addJobButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.addJobButton.Margin = new System.Windows.Forms.Padding(4);
             this.addJobButton.Name = "addJobButton";
             this.addJobButton.Size = new System.Drawing.Size(198, 41);
             this.addJobButton.TabIndex = 2;
@@ -810,45 +832,13 @@ namespace RecurringIntegrationsScheduler.Forms
             // cancelButton
             // 
             this.cancelButton.Location = new System.Drawing.Point(647, 30);
-            this.cancelButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cancelButton.Margin = new System.Windows.Forms.Padding(4);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(198, 41);
             this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.CancelButton_Click);
-            // 
-            // intervalLabel
-            // 
-            this.intervalLabel.Location = new System.Drawing.Point(16, 549);
-            this.intervalLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.intervalLabel.Name = "intervalLabel";
-            this.intervalLabel.Size = new System.Drawing.Size(273, 77);
-            this.intervalLabel.TabIndex = 26;
-            this.intervalLabel.Text = "Delay between attempts to download exported file (seconds)";
-            // 
-            // numericUpDownInterval
-            // 
-            this.numericUpDownInterval.Location = new System.Drawing.Point(298, 576);
-            this.numericUpDownInterval.Margin = new System.Windows.Forms.Padding(4);
-            this.numericUpDownInterval.Maximum = new decimal(new int[] {
-            3600,
-            0,
-            0,
-            0});
-            this.numericUpDownInterval.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numericUpDownInterval.Name = "numericUpDownInterval";
-            this.numericUpDownInterval.Size = new System.Drawing.Size(105, 29);
-            this.numericUpDownInterval.TabIndex = 25;
-            this.numericUpDownInterval.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             // 
             // DownloadJob
             // 
@@ -876,6 +866,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.Load += new System.EventHandler(this.DownloadJobForm_Load);
             this.jobDetailsGroupBox.ResumeLayout(false);
             this.jobDetailsGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInterval)).EndInit();
             this.axDetailsGroupBox.ResumeLayout(false);
             this.axDetailsGroupBox.PerformLayout();
             this.authMethodPanel.ResumeLayout(false);
@@ -891,7 +882,6 @@ namespace RecurringIntegrationsScheduler.Forms
             this.groupBoxExceptions.ResumeLayout(false);
             this.groupBoxExceptions.PerformLayout();
             this.groupBoxButtons.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInterval)).EndInit();
             this.ResumeLayout(false);
 
         }

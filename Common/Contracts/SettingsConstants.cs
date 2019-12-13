@@ -8,7 +8,6 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
     /// </summary>
     public static class SettingsConstants
     {
-        #region Common settings
         /// <summary>
         /// The AOS URI
         /// </summary>
@@ -168,9 +167,7 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         /// The execution monitor job
         /// </summary>
         public const string ExecutionJob = "RecurringIntegrationsScheduler.Job.ExecutionMonitor";
-        #endregion
 
-        #region Upload Job settings
         /// <summary>
         /// Input folder
         /// </summary>
@@ -225,9 +222,7 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         /// Reverse order
         /// </summary>
         public const string ReverseOrder = "ReverseOrder";
-        #endregion
 
-        #region Processing Job settings
         /// <summary>
         /// Processing success folder
         /// </summary>
@@ -237,9 +232,7 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         /// Processing errors folder
         /// </summary>
         public const string ProcessingErrorsDir = "ProcessingErrorsDir";
-        #endregion
 
-        #region Download Job settings
         /// <summary>
         /// Download success folder
         /// </summary>
@@ -269,9 +262,7 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         /// Upload in order
         /// </summary>
         public const string UploadInOrder = "UploadInOrder";
-        #endregion
 
-        #region Import Job settings
         /// <summary>
         /// Is execution job present
         /// </summary>
@@ -296,13 +287,10 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         /// Package template
         /// </summary>
         public const string PackageTemplate = "PackageTemplate";
-        #endregion
 
-        #region Execution Job settings
         /// <summary>
         /// Get import target error keys file
         /// </summary>
         public const string GetImportTargetErrorKeysFile = "GetImportTargetErrorKeysFile";
-        #endregion
     }
 }

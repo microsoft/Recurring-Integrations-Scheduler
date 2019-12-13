@@ -32,6 +32,8 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UploadJob));
             this.jobDetailsGroupBox = new System.Windows.Forms.GroupBox();
+            this.numericUpDownIntervalUploads = new System.Windows.Forms.NumericUpDown();
+            this.labelInterval = new System.Windows.Forms.Label();
             this.processingErrorsFolderBrowserButton = new System.Windows.Forms.Button();
             this.processingErrorsFolderTextBox = new System.Windows.Forms.TextBox();
             this.processingErrorsFolderLabel = new System.Windows.Forms.Label();
@@ -129,9 +131,10 @@ namespace RecurringIntegrationsScheduler.Forms
             this.groupBoxButtons = new System.Windows.Forms.GroupBox();
             this.addJobButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.numericUpDownInterval = new System.Windows.Forms.NumericUpDown();
-            this.labelInterval = new System.Windows.Forms.Label();
+            this.numericUpDownStatusCheckInterval = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
             this.jobDetailsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownIntervalUploads)).BeginInit();
             this.axDetailsGroupBox.SuspendLayout();
             this.authMethodPanel.SuspendLayout();
             this.recurrenceGroupBox.SuspendLayout();
@@ -145,12 +148,12 @@ namespace RecurringIntegrationsScheduler.Forms
             ((System.ComponentModel.ISupportInitialize)(this.retriesCountUpDown)).BeginInit();
             this.groupBoxExceptions.SuspendLayout();
             this.groupBoxButtons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInterval)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStatusCheckInterval)).BeginInit();
             this.SuspendLayout();
             // 
             // jobDetailsGroupBox
             // 
-            this.jobDetailsGroupBox.Controls.Add(this.numericUpDownInterval);
+            this.jobDetailsGroupBox.Controls.Add(this.numericUpDownIntervalUploads);
             this.jobDetailsGroupBox.Controls.Add(this.labelInterval);
             this.jobDetailsGroupBox.Controls.Add(this.processingErrorsFolderBrowserButton);
             this.jobDetailsGroupBox.Controls.Add(this.processingErrorsFolderTextBox);
@@ -190,6 +193,29 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobDetailsGroupBox.TabIndex = 0;
             this.jobDetailsGroupBox.TabStop = false;
             this.jobDetailsGroupBox.Text = "Job details";
+            // 
+            // numericUpDownIntervalUploads
+            // 
+            this.numericUpDownIntervalUploads.Location = new System.Drawing.Point(290, 884);
+            this.numericUpDownIntervalUploads.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.numericUpDownIntervalUploads.Maximum = new decimal(new int[] {
+            3600,
+            0,
+            0,
+            0});
+            this.numericUpDownIntervalUploads.Name = "numericUpDownIntervalUploads";
+            this.numericUpDownIntervalUploads.Size = new System.Drawing.Size(121, 29);
+            this.numericUpDownIntervalUploads.TabIndex = 30;
+            // 
+            // labelInterval
+            // 
+            this.labelInterval.AutoSize = true;
+            this.labelInterval.Location = new System.Drawing.Point(13, 888);
+            this.labelInterval.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelInterval.Name = "labelInterval";
+            this.labelInterval.Size = new System.Drawing.Size(270, 25);
+            this.labelInterval.TabIndex = 29;
+            this.labelInterval.Text = "Delay between uploads (sec.)";
             // 
             // processingErrorsFolderBrowserButton
             // 
@@ -679,7 +705,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.pauseIndefinitelyCheckBox.AutoSize = true;
             this.pauseIndefinitelyCheckBox.Location = new System.Drawing.Point(17, 31);
-            this.pauseIndefinitelyCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pauseIndefinitelyCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.pauseIndefinitelyCheckBox.Name = "pauseIndefinitelyCheckBox";
             this.pauseIndefinitelyCheckBox.Size = new System.Drawing.Size(221, 29);
             this.pauseIndefinitelyCheckBox.TabIndex = 0;
@@ -915,6 +941,8 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             // processingJobGroupBox
             // 
+            this.processingJobGroupBox.Controls.Add(this.numericUpDownStatusCheckInterval);
+            this.processingJobGroupBox.Controls.Add(this.label3);
             this.processingJobGroupBox.Controls.Add(this.procJobTriggerTypePanel);
             this.processingJobGroupBox.Controls.Add(this.procJobCronExpressionLabel);
             this.processingJobGroupBox.Controls.Add(this.procJobCronExpressionTextBox);
@@ -929,7 +957,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.processingJobGroupBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.processingJobGroupBox.Name = "processingJobGroupBox";
             this.processingJobGroupBox.Padding = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.processingJobGroupBox.Size = new System.Drawing.Size(422, 233);
+            this.processingJobGroupBox.Size = new System.Drawing.Size(422, 288);
             this.processingJobGroupBox.TabIndex = 4;
             this.processingJobGroupBox.TabStop = false;
             this.processingJobGroupBox.Text = "Processing monitor job";
@@ -1079,9 +1107,9 @@ namespace RecurringIntegrationsScheduler.Forms
             this.fileSelectionGroupBox.Controls.Add(this.orderByLabel);
             this.fileSelectionGroupBox.Controls.Add(this.searchPatternLabel);
             this.fileSelectionGroupBox.Location = new System.Drawing.Point(458, 24);
-            this.fileSelectionGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.fileSelectionGroupBox.Margin = new System.Windows.Forms.Padding(4);
             this.fileSelectionGroupBox.Name = "fileSelectionGroupBox";
-            this.fileSelectionGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.fileSelectionGroupBox.Padding = new System.Windows.Forms.Padding(4);
             this.fileSelectionGroupBox.Size = new System.Drawing.Size(422, 179);
             this.fileSelectionGroupBox.TabIndex = 5;
             this.fileSelectionGroupBox.TabStop = false;
@@ -1092,7 +1120,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.orderByComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.orderByComboBox.FormattingEnabled = true;
             this.orderByComboBox.Location = new System.Drawing.Point(106, 76);
-            this.orderByComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.orderByComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.orderByComboBox.Name = "orderByComboBox";
             this.orderByComboBox.Size = new System.Drawing.Size(305, 32);
             this.orderByComboBox.TabIndex = 5;
@@ -1134,7 +1162,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // searchPatternTextBox
             // 
             this.searchPatternTextBox.Location = new System.Drawing.Point(158, 34);
-            this.searchPatternTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.searchPatternTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.searchPatternTextBox.Name = "searchPatternTextBox";
             this.searchPatternTextBox.Size = new System.Drawing.Size(253, 29);
             this.searchPatternTextBox.TabIndex = 3;
@@ -1176,7 +1204,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.retryPolicyGroupBox.Controls.Add(this.retriesCountUpDown);
             this.retryPolicyGroupBox.Controls.Add(this.label2);
             this.retryPolicyGroupBox.Controls.Add(this.label1);
-            this.retryPolicyGroupBox.Location = new System.Drawing.Point(457, 805);
+            this.retryPolicyGroupBox.Location = new System.Drawing.Point(457, 868);
             this.retryPolicyGroupBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.retryPolicyGroupBox.Name = "retryPolicyGroupBox";
             this.retryPolicyGroupBox.Padding = new System.Windows.Forms.Padding(5, 6, 5, 6);
@@ -1245,9 +1273,9 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.groupBoxExceptions.Controls.Add(this.pauseOnExceptionsCheckBox);
             this.groupBoxExceptions.Location = new System.Drawing.Point(891, 877);
-            this.groupBoxExceptions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxExceptions.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxExceptions.Name = "groupBoxExceptions";
-            this.groupBoxExceptions.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxExceptions.Padding = new System.Windows.Forms.Padding(4);
             this.groupBoxExceptions.Size = new System.Drawing.Size(422, 78);
             this.groupBoxExceptions.TabIndex = 10;
             this.groupBoxExceptions.TabStop = false;
@@ -1259,7 +1287,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.pauseOnExceptionsCheckBox.Checked = true;
             this.pauseOnExceptionsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.pauseOnExceptionsCheckBox.Location = new System.Drawing.Point(17, 31);
-            this.pauseOnExceptionsCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pauseOnExceptionsCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.pauseOnExceptionsCheckBox.Name = "pauseOnExceptionsCheckBox";
             this.pauseOnExceptionsCheckBox.Size = new System.Drawing.Size(329, 29);
             this.pauseOnExceptionsCheckBox.TabIndex = 0;
@@ -1270,10 +1298,10 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.groupBoxButtons.Controls.Add(this.addJobButton);
             this.groupBoxButtons.Controls.Add(this.cancelButton);
-            this.groupBoxButtons.Location = new System.Drawing.Point(24, 956);
-            this.groupBoxButtons.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxButtons.Location = new System.Drawing.Point(24, 1020);
+            this.groupBoxButtons.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxButtons.Name = "groupBoxButtons";
-            this.groupBoxButtons.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxButtons.Padding = new System.Windows.Forms.Padding(4);
             this.groupBoxButtons.Size = new System.Drawing.Size(1288, 88);
             this.groupBoxButtons.TabIndex = 12;
             this.groupBoxButtons.TabStop = false;
@@ -1281,7 +1309,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // addJobButton
             // 
             this.addJobButton.Location = new System.Drawing.Point(867, 30);
-            this.addJobButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.addJobButton.Margin = new System.Windows.Forms.Padding(4);
             this.addJobButton.Name = "addJobButton";
             this.addJobButton.Size = new System.Drawing.Size(198, 41);
             this.addJobButton.TabIndex = 2;
@@ -1292,7 +1320,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // cancelButton
             // 
             this.cancelButton.Location = new System.Drawing.Point(1083, 30);
-            this.cancelButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cancelButton.Margin = new System.Windows.Forms.Padding(4);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(198, 41);
             this.cancelButton.TabIndex = 1;
@@ -1300,38 +1328,28 @@ namespace RecurringIntegrationsScheduler.Forms
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
-            // numericUpDownInterval
+            // numericUpDownStatusCheckInterval
             // 
-            this.numericUpDownInterval.Location = new System.Drawing.Point(290, 884);
-            this.numericUpDownInterval.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.numericUpDownInterval.Maximum = new decimal(new int[] {
+            this.numericUpDownStatusCheckInterval.Location = new System.Drawing.Point(289, 228);
+            this.numericUpDownStatusCheckInterval.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.numericUpDownStatusCheckInterval.Maximum = new decimal(new int[] {
             3600,
             0,
             0,
             0});
-            this.numericUpDownInterval.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numericUpDownInterval.Name = "numericUpDownInterval";
-            this.numericUpDownInterval.Size = new System.Drawing.Size(121, 29);
-            this.numericUpDownInterval.TabIndex = 30;
-            this.numericUpDownInterval.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.numericUpDownStatusCheckInterval.Name = "numericUpDownStatusCheckInterval";
+            this.numericUpDownStatusCheckInterval.Size = new System.Drawing.Size(121, 29);
+            this.numericUpDownStatusCheckInterval.TabIndex = 40;
             // 
-            // labelInterval
+            // label3
             // 
-            this.labelInterval.AutoSize = true;
-            this.labelInterval.Location = new System.Drawing.Point(13, 888);
-            this.labelInterval.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.labelInterval.Name = "labelInterval";
-            this.labelInterval.Size = new System.Drawing.Size(273, 25);
-            this.labelInterval.TabIndex = 29;
-            this.labelInterval.Text = "Delay between files (seconds)";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 232);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(247, 25);
+            this.label3.TabIndex = 39;
+            this.label3.Text = "Status check interval (sec.)";
             // 
             // UploadJob
             // 
@@ -1339,7 +1357,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1315, 1055);
+            this.ClientSize = new System.Drawing.Size(1315, 1121);
             this.Controls.Add(this.groupBoxButtons);
             this.Controls.Add(this.groupBoxExceptions);
             this.Controls.Add(this.retryPolicyGroupBox);
@@ -1362,6 +1380,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.Load += new System.EventHandler(this.UploadJobForm_Load);
             this.jobDetailsGroupBox.ResumeLayout(false);
             this.jobDetailsGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownIntervalUploads)).EndInit();
             this.axDetailsGroupBox.ResumeLayout(false);
             this.axDetailsGroupBox.PerformLayout();
             this.authMethodPanel.ResumeLayout(false);
@@ -1385,7 +1404,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.groupBoxExceptions.ResumeLayout(false);
             this.groupBoxExceptions.PerformLayout();
             this.groupBoxButtons.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInterval)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStatusCheckInterval)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1491,7 +1510,9 @@ namespace RecurringIntegrationsScheduler.Forms
         private System.Windows.Forms.GroupBox groupBoxButtons;
         private System.Windows.Forms.Button addJobButton;
         private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.NumericUpDown numericUpDownInterval;
+        private System.Windows.Forms.NumericUpDown numericUpDownIntervalUploads;
         private System.Windows.Forms.Label labelInterval;
+        private System.Windows.Forms.NumericUpDown numericUpDownStatusCheckInterval;
+        private System.Windows.Forms.Label label3;
     }
 }

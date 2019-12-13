@@ -22,12 +22,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         private readonly Settings _settings;
         private readonly HttpClient _httpClient;
         private readonly AuthenticationHelper _authenticationHelper;
-        private Uri _enqueueUri;
-        private Uri _dequeueUri;
-        private Uri _ackUri;
-
         private bool _disposed;
-
         private readonly AsyncRetryPolicy _retryPolicy;
 
         /// <summary>
@@ -144,32 +139,29 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>
         /// Data job enqueue request Uri
         /// </returns>
-        public Uri GetEnqueueUri()
+        public Uri GetEnqueueUri(string legalEntity = null)
         {
-            if (_enqueueUri != null)
-                return _enqueueUri;
+            var uploadSettings = _settings as UploadJobSettings;
+            var enqueueUri = new UriBuilder(GetAosRequestUri("api/connector/enqueue/" + uploadSettings.ActivityId));
 
-            if (_settings is UploadJobSettings uploadSettings)
+            if (!string.IsNullOrEmpty(legalEntity))
             {
-                var enqueueUri = new UriBuilder(GetAosRequestUri("api/connector/enqueue/" + uploadSettings.ActivityId));
-
-                if (uploadSettings.IsDataPackage)
-                {
-                    if (!string.IsNullOrEmpty(uploadSettings.Company))
-                        enqueueUri.Query = "company=" + uploadSettings.Company;
-                }
-                else // Individual file
-                {
-                    // entity name is required
-                    var enqueueQuery = "entity=" + uploadSettings.EntityName;
-                    // Append company if it is specified
-                    if (!string.IsNullOrEmpty(uploadSettings.Company))
-                        enqueueQuery += "&company=" + uploadSettings.Company;
-                    enqueueUri.Query = enqueueQuery;
-                }
-                return _enqueueUri = enqueueUri.Uri;
+                enqueueUri.Query = "company=" + legalEntity;
             }
-            return null;
+            else
+            {
+                if (!string.IsNullOrEmpty(uploadSettings.Company))
+                {
+                    enqueueUri.Query = "company=" + uploadSettings.Company;
+                }
+            }
+
+            if (!uploadSettings.IsDataPackage)// Individual file
+            {
+                // entity name is required
+                enqueueUri.Query += "entity=" + uploadSettings.EntityName;
+            }
+            return enqueueUri.Uri;
         }
 
         /// <summary>
@@ -180,15 +172,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </returns>
         public Uri GetDequeueUri()
         {
-            if (_dequeueUri != null)
-                return _dequeueUri;
-
-            if (_settings is DownloadJobSettings downloadSettings)
-            {
-                var dequeueUri = new UriBuilder(GetAosRequestUri("api/connector/dequeue/" + downloadSettings.ActivityId));
-                return _dequeueUri = dequeueUri.Uri;
-            }
-            return null;
+            var downloadSettings = _settings as DownloadJobSettings;
+            return new UriBuilder(GetAosRequestUri("api/connector/dequeue/" + downloadSettings.ActivityId)).Uri;
         }
 
         /// <summary>
@@ -199,15 +184,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </returns>
         public Uri GetAckUri()
         {
-            if (_ackUri != null)
-                return _ackUri;
-
-            if (_settings is DownloadJobSettings downloadSettings)
-            {
-                var acknowledgeUri = new UriBuilder(GetAosRequestUri("api/connector/ack/" + downloadSettings.ActivityId));
-                return _ackUri = acknowledgeUri.Uri;
-            }
-            return null;
+            var downloadSettings = _settings as DownloadJobSettings;
+            return new UriBuilder(GetAosRequestUri("api/connector/ack/" + downloadSettings.ActivityId)).Uri;
         }
 
         /// <summary>
@@ -219,15 +197,12 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </returns>
         public Uri GetJobStatusUri(string jobId)
         {
-            if (_settings is ProcessingJobSettings processingJobSettings)
+            var processingJobSettings = _settings as ProcessingJobSettings;
+            var jobStatusUri = new UriBuilder(GetAosRequestUri("api/connector/jobstatus/" + processingJobSettings.ActivityId))
             {
-                var jobStatusUri = new UriBuilder(GetAosRequestUri("api/connector/jobstatus/" + processingJobSettings.ActivityId))
-                {
-                    Query = "jobId=" + jobId.Replace(@"""", "")
-                };
-                return jobStatusUri.Uri;
-            }
-            return null;
+                Query = "jobId=" + jobId.Replace(@"""", "")
+            };
+            return jobStatusUri.Uri;
         }
 
         /// <summary>
@@ -528,14 +503,14 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         }
 
         private Uri GetAosRequestUri(string requestRelativePath) 
-        { 
-            var aosUri = new Uri(_settings.AosUri); 
-            var builder = new UriBuilder(aosUri) 
-            { 
-                Path = string.Concat(aosUri.AbsolutePath.TrimEnd('/'), "/", requestRelativePath.TrimStart('/')) 
-            }; 
-            return builder.Uri; 
-        } 
+             { 
+                    var aosUri = new Uri(_settings.AosUri); 
+                    var builder = new UriBuilder(aosUri) 
+                    { 
+                           Path = string.Concat(aosUri.AbsolutePath.TrimEnd('/'), "/", requestRelativePath.TrimStart('/')) 
+                    }; 
+                    return builder.Uri; 
+             } 
 
         /// <summary>
         /// Dispose

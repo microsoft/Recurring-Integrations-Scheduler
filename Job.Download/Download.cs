@@ -142,7 +142,7 @@ namespace RecurringIntegrationsScheduler.Job
                     }
                     else
                     {
-                        Log.Error("Uknown exception", ex);
+                        Log.Error("Unknown exception", ex);
                     }
 
                     while (ex.InnerException != null)
@@ -225,7 +225,6 @@ namespace RecurringIntegrationsScheduler.Job
         /// <exception cref="System.Exception"></exception>
         private async Task ProcessDownloadQueue()
         {
-            //Stream downloadedStream = null;
             var fileCount = 0;
             while (DownloadQueue.TryDequeue(out DataMessage dataMessage))
             {
@@ -236,7 +235,12 @@ namespace RecurringIntegrationsScheduler.Job
 
                 using (var downloadedStream = await response.Content.ReadAsStreamAsync())
                 {
+                    if(fileCount > 0 && _settings.Interval > 0) //Only delay after first file and never after last.
+                    {
+                        System.Threading.Thread.Sleep(_settings.Interval * 1000);
+                    }
                     fileCount++;
+
                     //Downloaded file has no file name. We need to create it.
                     //It will be timestamp followed by number in this download batch.
                     var fileName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-ffff}-{fileCount:D6}";
@@ -255,8 +259,6 @@ namespace RecurringIntegrationsScheduler.Job
 
                 if (_settings.UnzipPackage)
                     _retryPolicyForIo.Execute(() => FileOperationsHelper.UnzipPackage(dataMessage.FullPath, _settings.DeletePackage, _settings.AddTimestamp));
-
-                System.Threading.Thread.Sleep(_settings.Interval * 1000);
             }
         }
 

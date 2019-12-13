@@ -135,7 +135,7 @@ namespace RecurringIntegrationsScheduler.Job
                     }
                     else
                     {
-                        Log.Error("Uknown exception", ex);
+                        Log.Error("Unknown exception", ex);
                     }
 
                     while (ex.InnerException != null)
@@ -187,7 +187,7 @@ namespace RecurringIntegrationsScheduler.Job
         {
             using (_httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp))
             {
-                var firstFile = true;
+                var fileCount = 0;
                 string fileNameInPackage = "";
                 FileStream zipToOpen = null;
                 ZipArchive archive = null;
@@ -205,20 +205,19 @@ namespace RecurringIntegrationsScheduler.Job
                 {
                     try
                     {
-                        string tempFileName = "";
-                        if (!firstFile)
+                        if (fileCount > 0 && _settings.Interval > 0) //Only delay after first file and never after last.
                         {
                             System.Threading.Thread.Sleep(_settings.Interval * 1000);
                         }
-                        else
-                        {
-                            firstFile = false;
-                        }
+                        fileCount++;
+
                         var sourceStream = _retryPolicyForIo.Execute(() => FileOperationsHelper.Read(dataMessage.FullPath));
                         if (sourceStream == null) continue;//Nothing to do here
 
+                        string tempFileName = "";
+
                         //If we need to "wrap" file in package envelope
-                        if (!String.IsNullOrEmpty(_settings.PackageTemplate))
+                        if (!string.IsNullOrEmpty(_settings.PackageTemplate))
                         {
                             using (zipToOpen = new FileStream(_settings.PackageTemplate, FileMode.Open))
                             {
@@ -239,12 +238,10 @@ namespace RecurringIntegrationsScheduler.Job
                                     fileNameInPackage = UpdateManifestFile(archive, dataMessage, fileNameInPackage);
 
                                     var importedFile = archive.CreateEntry(fileNameInPackage, CompressionLevel.Fastest);
-                                    using (var entryStream = importedFile.Open())
-                                    {
-                                        sourceStream.CopyTo(entryStream);
-                                        sourceStream.Close();
-                                        sourceStream.Dispose();
-                                    }
+                                    using var entryStream = importedFile.Open();
+                                    sourceStream.CopyTo(entryStream);
+                                    sourceStream.Close();
+                                    sourceStream.Dispose();
                                 }
                                 sourceStream = _retryPolicyForIo.Execute(() => FileOperationsHelper.Read(tempFileName));
                             }
@@ -254,7 +251,7 @@ namespace RecurringIntegrationsScheduler.Job
 
                         // Get blob url and id. Returns in json format
                         var response = await _httpClientHelper.GetAzureWriteUrl();
-                        if(String.IsNullOrEmpty(response))
+                        if(string.IsNullOrEmpty(response))
                         {
                             Log.ErrorFormat(CultureInfo.InvariantCulture, "Method GetAzureWriteUrl returned empty string");
                             continue;
@@ -270,7 +267,7 @@ namespace RecurringIntegrationsScheduler.Job
                         {
                             sourceStream.Close();
                             sourceStream.Dispose();
-                            if (!String.IsNullOrEmpty(_settings.PackageTemplate))
+                            if (!string.IsNullOrEmpty(_settings.PackageTemplate))
                             {
                                 _retryPolicyForIo.Execute(() => FileOperationsHelper.Delete(tempFileName));
                             }
@@ -349,7 +346,6 @@ namespace RecurringIntegrationsScheduler.Job
                             zipToOpen.Close();
                             zipToOpen.Dispose();
                         }
-
                         archive?.Dispose();
                     }
                 }
@@ -358,26 +354,21 @@ namespace RecurringIntegrationsScheduler.Job
 
         private string GetFileNameInPackage()
         {
-            var manifestPath = "";
-            using (var package = ZipFile.OpenRead(_settings.PackageTemplate))
+            using var package = ZipFile.OpenRead(_settings.PackageTemplate);
+            foreach (var entry in package.Entries)
             {
-                foreach (var entry in package.Entries)
+                if (entry.FullName.Equals("Manifest.xml", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (entry.FullName.Equals("Manifest.xml", StringComparison.OrdinalIgnoreCase))
-                    {
-                        manifestPath = Path.Combine(Path.GetTempPath(), $"{_context.JobDetail.Key}-{entry.FullName}");
-                        entry.ExtractToFile(manifestPath, true);
-                    }
+                    var manifestPath = Path.Combine(Path.GetTempPath(), $"{_context.JobDetail.Key}-{entry.FullName}");
+                    entry.ExtractToFile(manifestPath, true);
+
+                    var doc = new XmlDocument();
+                    using var manifestFile = new StreamReader(manifestPath);
+                    doc.Load(new XmlTextReader(manifestFile) { Namespaces = false });
+                    return doc.SelectSingleNode("//InputFilePath[1]")?.InnerText;
                 }
             }
-            var doc = new XmlDocument();
-            string fileName;
-            using (var manifestFile = new StreamReader(manifestPath))
-            {
-                doc.Load(new XmlTextReader(manifestFile) { Namespaces = false });
-                fileName = doc.SelectSingleNode("//InputFilePath[1]")?.InnerText;
-            }
-            return fileName;
+            return null;
         }
 
         /// <summary>
@@ -413,12 +404,10 @@ namespace RecurringIntegrationsScheduler.Job
                 tempXmlDocManifest.SelectSingleNode("//InputFilePath[1]").InnerText = Path.GetFileName(dataMessage.FullPath);
 
                 // Save the document to a file and auto-indent the output.
-                using (XmlTextWriter writer = new XmlTextWriter(tempManifestFileNameNew, null))
-                {
-                    writer.Namespaces = false;
-                    writer.Formatting = System.Xml.Formatting.Indented;
-                    tempXmlDocManifest.Save(writer);
-                }
+                using XmlTextWriter writer = new XmlTextWriter(tempManifestFileNameNew, null);
+                writer.Namespaces = false;
+                writer.Formatting = System.Xml.Formatting.Indented;
+                tempXmlDocManifest.Save(writer);
             }
 
             // Delete the Manifest.xml from the archive file

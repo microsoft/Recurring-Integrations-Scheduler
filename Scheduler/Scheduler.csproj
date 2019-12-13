@@ -195,16 +195,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Settings\AadApplication.cs" />
-    <Compile Include="Settings\AadApplications.cs" />
-    <Compile Include="Settings\JobGroup.cs" />
-    <Compile Include="Settings\JobGroups.cs" />
-    <Compile Include="Settings\User.cs" />
-    <Compile Include="Settings\Instance.cs" />
-    <Compile Include="Settings\Users.cs" />
-    <Compile Include="Settings\DataJob.cs" />
-    <Compile Include="Settings\Instances.cs" />
-    <Compile Include="Settings\DataJobs.cs" />
+    <Compile Include="Settings\Settings.cs" />
     <Compile Include="Forms\Parameters.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -316,7 +307,7 @@
     <None Include="Assets\Folder open_32xMD_exp.png" />
     <None Include="Assets\Add_16xMD.png" />
     <None Include="Assets\Edit_16xMD.png" />
-    <Content Include="Assets\RecurringIntegrationsScheduler.ico" />
+    <None Include="Assets\RecurringIntegrationsScheduler.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

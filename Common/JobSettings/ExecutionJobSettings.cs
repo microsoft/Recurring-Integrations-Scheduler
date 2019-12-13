@@ -90,10 +90,6 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             PackageTemplate = dataMap.GetString(SettingsConstants.PackageTemplate);
 
             StatusCheckInterval = dataMap.GetInt(SettingsConstants.StatusCheckInterval);
-            if (StatusCheckInterval < 1) //Default status check interval is 1 second.
-            {
-                StatusCheckInterval = 1;
-            }
         }
 
         #region Members
