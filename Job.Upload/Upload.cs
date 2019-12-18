@@ -194,7 +194,7 @@ namespace RecurringIntegrationsScheduler.Job
                         }
                         fileCount++;
 
-                        var sourceStream = _retryPolicyForIo.Execute(() => FileOperationsHelper.Read(dataMessage.FullPath));
+                        var sourceStream = _retryPolicyForIo.Execute(() => FileOperationsHelper.Read(dataMessage.FullPath, FileShare.None));
                         if (sourceStream == null) continue;//Nothing to do here
 
                         sourceStream.Seek(0, SeekOrigin.Begin);
