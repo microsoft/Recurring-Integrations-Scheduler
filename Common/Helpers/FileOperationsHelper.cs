@@ -34,16 +34,22 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </summary>
         /// <param name="filePath">File path</param>
         /// <returns>Stream</returns>
-        public static Stream Read(string filePath)
+        public static Stream Read(string filePath, FileShare fileShare = FileShare.ReadWrite)
         {
             if (File.Exists(filePath))
             {
-                return new FileStream(filePath,
-                    FileMode.Open,
-                    FileAccess.ReadWrite,
-                    FileShare.ReadWrite,
-                    4096,
-                    true);
+                try
+                {
+                    return new FileStream(filePath,
+                        FileMode.Open,
+                        FileAccess.ReadWrite,
+                        fileShare,
+                        4096,
+                        true);
+                }
+                catch (IOException)
+                {                    
+                }
             }
             return null;
          }
