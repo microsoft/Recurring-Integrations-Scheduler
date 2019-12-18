@@ -19,7 +19,7 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -70,6 +70,33 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Job: {0}. Checking for error keys file for data entity {1}..
+        /// </summary>
+        internal static string Job_0_Checking_for_error_keys_for_data_entity_1 {
+            get {
+                return ResourceManager.GetString("Job_0_Checking_for_error_keys_for_data_entity_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job: {0}. Checking if error keys file was generated..
+        /// </summary>
+        internal static string Job_0_Checking_if_error_keys_file_was_generated {
+            get {
+                return ResourceManager.GetString("Job_0_Checking_if_error_keys_file_was_generated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job: {0} Download of error keys file failed. Exception : {1}.
+        /// </summary>
+        internal static string Job_0_download_of_error_keys_file_failed_1 {
+            get {
+                return ResourceManager.GetString("Job_0_download_of_error_keys_file_failed_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Job: {0} ended..
         /// </summary>
         internal static string Job_0_ended {
@@ -84,6 +111,15 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         internal static string Job_0_execution_status_check_request_failed_Status_code_1_Reason_2 {
             get {
                 return ResourceManager.GetString("Job_0_execution_status_check_request_failed_Status_code_1_Reason_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job: {0} ExecutionId: {1} import status check returned: {2}.
+        /// </summary>
+        internal static string Job_0_ExecutionId_1_status_check_returned_2 {
+            get {
+                return ResourceManager.GetString("Job_0_ExecutionId_1_status_check_returned_2", resourceCulture);
             }
         }
         
@@ -129,6 +165,15 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         internal static string Job_0_File_1_found_in_processing_location_and_added_to_queue_for_status_check {
             get {
                 return ResourceManager.GetString("Job_0_File_1_found_in_processing_location_and_added_to_queue_for_status_check", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job: {0}. Looking for data entities in manifest file {1}..
+        /// </summary>
+        internal static string Job_0_Looking_for_data_entities_in_manifest_file_1 {
+            get {
+                return ResourceManager.GetString("Job_0_Looking_for_data_entities_in_manifest_file_1", resourceCulture);
             }
         }
         

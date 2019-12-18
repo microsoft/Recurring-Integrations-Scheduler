@@ -150,8 +150,8 @@
   <data name="Job_0_File_dequeued_successfully_Download_location_1" xml:space="preserve">
     <value>Job: {0}. File dequeued successfully. Download location: {1}</value>
   </data>
-  <data name="Download_job_0_failed" xml:space="preserve">
-    <value>Export job: {0} failed</value>
+  <data name="Job_0_failed" xml:space="preserve">
+    <value>Job: {0} failed</value>
   </data>
   <data name="Job_0_ended" xml:space="preserve">
     <value>Job: {0} ended.</value>
@@ -185,5 +185,11 @@
   </data>
   <data name="Job_0_was_paused_indefinitely" xml:space="preserve">
     <value>Job: {0} was paused indefinitely.</value>
+  </data>
+  <data name="Job_0_Checking_for_status_reached_1_attempts_Status_is_2_Exiting" xml:space="preserve">
+    <value>Job: {0}. Checking for status reached {1} attempts. Status is {2}. Exiting...</value>
+  </data>
+  <data name="Job_0_Request_to_download_exported_package_reached_1_attempts_Exiting" xml:space="preserve">
+    <value>Job: {0}. Request to download exported package reached {1} attempts. Exiting...</value>
   </data>
 </root>

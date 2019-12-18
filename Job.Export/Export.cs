@@ -51,7 +51,7 @@ namespace RecurringIntegrationsScheduler.Job
         /// <summary>
         /// Retry policy for HTTP operations
         /// </summary>
-        private Policy _retryPolicyForHttp;
+        private Polly.Retry.AsyncRetryPolicy _retryPolicyForHttp;
 
         /// <summary>
         /// Called by the <see cref="T:Quartz.IScheduler" /> when a <see cref="T:Quartz.ITrigger" />
@@ -122,7 +122,7 @@ namespace RecurringIntegrationsScheduler.Job
                     }
                     else
                     {
-                        Log.Error("Uknown exception", ex);
+                        Log.Error("Unknown exception", ex);
                     }
 
                     while (ex.InnerException != null)
@@ -134,7 +134,7 @@ namespace RecurringIntegrationsScheduler.Job
                     }
                 }
                 if (context.Scheduler.SchedulerName != "Private")
-                    throw new JobExecutionException(string.Format(Resources.Download_job_0_failed, _context.JobDetail.Key), ex, false);
+                    throw new JobExecutionException(string.Format(Resources.Job_0_failed, _context.JobDetail.Key), ex, false);
 
                 if (!Log.IsDebugEnabled)
                     Log.Error(string.Format(Resources.Job_0_thrown_an_error_1, _context.JobDetail.Key, ex.Message));
@@ -159,31 +159,41 @@ namespace RecurringIntegrationsScheduler.Job
                 var attempt = 0;
                 do
                 {
+                    if (attempt > 0 && _settings.StatusCheckInterval > 0) //Only delay after first file and never after last.
+                    {
+                        System.Threading.Thread.Sleep(_settings.StatusCheckInterval * 1000);
+                    }
                     attempt++;
-                    if(attempt != 1)
-                        System.Threading.Thread.Sleep(_settings.Interval);
+
                     executionStatus = await _httpClientHelper.GetExecutionSummaryStatus(executionId);
                     if (Log.IsDebugEnabled)
                         Log.Debug(string.Format(Resources.Job_0_Checking_if_export_is_completed_Try_1_Status_2, _context.JobDetail.Key, attempt, executionStatus));
-                    if (attempt == 1000)
-                        break;
+                    if (attempt == 1000)//TODO hardcoded
+                    {
+                        throw new Exception(string.Format(Resources.Job_0_Checking_for_status_reached_1_attempts_Status_is_2_Exiting, _context.JobDetail.Key, attempt, executionStatus));
+                    }
                 }
-                while ((executionStatus == "NotRun" || executionStatus == "Executing" || executionStatus == "Bad request"));
+                while (executionStatus == "NotRun" || executionStatus == "Executing" || executionStatus == "Bad request");
 
                 if (executionStatus == "Succeeded" || executionStatus == "PartiallySucceeded")
                 {
-                    attempt = 0;
+                    attempt = 0;//Reset for get url request attempts
                     Uri packageUrl = null;
                     do
                     {
+                        if (attempt > 0 && _settings.Interval > 0) //Only delay after first file and never after last.
+                        {
+                            System.Threading.Thread.Sleep(_settings.Interval * 1000);
+                        }
                         attempt++;
-                        if (attempt != 1)
-                            System.Threading.Thread.Sleep(_settings.Interval);
+
                         packageUrl = await _httpClientHelper.GetExportedPackageUrl(executionId);
                         if (Log.IsDebugEnabled)
                             Log.Debug(string.Format(Resources.Job_0_Trying_to_get_exported_package_URL_Try_1, _context.JobDetail.Key, attempt));
-                        if (attempt == 100)
-                            break;
+                        if (attempt == 100)//TODO hardcoded
+                        {
+                            throw new Exception(string.Format(Resources.Job_0_Request_to_download_exported_package_reached_1_attempts_Exiting, _context.JobDetail.Key, attempt));
+                        }
                     }
                     while (packageUrl == null);
 
@@ -191,21 +201,19 @@ namespace RecurringIntegrationsScheduler.Job
                     if (!response.IsSuccessStatusCode)
                         throw new JobExecutionException(string.Format(Resources.Job_0_Download_failure_1, _context.JobDetail.Key, string.Format($"Status: {response.StatusCode}. Message: {response.Content}")));
 
-                    using (Stream downloadedStream = await response.Content.ReadAsStreamAsync())
+                    using Stream downloadedStream = await response.Content.ReadAsStreamAsync();
+                    var fileName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-ffff}.zip";
+                    var successPath = Path.Combine(_settings.DownloadSuccessDir, fileName);
+                    var dataMessage = new DataMessage()
                     {
-                        var fileName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-ffff}.zip";
-                        var successPath = Path.Combine(_settings.DownloadSuccessDir, fileName);
-                        var dataMessage = new DataMessage()
-                        {
-                            FullPath = successPath,
-                            Name = fileName,
-                            MessageStatus = MessageStatus.Succeeded
-                        };
-                        _retryPolicyForIo.Execute(() => FileOperationsHelper.Create(downloadedStream, dataMessage.FullPath));
+                        FullPath = successPath,
+                        Name = fileName,
+                        MessageStatus = MessageStatus.Succeeded
+                    };
+                    _retryPolicyForIo.Execute(() => FileOperationsHelper.Create(downloadedStream, dataMessage.FullPath));
 
-                        if (_settings.UnzipPackage)
-                            _retryPolicyForIo.Execute(() => FileOperationsHelper.UnzipPackage(dataMessage.FullPath, _settings.DeletePackage, _settings.AddTimestamp));
-                    }
+                    if (_settings.UnzipPackage)
+                        _retryPolicyForIo.Execute(() => FileOperationsHelper.UnzipPackage(dataMessage.FullPath, _settings.DeletePackage, _settings.AddTimestamp));
                 }
                 else if (executionStatus == "Unknown" || executionStatus == "Failed" || executionStatus == "Canceled")
                 {

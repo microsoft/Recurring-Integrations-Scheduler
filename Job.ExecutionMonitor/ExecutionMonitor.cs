@@ -4,16 +4,20 @@
 using log4net;
 using Polly;
 using Quartz;
+using Quartz.Util;
 using RecurringIntegrationsScheduler.Common.Contracts;
 using RecurringIntegrationsScheduler.Common.Helpers;
 using RecurringIntegrationsScheduler.Common.JobSettings;
 using RecurringIntegrationsScheduler.Job.Properties;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace RecurringIntegrationsScheduler.Job
 {
@@ -62,7 +66,7 @@ namespace RecurringIntegrationsScheduler.Job
         /// <summary>
         /// Retry policy for HTTP operations
         /// </summary>
-        private Policy _retryPolicyForHttp;
+        private Polly.Retry.AsyncRetryPolicy _retryPolicyForHttp;
 
         /// <summary>
         /// Called by the <see cref="T:Quartz.IScheduler" /> when a <see cref="T:Quartz.ITrigger" />
@@ -132,7 +136,7 @@ namespace RecurringIntegrationsScheduler.Job
                     }
                     else
                     {
-                        Log.Error("Uknown exception", ex);
+                        Log.Error("Unknown exception", ex);
                     }
 
                     while (ex.InnerException != null)
@@ -177,18 +181,23 @@ namespace RecurringIntegrationsScheduler.Job
         /// <returns></returns>
         private async Task ProcessEnqueuedQueue()
         {
+            var fileCount = 0;
             _httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp);
 
             while (EnqueuedJobs.TryDequeue(out DataMessage dataMessage))
             {
+                if (fileCount > 0 && _settings.StatusCheckInterval > 0) //Only delay after first file and never after last.
+                {
+                    System.Threading.Thread.Sleep(_settings.StatusCheckInterval * 1000);
+                }
+                fileCount++;
+
                 // Check status for current item with message id - item.Key
                 var jobStatusDetail = await _httpClientHelper.GetExecutionSummaryStatus(dataMessage.MessageId);
 
                 // If status was found and is not null,
                 if (jobStatusDetail != null)
-                    PostProcessMessage(jobStatusDetail, dataMessage);
-
-                System.Threading.Thread.Sleep(_settings.Interval);
+                    await PostProcessMessage(jobStatusDetail, dataMessage);
             }
         }
 
@@ -198,8 +207,11 @@ namespace RecurringIntegrationsScheduler.Job
         /// </summary>
         /// <param name="executionStatus">Execution status</param>
         /// <param name="dataMessage">Name of the file whose status is being processed</param>
-        private void PostProcessMessage(string executionStatus, DataMessage dataMessage)
+        private async Task PostProcessMessage(string executionStatus, DataMessage dataMessage)
         {
+            if (Log.IsDebugEnabled)
+                Log.DebugFormat(CultureInfo.InvariantCulture,
+                    string.Format(Resources.Job_0_ExecutionId_1_status_check_returned_2, _context.JobDetail.Key, dataMessage.MessageId, executionStatus));
             switch (executionStatus)
             {
                 case "Succeeded":
@@ -207,7 +219,7 @@ namespace RecurringIntegrationsScheduler.Job
                         // Move message file and delete processing status file
                         var processingSuccessDestination = Path.Combine(_settings.ProcessingSuccessDir, dataMessage.Name);
                         _retryPolicyForIo.Execute(() => FileOperationsHelper.MoveDataToTarget(dataMessage.FullPath, processingSuccessDestination, true, _settings.StatusFileExtension));
-                        CreateLinkToExecutionSummaryPage(dataMessage.MessageId, processingSuccessDestination);
+                        await CreateLinkToExecutionSummaryPage(dataMessage.MessageId, processingSuccessDestination);
                     }
                     break;
                 case "Unknown":
@@ -217,7 +229,56 @@ namespace RecurringIntegrationsScheduler.Job
                     {
                         var processingErrorDestination = Path.Combine(_settings.ProcessingErrorsDir, dataMessage.Name);
                         _retryPolicyForIo.Execute(() => FileOperationsHelper.MoveDataToTarget(dataMessage.FullPath, processingErrorDestination, true, _settings.StatusFileExtension));
-                        CreateLinkToExecutionSummaryPage(dataMessage.MessageId, processingErrorDestination);
+                        await CreateLinkToExecutionSummaryPage(dataMessage.MessageId, processingErrorDestination);
+                        if (_settings.GetImportTargetErrorKeysFile)
+                        {
+                            if (Log.IsDebugEnabled)
+                            {
+                                Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Checking_if_error_keys_file_was_generated, _context.JobDetail.Key));
+                            }
+                            var fileWithManifest = processingErrorDestination;
+                            if(!string.IsNullOrEmpty(_settings.PackageTemplate))
+                            {
+                                fileWithManifest = _settings.PackageTemplate;
+                            }
+                            var entitiesInPackage = GetEntitiesNamesInPackage(fileWithManifest);
+                            foreach(var entity in entitiesInPackage)
+                            {
+                                if (Log.IsDebugEnabled)
+                                {
+                                    Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Checking_for_error_keys_for_data_entity_1, _context.JobDetail.Key, entity));
+                                }
+                                var errorsExist = await _httpClientHelper.GenerateImportTargetErrorKeysFile(dataMessage.MessageId, entity);
+                                if (errorsExist)
+                                {
+                                    string errorFileUrl;
+                                    do
+                                    {
+                                        errorFileUrl = await _httpClientHelper.GetImportTargetErrorKeysFileUrl(dataMessage.MessageId, entity);
+                                        if (errorFileUrl.Length == 0)
+                                        {
+                                            System.Threading.Thread.Sleep(_settings.Interval);
+                                        }
+                                    }
+                                    while (string.IsNullOrEmpty(errorFileUrl));
+
+                                    var response = await _httpClientHelper.GetRequestAsync(new UriBuilder(errorFileUrl).Uri, false);
+                                    if (!response.IsSuccessStatusCode)
+                                        throw new JobExecutionException(string.Format(Resources.Job_0_download_of_error_keys_file_failed_1, _context.JobDetail.Key, string.Format($"Status: {response.StatusCode}. Message: {response.Content}")));
+
+                                    using Stream downloadedStream = await response.Content.ReadAsStreamAsync();
+                                    var errorsFileName = $"{Path.GetFileNameWithoutExtension(dataMessage.Name)}-{entity}-ErrorKeys-{DateTime.Now:yyyy-MM-dd_HH-mm-ss-ffff}.txt";
+                                    var errorsFilePath = Path.Combine(_settings.ProcessingErrorsDir, errorsFileName);
+                                    var dataMessageForErrorsFile = new DataMessage()
+                                    {
+                                        FullPath = errorsFilePath,
+                                        Name = errorsFileName,
+                                        MessageStatus = MessageStatus.Failed
+                                    };
+                                    _retryPolicyForIo.Execute(() => FileOperationsHelper.Create(downloadedStream, dataMessageForErrorsFile.FullPath));
+                                }
+                            }
+                        }
                     }
                     break;
                 default: //"NotRun", "Executing"
@@ -225,7 +286,7 @@ namespace RecurringIntegrationsScheduler.Job
             }
         }
 
-        private async void CreateLinkToExecutionSummaryPage(string messageId, string filePath)
+        private async Task CreateLinkToExecutionSummaryPage(string messageId, string filePath)
         {
             var directoryName = Path.GetDirectoryName(filePath);
             if (directoryName == null)
@@ -241,6 +302,47 @@ namespace RecurringIntegrationsScheduler.Job
                 _streamWriter.WriteLine("URL=" + linkUrl);
                 _streamWriter.Flush();
             }
+        }
+
+        /// <summary>
+        /// Reads the Manifest.xml file of the datapackage to get entity names to query for error key file
+        /// </summary>
+        /// <param name="filename">The data package file</param>
+        /// <returns>Entities list</returns>
+        private List<string> GetEntitiesNamesInPackage(string fileName)
+        {
+            if (Log.IsDebugEnabled)
+            {
+                Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Looking_for_data_entities_in_manifest_file_1, _context.JobDetail.Key, fileName));
+            }
+
+            var enitiesList = new List<string>();
+
+            using (var package = ZipFile.OpenRead(fileName))
+            {
+                foreach (var entry in package.Entries)
+                {
+                    if (entry.FullName.Equals("Manifest.xml", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var manifestPath = Path.Combine(Path.GetTempPath(), $"{_context.JobDetail.Key}-{entry.FullName}");
+                        entry.ExtractToFile(manifestPath, true);
+
+                        var doc = new XmlDocument();
+                        XmlNodeList entities;
+                        using (var manifestFile = new StreamReader(manifestPath))
+                        {
+                            doc.Load(new XmlTextReader(manifestFile) { Namespaces = false });
+                            entities = doc.SelectNodes("//EntityName");
+                        }
+
+                        foreach (XmlNode node in entities)
+                        {
+                            enitiesList.Add(node.InnerText);
+                        }
+                    }
+                }
+            }
+            return enitiesList;
         }
     }
 }

@@ -3,7 +3,7 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Polly;
+using Polly.Retry;
 using RecurringIntegrationsScheduler.Common.JobSettings;
 using RecurringIntegrationsScheduler.Common.Properties;
 using System;
@@ -22,20 +22,15 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         private readonly Settings _settings;
         private readonly HttpClient _httpClient;
         private readonly AuthenticationHelper _authenticationHelper;
-        private Uri _enqueueUri;
-        private Uri _dequeueUri;
-        private Uri _ackUri;
-
         private bool _disposed;
-
-        private readonly Policy _retryPolicy;
+        private readonly AsyncRetryPolicy _retryPolicy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpClientHelper"/> class.
         /// </summary>
         /// <param name="jobSettings">Job settings</param>
         /// <param name="retryPolicy">Retry policy</param>
-        public HttpClientHelper(Settings jobSettings, Policy retryPolicy)
+        public HttpClientHelper(Settings jobSettings, Polly.Retry.AsyncRetryPolicy retryPolicy)
         {
             _settings = jobSettings;
             _retryPolicy = retryPolicy;
@@ -67,7 +62,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         public async Task<HttpResponseMessage> PostStreamRequestAsync(Uri uri, Stream bodyStream, string externalCorrelationHeaderValue = null)
         {
             _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Authorization = await _authenticationHelper.GetValidAuthenticationHeader();
+            _httpClient.DefaultRequestHeaders.Add("Authorization", await _authenticationHelper.GetValidAuthenticationHeader());
 
             // Add external correlation id header if specified and valid
             if (!string.IsNullOrEmpty(externalCorrelationHeaderValue))
@@ -99,7 +94,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         public async Task<HttpResponseMessage> PostStringRequestAsync(Uri uri, string bodyString, string externalCorrelationHeaderValue = null)
         {
             _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Authorization = await _authenticationHelper.GetValidAuthenticationHeader();
+            _httpClient.DefaultRequestHeaders.Add("Authorization", await _authenticationHelper.GetValidAuthenticationHeader());
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             // Add external correlation id header if specified and valid
@@ -133,7 +128,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             _httpClient.DefaultRequestHeaders.Clear();
             if(addAuthorization)
             {
-                _httpClient.DefaultRequestHeaders.Authorization = await _authenticationHelper.GetValidAuthenticationHeader();
+                _httpClient.DefaultRequestHeaders.Add("Authorization", await _authenticationHelper.GetValidAuthenticationHeader());
             }
             return await _retryPolicy.ExecuteAsync(() => _httpClient.GetAsync(uri));
         }
@@ -144,32 +139,29 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>
         /// Data job enqueue request Uri
         /// </returns>
-        public Uri GetEnqueueUri()
+        public Uri GetEnqueueUri(string legalEntity = null)
         {
-            if (_enqueueUri != null)
-                return _enqueueUri;
+            var uploadSettings = _settings as UploadJobSettings;
+            var enqueueUri = new UriBuilder(GetAosRequestUri("api/connector/enqueue/" + uploadSettings.ActivityId));
 
-            if (_settings is UploadJobSettings uploadSettings)
+            if (!string.IsNullOrEmpty(legalEntity))
             {
-                var enqueueUri = new UriBuilder(GetAosRequestUri("api/connector/enqueue/" + uploadSettings.ActivityId));
-
-                if (uploadSettings.IsDataPackage)
-                {
-                    if (!string.IsNullOrEmpty(uploadSettings.Company))
-                        enqueueUri.Query = "company=" + uploadSettings.Company;
-                }
-                else // Individual file
-                {
-                    // entity name is required
-                    var enqueueQuery = "entity=" + uploadSettings.EntityName;
-                    // Append company if it is specified
-                    if (!string.IsNullOrEmpty(uploadSettings.Company))
-                        enqueueQuery += "&company=" + uploadSettings.Company;
-                    enqueueUri.Query = enqueueQuery;
-                }
-                return _enqueueUri = enqueueUri.Uri;
+                enqueueUri.Query = "company=" + legalEntity;
             }
-            return null;
+            else
+            {
+                if (!string.IsNullOrEmpty(uploadSettings.Company))
+                {
+                    enqueueUri.Query = "company=" + uploadSettings.Company;
+                }
+            }
+
+            if (!uploadSettings.IsDataPackage)// Individual file
+            {
+                // entity name is required
+                enqueueUri.Query += "entity=" + uploadSettings.EntityName;
+            }
+            return enqueueUri.Uri;
         }
 
         /// <summary>
@@ -180,15 +172,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </returns>
         public Uri GetDequeueUri()
         {
-            if (_dequeueUri != null)
-                return _dequeueUri;
-
-            if (_settings is DownloadJobSettings downloadSettings)
-            {
-                var dequeueUri = new UriBuilder(GetAosRequestUri("api/connector/dequeue/" + downloadSettings.ActivityId));
-                return _dequeueUri = dequeueUri.Uri;
-            }
-            return null;
+            var downloadSettings = _settings as DownloadJobSettings;
+            return new UriBuilder(GetAosRequestUri("api/connector/dequeue/" + downloadSettings.ActivityId)).Uri;
         }
 
         /// <summary>
@@ -199,15 +184,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </returns>
         public Uri GetAckUri()
         {
-            if (_ackUri != null)
-                return _ackUri;
-
-            if (_settings is DownloadJobSettings downloadSettings)
-            {
-                var acknowledgeUri = new UriBuilder(GetAosRequestUri("api/connector/ack/" + downloadSettings.ActivityId));
-                return _ackUri = acknowledgeUri.Uri;
-            }
-            return null;
+            var downloadSettings = _settings as DownloadJobSettings;
+            return new UriBuilder(GetAosRequestUri("api/connector/ack/" + downloadSettings.ActivityId)).Uri;
         }
 
         /// <summary>
@@ -219,15 +197,12 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </returns>
         public Uri GetJobStatusUri(string jobId)
         {
-            if (_settings is ProcessingJobSettings processingJobSettings)
+            var processingJobSettings = _settings as ProcessingJobSettings;
+            var jobStatusUri = new UriBuilder(GetAosRequestUri("api/connector/jobstatus/" + processingJobSettings.ActivityId))
             {
-                var jobStatusUri = new UriBuilder(GetAosRequestUri("api/connector/jobstatus/" + processingJobSettings.ActivityId))
-                {
-                    Query = "jobId=" + jobId.Replace(@"""", "")
-                };
-                return jobStatusUri.Uri;
-            }
-            return null;
+                Query = "jobId=" + jobId.Replace(@"""", "")
+            };
+            return jobStatusUri.Uri;
         }
 
         /// <summary>
@@ -469,15 +444,73 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
 
         }
 
+        /// <summary>
+        /// Generate error keys file for data entity import
+        /// </summary>
+        /// <param name="executionId">Execution Id</param>
+        /// <param name="entityName">Entity name</param>
+        /// <returns></returns>
+        public async Task<bool> GenerateImportTargetErrorKeysFile(string executionId, string entityName)
+        {
+            var requestUri = GetAosRequestUri(_settings.GenerateImportTargetErrorKeysFilePath);
+
+            var parameters = new
+            {
+                executionId,
+                entityName
+            };
+            string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
+            if (response.IsSuccessStatusCode)
+            {
+                string result = response.Content.ReadAsStringAsync().Result;
+                JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
+                return Convert.ToBoolean(jsonResponse["value"].ToString());
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Get error keys file URL for data entity import
+        /// </summary>
+        /// <param name="executionId">Execution Id</param>
+        /// <param name="entityName">Entity name</param>
+        /// <returns></returns>
+        public async Task<string> GetImportTargetErrorKeysFileUrl(string executionId, string entityName)
+        {
+            var requestUri = GetAosRequestUri(_settings.GetImportTargetErrorKeysFileUrlPath);
+
+            var parameters = new
+            {
+                executionId,
+                entityName
+            };
+            string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
+            if (response.IsSuccessStatusCode)
+            {
+                string result = response.Content.ReadAsStringAsync().Result;
+                JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
+                return jsonResponse["value"].ToString();
+            }
+            else
+            {
+                return "";
+            }
+        }
+
         private Uri GetAosRequestUri(string requestRelativePath) 
-        { 
-            var aosUri = new Uri(_settings.AosUri); 
-            var builder = new UriBuilder(aosUri) 
-            { 
-                Path = string.Concat(aosUri.AbsolutePath.TrimEnd('/'), "/", requestRelativePath.TrimStart('/')) 
-            }; 
-            return builder.Uri; 
-        } 
+             { 
+                    var aosUri = new Uri(_settings.AosUri); 
+                    var builder = new UriBuilder(aosUri) 
+                    { 
+                           Path = string.Concat(aosUri.AbsolutePath.TrimEnd('/'), "/", requestRelativePath.TrimStart('/')) 
+                    }; 
+                    return builder.Uri; 
+             } 
 
         /// <summary>
         /// Dispose

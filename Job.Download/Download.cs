@@ -71,7 +71,7 @@ namespace RecurringIntegrationsScheduler.Job
         /// <summary>
         /// Retry policy for HTTP operations
         /// </summary>
-        private Policy _retryPolicyForHttp;
+        private Polly.Retry.AsyncRetryPolicy _retryPolicyForHttp;
 
         /// <summary>
         /// Called by the <see cref="T:Quartz.IScheduler" /> when a <see cref="T:Quartz.ITrigger" />
@@ -142,7 +142,7 @@ namespace RecurringIntegrationsScheduler.Job
                     }
                     else
                     {
-                        Log.Error("Uknown exception", ex);
+                        Log.Error("Unknown exception", ex);
                     }
 
                     while (ex.InnerException != null)
@@ -207,7 +207,6 @@ namespace RecurringIntegrationsScheduler.Job
                         throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Failure_response_Status_1_2_Reason_3, _context.JobDetail.Key, response.StatusCode, response.StatusCode, response.ReasonPhrase)));
                         
                 }
-                System.Threading.Thread.Sleep(_settings.Interval);
             }
             if (!DownloadQueue.IsEmpty)
             {
@@ -226,7 +225,6 @@ namespace RecurringIntegrationsScheduler.Job
         /// <exception cref="System.Exception"></exception>
         private async Task ProcessDownloadQueue()
         {
-            //Stream downloadedStream = null;
             var fileCount = 0;
             while (DownloadQueue.TryDequeue(out DataMessage dataMessage))
             {
@@ -237,7 +235,12 @@ namespace RecurringIntegrationsScheduler.Job
 
                 using (var downloadedStream = await response.Content.ReadAsStreamAsync())
                 {
+                    if(fileCount > 0 && _settings.Interval > 0) //Only delay after first file and never after last.
+                    {
+                        System.Threading.Thread.Sleep(_settings.Interval * 1000);
+                    }
                     fileCount++;
+
                     //Downloaded file has no file name. We need to create it.
                     //It will be timestamp followed by number in this download batch.
                     var fileName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-ffff}-{fileCount:D6}";
@@ -256,8 +259,6 @@ namespace RecurringIntegrationsScheduler.Job
 
                 if (_settings.UnzipPackage)
                     _retryPolicyForIo.Execute(() => FileOperationsHelper.UnzipPackage(dataMessage.FullPath, _settings.DeletePackage, _settings.AddTimestamp));
-
-                System.Threading.Thread.Sleep(_settings.Interval);
             }
         }
 

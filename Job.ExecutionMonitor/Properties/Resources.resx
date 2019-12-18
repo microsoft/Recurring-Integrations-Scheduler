@@ -162,4 +162,19 @@
   <data name="Job_0_was_paused_indefinitely" xml:space="preserve">
     <value>Job: {0} was paused indefinitely.</value>
   </data>
+  <data name="Job_0_download_of_error_keys_file_failed_1" xml:space="preserve">
+    <value>Job: {0} Download of error keys file failed. Exception : {1}</value>
+  </data>
+  <data name="Job_0_ExecutionId_1_status_check_returned_2" xml:space="preserve">
+    <value>Job: {0} ExecutionId: {1} import status check returned: {2}</value>
+  </data>
+  <data name="Job_0_Checking_for_error_keys_for_data_entity_1" xml:space="preserve">
+    <value>Job: {0}. Checking for error keys file for data entity {1}.</value>
+  </data>
+  <data name="Job_0_Checking_if_error_keys_file_was_generated" xml:space="preserve">
+    <value>Job: {0}. Checking if error keys file was generated.</value>
+  </data>
+  <data name="Job_0_Looking_for_data_entities_in_manifest_file_1" xml:space="preserve">
+    <value>Job: {0}. Looking for data entities in manifest file {1}.</value>
+  </data>
 </root>

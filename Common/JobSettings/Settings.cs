@@ -80,9 +80,9 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             }
 
             Interval = dataMap.GetInt(SettingsConstants.Interval);
-            if (Interval < 100) //Default execution interval is 100 ms.
+            if (Interval < 1) //Default execution interval is 1 second.
             {
-                Interval = 100;
+                Interval = 1;
             }
 
             RetryCount = dataMap.GetInt(SettingsConstants.RetryCount);
@@ -153,6 +153,18 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             if (string.IsNullOrEmpty(GetMessageStatusActionPath))
             {
                 GetMessageStatusActionPath = OdataActionsConstants.GetMessageStatusActionPath;
+            }
+
+            GetImportTargetErrorKeysFileUrlPath = dataMap.GetString(SettingsConstants.GetImportTargetErrorKeysFileUrlPath);
+            if (string.IsNullOrEmpty(GetImportTargetErrorKeysFileUrlPath))
+            {
+                GetImportTargetErrorKeysFileUrlPath = OdataActionsConstants.GetImportTargetErrorKeysFileUrlPath;
+            }
+
+            GenerateImportTargetErrorKeysFilePath = dataMap.GetString(SettingsConstants.GenerateImportTargetErrorKeysFilePath);
+            if (string.IsNullOrEmpty(GenerateImportTargetErrorKeysFilePath))
+            {
+                GenerateImportTargetErrorKeysFilePath = OdataActionsConstants.GenerateImportTargetErrorKeysFilePath;
             }
         }
 
@@ -333,6 +345,23 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// The relative path to the GetMessageStatus Odata action
         /// </value>
         public string GetMessageStatusActionPath { get; private set; } = OdataActionsConstants.GetMessageStatusActionPath;
+
+        /// <summary>
+        /// Get the GetImportTargetErrorKeysFileUrl Odata action relative path
+        /// </summary>
+        /// <value>
+        /// The relative path to the GetImportTargetErrorKeysFileUrl Odata action
+        /// </value>
+        public string GetImportTargetErrorKeysFileUrlPath { get; private set; } = OdataActionsConstants.GetImportTargetErrorKeysFileUrlPath;
+
+        /// <summary>
+        /// Get the GenerateImportTargetErrorKeysFile Odata action relative path
+        /// </summary>
+        /// <value>
+        /// The relative path to the GenerateImportTargetErrorKeysFile Odata action
+        /// </value>
+        public string GenerateImportTargetErrorKeysFilePath { get; private set; } = OdataActionsConstants.GenerateImportTargetErrorKeysFilePath;
+
 
         #endregion
     }

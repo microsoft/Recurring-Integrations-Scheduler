@@ -47,6 +47,8 @@ namespace RecurringIntegrationsScheduler.Forms
         private string getAzureWriteUrlPath;
         private string getExecutionSummaryStatusPath;
         private string getExecutionSummaryPageUrlPath;
+        private string getImportTargetErrorKeysFileUrlPath;
+        private string generateImportTargetErrorKeysFilePath;
 
         private void ImportJobForm_Load(object sender, EventArgs e)
         {
@@ -93,6 +95,8 @@ namespace RecurringIntegrationsScheduler.Forms
             getAzureWriteUrlPath = OdataActionsConstants.GetAzureWriteUrlActionPath;
             getExecutionSummaryStatusPath = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
             getExecutionSummaryPageUrlPath = OdataActionsConstants.GetExecutionSummaryPageUrlActionPath;
+            getImportTargetErrorKeysFileUrlPath = OdataActionsConstants.GetImportTargetErrorKeysFileUrlPath;
+            generateImportTargetErrorKeysFilePath = OdataActionsConstants.GenerateImportTargetErrorKeysFilePath;
 
             if (ImportJobDetail != null)
             {
@@ -132,6 +136,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 executeImportCheckBox.Checked =
                     (ImportJobDetail.JobDataMap[SettingsConstants.ExecuteImport] != null) &&
                     Convert.ToBoolean(ImportJobDetail.JobDataMap[SettingsConstants.ExecuteImport].ToString());
+
+                numericUpDownInterval.Value = Math.Round(Convert.ToDecimal(ImportJobDetail.JobDataMap[SettingsConstants.Interval]));
 
                 serviceAuthRadioButton.Checked =
                     (ImportJobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication] != null) &&
@@ -285,6 +291,14 @@ namespace RecurringIntegrationsScheduler.Forms
 
                 getExecutionSummaryStatusPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryStatusActionPath;
                 getExecutionSummaryPageUrlPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryPageUrlActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryPageUrlActionPath;
+                getImportTargetErrorKeysFileUrlPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetImportTargetErrorKeysFileUrlPath]?.ToString() ?? OdataActionsConstants.GetImportTargetErrorKeysFileUrlPath;
+                generateImportTargetErrorKeysFilePath = ExecutionJobDetail.JobDataMap[SettingsConstants.GenerateImportTargetErrorKeysFilePath]?.ToString() ?? OdataActionsConstants.GenerateImportTargetErrorKeysFilePath;
+
+                downloadErrorKeysFileCheckBox.Checked =
+                    (ExecutionJobDetail.JobDataMap[SettingsConstants.GetImportTargetErrorKeysFile] != null) &&
+                    Convert.ToBoolean(ExecutionJobDetail.JobDataMap[SettingsConstants.GetImportTargetErrorKeysFile].ToString());
+
+               numericUpDownStatusCheckInterval.Value = Math.Round(Convert.ToDecimal(ExecutionJobDetail.JobDataMap[SettingsConstants.StatusCheckInterval]));
             }
         }
 
@@ -521,7 +535,7 @@ namespace RecurringIntegrationsScheduler.Forms
             if (upJobSimpleTriggerRadioButton.Checked)
             {
                 var minutes = upJobHoursDateTimePicker.Value.Hour*60;
-                minutes = minutes + upJobMinutesDateTimePicker.Value.Minute;
+                minutes += upJobMinutesDateTimePicker.Value.Minute;
 
                 return builder.WithSimpleSchedule(x => x
                         .WithIntervalInMinutes(minutes)
@@ -566,7 +580,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
                 {SettingsConstants.GetAzureWriteUrlActionPath, getAzureWriteUrlPath},
                 {SettingsConstants.ImportFromPackageActionPath, importFromPackagePath},
-                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
+                {SettingsConstants.Interval, numericUpDownInterval.Value.ToString(CultureInfo.InvariantCulture)}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -602,7 +617,12 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
                 {SettingsConstants.GetExecutionSummaryStatusActionPath, getExecutionSummaryStatusPath},
                 {SettingsConstants.GetExecutionSummaryPageUrlActionPath, getExecutionSummaryPageUrlPath},
-                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
+                {SettingsConstants.GetImportTargetErrorKeysFile, downloadErrorKeysFileCheckBox.Checked.ToString()},
+                {SettingsConstants.GetImportTargetErrorKeysFileUrlPath, getImportTargetErrorKeysFileUrlPath},
+                {SettingsConstants.GenerateImportTargetErrorKeysFilePath, generateImportTargetErrorKeysFilePath},
+                {SettingsConstants.PackageTemplate, packageTemplateTextBox.Text},
+                {SettingsConstants.StatusCheckInterval, numericUpDownStatusCheckInterval.Value.ToString(CultureInfo.InvariantCulture)}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -799,6 +819,8 @@ namespace RecurringIntegrationsScheduler.Forms
                     form.ImportFromPackagePath = importFromPackagePath;
                     form.GetExecutionSummaryStatusPath = getExecutionSummaryStatusPath;
                     form.GetExecutionSummaryPageUrlPath = getExecutionSummaryPageUrlPath;
+                    form.GetImportTargetErrorKeysFileUrlPath = getImportTargetErrorKeysFileUrlPath;
+                    form.GenerateImportTargetErrorKeysFilePath = generateImportTargetErrorKeysFilePath;
                     form.ShowDialog();
 
                     if (form.Cancelled) return;
@@ -807,6 +829,8 @@ namespace RecurringIntegrationsScheduler.Forms
                     importFromPackagePath = form.ImportFromPackagePath;
                     getExecutionSummaryStatusPath = form.GetExecutionSummaryStatusPath;
                     getExecutionSummaryPageUrlPath = form.GetExecutionSummaryPageUrlPath;
+                    getImportTargetErrorKeysFileUrlPath = form.GetImportTargetErrorKeysFileUrlPath;
+                    generateImportTargetErrorKeysFilePath = form.GenerateImportTargetErrorKeysFilePath;
                 }
             }
             catch (Exception ex)

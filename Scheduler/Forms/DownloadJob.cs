@@ -112,6 +112,7 @@ namespace RecurringIntegrationsScheduler.Forms
                                                  Convert.ToBoolean(
                                                      JobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication]
                                                          .ToString());
+                numericUpDownInterval.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.Interval]));
 
                 if (!serviceAuthRadioButton.Checked)
                 {
@@ -409,7 +410,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
-                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
+                {SettingsConstants.Interval, numericUpDownInterval.Value.ToString(CultureInfo.InvariantCulture)},
             };
             if (serviceAuthRadioButton.Checked)
             {

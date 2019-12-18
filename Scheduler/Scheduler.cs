@@ -167,7 +167,10 @@ namespace RecurringIntegrationsScheduler
                             if (previousFireTime.HasValue)
                                 row["PreviousFireTime"] =
                                     TimeZone.CurrentTimeZone.ToLocalTime(previousFireTime.Value.DateTime);
-                            row["JobStatus"] = GetScheduler().GetTriggerState(triggers.First().Key).Result.ToString();
+                            var status = GetScheduler().GetTriggerState(triggers.First().Key).Result.ToString();
+                            if (status == "Blocked") 
+                                status = "Executing";
+                            row["JobStatus"] = status;
                         }
                         table.Rows.Add(row);
                     }
@@ -247,44 +250,42 @@ namespace RecurringIntegrationsScheduler
         /// <param name="triggerDetails">The trigger details.</param>
         private static void WriteToFile(FileInfo file, List<IJobDetail> jobDetails, List<ITrigger> triggerDetails)
         {
-            using (var writer = file.CreateText())
-            {
-                XNamespace ns = "http://quartznet.sourceforge.net/JobSchedulingData";
-                var doc = new XDocument(new XDeclaration("1.0", "UTF-8", "yes")
-                    , new XElement(ns + "job-scheduling-data"
-                        , new XAttribute(XNamespace.Xmlns + "xsi", "http://www.w3.org/2001/XMLSchema-instance")
-                        , new XAttribute("version", "2.0")
-                    ));
-                doc.Root?.Add(new XElement(ns + "processing-directives"
-                        , new XElement(ns + "overwrite-existing-data", true))
+            using var writer = file.CreateText();
+            XNamespace ns = "http://quartznet.sourceforge.net/JobSchedulingData";
+            var doc = new XDocument(new XDeclaration("1.0", "UTF-8", "yes")
+                , new XElement(ns + "job-scheduling-data"
+                    , new XAttribute(XNamespace.Xmlns + "xsi", "http://www.w3.org/2001/XMLSchema-instance")
+                    , new XAttribute("version", "2.0")
+                ));
+            doc.Root?.Add(new XElement(ns + "processing-directives"
+                    , new XElement(ns + "overwrite-existing-data", true))
+            );
+            var schedule = new XElement(ns + "schedule");
+            foreach (var detail in jobDetails)
+                schedule.Add(
+                    new XElement(ns + "job"
+                        , new XElement(ns + "name", detail.Key.Name)
+                        , new XElement(ns + "group", detail.Key.Group)
+                        , new XElement(ns + "description", detail.Description)
+                        ,
+                        new XElement(ns + "job-type",
+                            detail.JobType.FullName + "," + detail.JobType.Assembly.FullName)
+                        , new XElement(ns + "durable", detail.Durable)
+                        , new XElement(ns + "recover", detail.RequestsRecovery)
+                        , GetJobDataMap(ns, detail.JobDataMap)
+                    )
                 );
-                var schedule = new XElement(ns + "schedule");
-                foreach (var detail in jobDetails)
-                    schedule.Add(
-                        new XElement(ns + "job"
-                            , new XElement(ns + "name", detail.Key.Name)
-                            , new XElement(ns + "group", detail.Key.Group)
-                            , new XElement(ns + "description", detail.Description)
-                            ,
-                            new XElement(ns + "job-type",
-                                detail.JobType.FullName + "," + detail.JobType.Assembly.FullName)
-                            , new XElement(ns + "durable", detail.Durable)
-                            , new XElement(ns + "recover", detail.RequestsRecovery)
-                            , GetJobDataMap(ns, detail.JobDataMap)
-                        )
-                    );
-                foreach (var trigger in triggerDetails)
-                {
-                    if (trigger is SimpleTriggerImpl simple)
-                        schedule.Add(GetSimpleTrigger(ns, simple));
-                    if (trigger is CronTriggerImpl cron)
-                        schedule.Add(GetCronTrigger(ns, cron));
-                    if (trigger is CalendarIntervalTriggerImpl calendar)
-                        schedule.Add(GetCalendarIntervalTrigger(ns, calendar));
-                }
-                doc.Root?.Add(schedule);
-                doc.Save(writer);
+            foreach (var trigger in triggerDetails)
+            {
+                if (trigger is SimpleTriggerImpl simple)
+                    schedule.Add(GetSimpleTrigger(ns, simple));
+                if (trigger is CronTriggerImpl cron)
+                    schedule.Add(GetCronTrigger(ns, cron));
+                if (trigger is CalendarIntervalTriggerImpl calendar)
+                    schedule.Add(GetCalendarIntervalTrigger(ns, calendar));
             }
+            doc.Root?.Add(schedule);
+            doc.Save(writer);
         }
 
         /// <summary>
@@ -382,24 +383,16 @@ namespace RecurringIntegrationsScheduler
         /// <exception cref="System.ArgumentOutOfRangeException"></exception>
         private static string GetSimpleTriggerMisfireInstructionText(int misfireInstruction)
         {
-            switch (misfireInstruction)
+            return misfireInstruction switch
             {
-                case 0:
-                    return "SmartPolicy";
-                case 1:
-                    return "FireNow";
-                case 2:
-                    return "RescheduleNowWithExistingRepeatCount";
-                case 3:
-                    return "RescheduleNowWithRemainingRepeatCount";
-                case 4:
-                    return "RescheduleNextWithRemainingCount";
-                case 5:
-                    return "RescheduleNextWithExistingCount";
-                default:
-                    throw new ArgumentOutOfRangeException(
-                        $"{misfireInstruction} is not a supported misfire instruction for SimpleTrigger See Quartz.MisfireInstruction for more details.");
-            }
+                0 => "SmartPolicy",
+                1 => "FireNow",
+                2 => "RescheduleNowWithExistingRepeatCount",
+                3 => "RescheduleNowWithRemainingRepeatCount",
+                4 => "RescheduleNextWithRemainingCount",
+                5 => "RescheduleNextWithExistingCount",
+                _ => throw new ArgumentOutOfRangeException($"{misfireInstruction} is not a supported misfire instruction for SimpleTrigger See Quartz.MisfireInstruction for more details."),
+            };
         }
 
         /// <summary>
@@ -410,18 +403,13 @@ namespace RecurringIntegrationsScheduler
         /// <exception cref="System.ArgumentOutOfRangeException"></exception>
         private static string GetCronTriggerMisfireInstructionText(int misfireInstruction)
         {
-            switch (misfireInstruction)
+            return misfireInstruction switch
             {
-                case 0:
-                    return "SmartPolicy";
-                case 1:
-                    return "FireOnceNow";
-                case 2:
-                    return "DoNothing";
-                default:
-                    throw new ArgumentOutOfRangeException(
-                        $"{misfireInstruction} is not a supported misfire instruction for CronTrigger See Quartz.MisfireInstruction for more details.");
-            }
+                0 => "SmartPolicy",
+                1 => "FireOnceNow",
+                2 => "DoNothing",
+                _ => throw new ArgumentOutOfRangeException($"{misfireInstruction} is not a supported misfire instruction for CronTrigger See Quartz.MisfireInstruction for more details."),
+            };
         }
 
         /// <summary>

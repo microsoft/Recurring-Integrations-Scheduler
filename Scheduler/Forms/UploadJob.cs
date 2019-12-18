@@ -116,6 +116,9 @@ namespace RecurringIntegrationsScheduler.Forms
                                                   UploadJobDetail.JobDataMap[SettingsConstants.IsDataPackage].ToString());
                 statusFileExtensionTextBox.Text =
                     UploadJobDetail.JobDataMap[SettingsConstants.StatusFileExtension]?.ToString() ?? ".Status";
+                
+                numericUpDownIntervalUploads.Value = Math.Round(Convert.ToDecimal(UploadJobDetail.JobDataMap[SettingsConstants.Interval]));
+
                 serviceAuthRadioButton.Checked =
                     (UploadJobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication] != null) &&
                     Convert.ToBoolean(UploadJobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication].ToString());
@@ -269,6 +272,7 @@ namespace RecurringIntegrationsScheduler.Forms
                     ProcessingJobDetail.JobDataMap[SettingsConstants.ProcessingSuccessDir]?.ToString() ?? string.Empty;
                 processingErrorsFolderTextBox.Text =
                     ProcessingJobDetail.JobDataMap[SettingsConstants.ProcessingErrorsDir]?.ToString() ?? string.Empty;
+                numericUpDownStatusCheckInterval.Value = Math.Round(Convert.ToDecimal(ProcessingJobDetail.JobDataMap[SettingsConstants.StatusCheckInterval]));
 
                 if (ProcessingTrigger.GetType() == typeof(SimpleTriggerImpl))
                 {
@@ -583,7 +587,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
-                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
+                {SettingsConstants.Interval, numericUpDownIntervalUploads.Value.ToString(CultureInfo.InvariantCulture)}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -619,7 +624,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
-                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
+                {SettingsConstants.StatusCheckInterval, numericUpDownStatusCheckInterval.Value.ToString(CultureInfo.InvariantCulture)}
             };
             if (serviceAuthRadioButton.Checked)
             {

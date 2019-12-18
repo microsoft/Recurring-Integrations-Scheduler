@@ -61,11 +61,9 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 throw new DirectoryNotFoundException();
 
             Directory.CreateDirectory(targetDirectoryName);
-            using (var fileStream = File.Create(filePath))
-            {
-                sourceStream.Seek(0, SeekOrigin.Begin);
-                sourceStream.CopyTo(fileStream);
-            }
+            using var fileStream = File.Create(filePath);
+            sourceStream.Seek(0, SeekOrigin.Begin);
+            sourceStream.CopyTo(fileStream);
         }
 
         /// <summary>
@@ -269,10 +267,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             }
             var statusData = JsonConvert.SerializeObject(dataMessage, Formatting.Indented, new StringEnumConverter());
 
-            using (var statusFileMemoryStream = new MemoryStream(Encoding.Default.GetBytes(statusData)))
-            {
-                Create(statusFileMemoryStream, Path.Combine(Path.GetDirectoryName(dataMessage.FullPath) ?? throw new InvalidOperationException(), Path.GetFileNameWithoutExtension(dataMessage.FullPath) + statusFileExtension));
-            }
+            using var statusFileMemoryStream = new MemoryStream(Encoding.Default.GetBytes(statusData));
+            Create(statusFileMemoryStream, Path.Combine(Path.GetDirectoryName(dataMessage.FullPath) ?? throw new InvalidOperationException(), Path.GetFileNameWithoutExtension(dataMessage.FullPath) + statusFileExtension));
         }
 
         /// <summary>
@@ -290,10 +286,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             var logFilePath = Path.Combine(Path.GetDirectoryName(targetDataMessage.FullPath) ?? throw new InvalidOperationException(), Path.GetFileNameWithoutExtension(targetDataMessage.FullPath) + statusFileExtension);
             var logData = JsonConvert.SerializeObject(httpResponse, Formatting.Indented, new StringEnumConverter());
 
-            using (var logMemoryStream = new MemoryStream(Encoding.Default.GetBytes(logData)))
-            {
-                Create(logMemoryStream, logFilePath);
-            }
+            using var logMemoryStream = new MemoryStream(Encoding.Default.GetBytes(logData));
+            Create(logMemoryStream, logFilePath);
         }
 
         /// <summary>
@@ -325,10 +319,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 logData = Resources.Unknown_error;
             }
 
-            using (var logMemoryStream = new MemoryStream(Encoding.Default.GetBytes(logData)))
-            {
-                Create(logMemoryStream, logFilePath);
-            }
+            using var logMemoryStream = new MemoryStream(Encoding.Default.GetBytes(logData));
+            Create(logMemoryStream, logFilePath);
         }
     }
 }

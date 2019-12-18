@@ -242,7 +242,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// Package template location.
         /// </value>
         public string PackageTemplate { get; private set; }
-
+        
         #endregion
     }
 }
