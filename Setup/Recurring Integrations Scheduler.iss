@@ -1,4 +1,4 @@
-#define MyAppName "Recurring Integrations Scheduler - solution for file-based integrations with Dynamics 365 for Finance and Operations, Enterprise Edition"
+#define MyAppName "Recurring Integrations Scheduler - solution for file-based integrations with Dynamics 365 for Finance and Supply Chain Management, Enterprise Edition"
 #define MyAppShortName "Recurring Integrations Scheduler"
 #define MyAppVersion GetFileVersion("..\Output\Release\RecurringIntegrationsScheduler.exe")
                                                                                       
@@ -11,7 +11,7 @@ AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppVerName={#MyAppName} {#MyAppVersion}
 VersionInfoVersion={#MyAppVersion}
-DefaultDirName={pf}\{#MyAppShortName}
+DefaultDirName={commonpf}\{#MyAppShortName}
 DefaultGroupName={#MyAppShortName}
 AllowNoIcons=yes
 OutputBaseFilename=Recurring Integrations Scheduler Setup
@@ -52,7 +52,7 @@ Source: "..\Output\Release\RecurringIntegrationsScheduler.Job.Import.dll"; DestD
 Source: "..\Output\Release\RecurringIntegrationsScheduler.Job.Export.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
 Source: "..\Output\Release\RecurringIntegrationsScheduler.Job.ExecutionMonitor.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
 ; References
-Source: "..\Output\Release\Microsoft.Identity.Clients.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
+Source: "..\Output\Release\Microsoft.Identity.Client.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
 Source: "..\Output\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
 Source: "..\Output\Release\System.Linq.Dynamic.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
 Source: "..\Output\Release\Polly.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
