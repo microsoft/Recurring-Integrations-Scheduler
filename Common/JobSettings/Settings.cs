@@ -79,11 +79,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 UserPassword = EncryptDecrypt.Decrypt(UserPassword);
             }
 
-            Interval = dataMap.GetInt(SettingsConstants.Interval);
-            if (Interval < 1) //Default execution interval is 1 second.
-            {
-                Interval = 1;
-            }
+            DelayBetweenFiles = dataMap.GetInt(SettingsConstants.DelayBetweenFiles);
 
             RetryCount = dataMap.GetInt(SettingsConstants.RetryCount);
             if (RetryCount == 0) 
@@ -94,7 +90,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             RetryDelay = dataMap.GetInt(SettingsConstants.RetryDelay);
             if (RetryDelay == 0) 
             {
-                RetryDelay = 60; //seconds
+                RetryDelay = 10; //seconds
             }
 
             PauseJobOnException = Convert.ToBoolean(dataMap.GetString(SettingsConstants.PauseJobOnException));
@@ -166,6 +162,14 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             {
                 GenerateImportTargetErrorKeysFilePath = OdataActionsConstants.GenerateImportTargetErrorKeysFilePath;
             }
+
+            GetExecutionErrorsPath = dataMap.GetString(SettingsConstants.GetExecutionErrorsPath);
+            if (string.IsNullOrEmpty(GetExecutionErrorsPath))
+            {
+                GetExecutionErrorsPath = OdataActionsConstants.GetExecutionErrorsPath;
+            }
+
+            GetExecutionErrors = Convert.ToBoolean(dataMap.GetString(SettingsConstants.GetExecutionErrors));
         }
 
         #region Members
@@ -240,7 +244,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The execution interval.
         /// </value>
-        public int Interval { get; private set; }
+        public int DelayBetweenFiles { get; private set; }
 
         /// <summary>
         /// Gets or sets retry count.
@@ -264,7 +268,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// <c>true</c> if [pause job when exception occurs]; otherwise, <c>false</c>.
         /// </value>
-        public bool PauseJobOnException { get; set; }
+        public bool PauseJobOnException { get; private set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the job is paused indefinitely or not.
@@ -272,7 +276,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// <c>true</c> if [pause job indefinitely]; otherwise, <c>false</c>.
         /// </value>
-        public bool IndefinitePause { get; set; }
+        public bool IndefinitePause { get; private set; }
 
         /// <summary>
         /// Get the ImportFromPackage Odata action relative path
@@ -362,6 +366,21 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// </value>
         public string GenerateImportTargetErrorKeysFilePath { get; private set; } = OdataActionsConstants.GenerateImportTargetErrorKeysFilePath;
 
+        /// <summary>
+        /// Get the GetExecutionErrors Odata action relative path
+        /// </summary>
+        /// <value>
+        /// The relative path to the GetExecutionErrors Odata action
+        /// </value>
+        public string GetExecutionErrorsPath { get; private set; } = OdataActionsConstants.GetExecutionErrorsPath;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to retrieve execution errors.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [gt executon errors]; otherwise, <c>false</c>.
+        /// </value>
+        public bool GetExecutionErrors { get; private set; }
 
         #endregion
     }

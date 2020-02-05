@@ -82,11 +82,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Company_is_missing_in_job_configuration));
             }
 
-            StatusCheckInterval = dataMap.GetInt(SettingsConstants.StatusCheckInterval);
-            if (StatusCheckInterval < 1) //Default status check interval is 1 second.
-            {
-                StatusCheckInterval = 1;
-            }
+            DelayBetweenStatusCheck = dataMap.GetInt(SettingsConstants.DelayBetweenStatusCheck);
         }
 
         #region Members
@@ -153,7 +149,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// Delay between status checks.
         /// </value>
-        public int StatusCheckInterval { get; private set; }
+        public int DelayBetweenStatusCheck { get; private set; }
 
         #endregion
     }

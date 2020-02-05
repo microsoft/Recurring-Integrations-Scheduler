@@ -37,30 +37,33 @@ namespace RecurringIntegrationsScheduler.Forms
             // textBox1
             // 
             this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox1.Font = new System.Drawing.Font("Courier New", 8.142858F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox1.Location = new System.Drawing.Point(0, 0);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(781, 310);
+            this.textBox1.Size = new System.Drawing.Size(1417, 526);
             this.textBox1.TabIndex = 0;
             this.textBox1.Text = resources.GetString("textBox1.Text");
             // 
             // CronExamples
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(781, 310);
+            this.ClientSize = new System.Drawing.Size(1417, 526);
             this.Controls.Add(this.textBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(797, 349);
+            this.MaximumSize = new System.Drawing.Size(1441, 590);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(797, 349);
+            this.MinimumSize = new System.Drawing.Size(1441, 590);
             this.Name = "CronExamples";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = Resources.Cron_examples;
+            this.Text = "Cron examples";
             this.Load += new System.EventHandler(this.CronExamples_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

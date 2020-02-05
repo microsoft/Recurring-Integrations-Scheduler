@@ -139,7 +139,7 @@
     <value>Job: {0}. File: {1} - uploaded successfully.</value>
   </data>
   <data name="Job_0_Upload_failed_for_file_1_Failure_response_Status_2_Reason_3" xml:space="preserve">
-    <value>Job: {0}. Upload failed for file: {1}. Failure response:  Status: {2}, Reason: {3}</value>
+    <value>Job: {0}. Upload failed for file: {1}. Failure response:  Status: {2}, Reason: {3}. ImportFromPackage failed request's parameters: {4}</value>
   </data>
   <data name="Job_0_Failure_processing_file_1_Exception_2" xml:space="preserve">
     <value>Job: {0}. Failure processing file: {1} Exception : {2}</value>
@@ -176,5 +176,14 @@
   </data>
   <data name="Job_0_Please_check_your_package_template_Input_file_name_in_Manifest_cannot_be_identified" xml:space="preserve">
     <value>Job: {0} Please check your package template. Input file name in Manifest cannot be identified.</value>
+  </data>
+  <data name="Job_0_Unable_to_get_target_legal_entity_name" xml:space="preserve">
+    <value>Job: {0}. Unable to get target legal entity name. Check job configuration.</value>
+  </data>
+  <data name="Job_0_Method_GetAzureWriteUrl_returned_empty_string" xml:space="preserve">
+    <value>Job: {0}. Method GetAzureWriteUrl returned empty string</value>
+  </data>
+  <data name="Job_0_Target_legal_entity_is_not_valid_1" xml:space="preserve">
+    <value>Job: {0}. Target legal entity is not valid: {1}</value>
   </data>
 </root>

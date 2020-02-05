@@ -188,9 +188,9 @@ namespace RecurringIntegrationsScheduler.Job
                 {
                     try
                     {
-                        if (fileCount > 0 && _settings.Interval > 0) //Only delay after first file and never after last.
+                        if (fileCount > 0 && _settings.DelayBetweenFiles > 0) //Only delay after first file and never after last.
                         {
-                            System.Threading.Thread.Sleep(_settings.Interval * 1000);
+                            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_settings.DelayBetweenFiles));
                         }
                         fileCount++;
 
@@ -217,7 +217,7 @@ namespace RecurringIntegrationsScheduler.Job
                                 MessageStatus = MessageStatus.Enqueued
                             };
 
-                            // Move to inprocess/success location
+                            // Move to success location
                             _retryPolicyForIo.Execute(() => FileOperationsHelper.Move(dataMessage.FullPath, targetDataMessage.FullPath));
 
                             if (_settings.ProcessingJobPresent)

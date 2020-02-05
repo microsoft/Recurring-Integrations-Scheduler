@@ -89,7 +89,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
 
             PackageTemplate = dataMap.GetString(SettingsConstants.PackageTemplate);
 
-            StatusCheckInterval = dataMap.GetInt(SettingsConstants.StatusCheckInterval);
+            DelayBetweenStatusCheck = dataMap.GetInt(SettingsConstants.DelayBetweenStatusCheck);
         }
 
         #region Members
@@ -148,7 +148,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// Delay between status checks.
         /// </value>
-        public int StatusCheckInterval { get; private set; }
+        public int DelayBetweenStatusCheck { get; private set; }
 
         #endregion
     }

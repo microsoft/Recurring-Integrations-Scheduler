@@ -235,9 +235,9 @@ namespace RecurringIntegrationsScheduler.Job
 
                 using (var downloadedStream = await response.Content.ReadAsStreamAsync())
                 {
-                    if(fileCount > 0 && _settings.Interval > 0) //Only delay after first file and never after last.
+                    if(fileCount > 0 && _settings.DelayBetweenFiles > 0) //Only delay after first file and never after last.
                     {
-                        System.Threading.Thread.Sleep(_settings.Interval * 1000);
+                        System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_settings.DelayBetweenFiles));
                     }
                     fileCount++;
 

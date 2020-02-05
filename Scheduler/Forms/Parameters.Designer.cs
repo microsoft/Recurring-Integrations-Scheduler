@@ -93,6 +93,8 @@ namespace RecurringIntegrationsScheduler.Forms
             this.applicationsDeleteButton = new System.Windows.Forms.ToolStripButton();
             this.applicationsEditButton = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.miscSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.v3formsCheckbox = new System.Windows.Forms.CheckBox();
             this.instancesToolStrip.SuspendLayout();
             this.usersToolStrip.SuspendLayout();
             this.dataJobsToolStrip.SuspendLayout();
@@ -113,6 +115,7 @@ namespace RecurringIntegrationsScheduler.Forms
             ((System.ComponentModel.ISupportInitialize)(this.applicationsGrid)).BeginInit();
             this.applicationsToolStrip.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            this.miscSettingsGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // instancesToolStrip
@@ -128,7 +131,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.instancesToolStrip.Location = new System.Drawing.Point(7, 436);
             this.instancesToolStrip.Name = "instancesToolStrip";
             this.instancesToolStrip.Padding = new System.Windows.Forms.Padding(0);
-            this.instancesToolStrip.Size = new System.Drawing.Size(780, 40);
+            this.instancesToolStrip.Size = new System.Drawing.Size(785, 40);
             this.instancesToolStrip.TabIndex = 2;
             // 
             // instancesAddButton
@@ -182,7 +185,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.usersToolStrip.Location = new System.Drawing.Point(7, 437);
             this.usersToolStrip.Name = "usersToolStrip";
             this.usersToolStrip.Padding = new System.Windows.Forms.Padding(0);
-            this.usersToolStrip.Size = new System.Drawing.Size(379, 40);
+            this.usersToolStrip.Size = new System.Drawing.Size(381, 40);
             this.usersToolStrip.TabIndex = 3;
             // 
             // usersAddButton
@@ -226,7 +229,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.dataJobsToolStrip.Location = new System.Drawing.Point(7, 436);
             this.dataJobsToolStrip.Name = "dataJobsToolStrip";
             this.dataJobsToolStrip.Padding = new System.Windows.Forms.Padding(0);
-            this.dataJobsToolStrip.Size = new System.Drawing.Size(376, 40);
+            this.dataJobsToolStrip.Size = new System.Drawing.Size(378, 40);
             this.dataJobsToolStrip.TabIndex = 3;
             // 
             // dataJobsAddButton
@@ -270,7 +273,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobGroupsToolStrip.Location = new System.Drawing.Point(7, 437);
             this.jobGroupsToolStrip.Name = "jobGroupsToolStrip";
             this.jobGroupsToolStrip.Padding = new System.Windows.Forms.Padding(0);
-            this.jobGroupsToolStrip.Size = new System.Drawing.Size(376, 40);
+            this.jobGroupsToolStrip.Size = new System.Drawing.Size(378, 40);
             this.jobGroupsToolStrip.TabIndex = 4;
             // 
             // jobGroupsAddButton
@@ -312,10 +315,10 @@ namespace RecurringIntegrationsScheduler.Forms
             this.instancesGroupBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.instancesGroupBox.Name = "instancesGroupBox";
             this.instancesGroupBox.Padding = new System.Windows.Forms.Padding(7, 14, 7, 7);
-            this.instancesGroupBox.Size = new System.Drawing.Size(794, 483);
+            this.instancesGroupBox.Size = new System.Drawing.Size(799, 483);
             this.instancesGroupBox.TabIndex = 1;
             this.instancesGroupBox.TabStop = false;
-            this.instancesGroupBox.Text = "Dynamics 365 for Finance and Operations instances";
+            this.instancesGroupBox.Text = "Dynamics 365 instances";
             // 
             // instancesGrid
             // 
@@ -341,7 +344,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.instancesGrid.RowHeadersVisible = false;
             this.instancesGrid.RowHeadersWidth = 4;
             this.instancesGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.instancesGrid.Size = new System.Drawing.Size(780, 400);
+            this.instancesGrid.Size = new System.Drawing.Size(785, 400);
             this.instancesGrid.TabIndex = 0;
             this.instancesGrid.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.InstancesGrid_CellContentDoubleClick);
             this.instancesGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.InstancesDataGridView_RowsRemoved);
@@ -391,11 +394,11 @@ namespace RecurringIntegrationsScheduler.Forms
             this.usersGroupBox.Controls.Add(this.usersDataGrid);
             this.usersGroupBox.Controls.Add(this.usersToolStrip);
             this.usersGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.usersGroupBox.Location = new System.Drawing.Point(406, 501);
+            this.usersGroupBox.Location = new System.Drawing.Point(409, 501);
             this.usersGroupBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.usersGroupBox.Name = "usersGroupBox";
             this.usersGroupBox.Padding = new System.Windows.Forms.Padding(7, 14, 7, 7);
-            this.usersGroupBox.Size = new System.Drawing.Size(393, 484);
+            this.usersGroupBox.Size = new System.Drawing.Size(395, 484);
             this.usersGroupBox.TabIndex = 0;
             this.usersGroupBox.TabStop = false;
             this.usersGroupBox.Text = "User credentials";
@@ -422,7 +425,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.usersDataGrid.RowHeadersVisible = false;
             this.usersDataGrid.RowHeadersWidth = 4;
             this.usersDataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.usersDataGrid.Size = new System.Drawing.Size(379, 401);
+            this.usersDataGrid.Size = new System.Drawing.Size(381, 401);
             this.usersDataGrid.TabIndex = 1;
             this.usersDataGrid.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.UsersDataGrid_CellContentDoubleClick);
             this.usersDataGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.UsersDataGridView_RowsRemoved);
@@ -452,14 +455,14 @@ namespace RecurringIntegrationsScheduler.Forms
             this.dataJobsGroupBox.Controls.Add(this.dataJobsGrid);
             this.dataJobsGroupBox.Controls.Add(this.dataJobsToolStrip);
             this.dataJobsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataJobsGroupBox.Location = new System.Drawing.Point(809, 6);
+            this.dataJobsGroupBox.Location = new System.Drawing.Point(814, 6);
             this.dataJobsGroupBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.dataJobsGroupBox.Name = "dataJobsGroupBox";
             this.dataJobsGroupBox.Padding = new System.Windows.Forms.Padding(7, 14, 7, 7);
-            this.dataJobsGroupBox.Size = new System.Drawing.Size(390, 483);
+            this.dataJobsGroupBox.Size = new System.Drawing.Size(392, 483);
             this.dataJobsGroupBox.TabIndex = 0;
             this.dataJobsGroupBox.TabStop = false;
-            this.dataJobsGroupBox.Text = "Data jobs";
+            this.dataJobsGroupBox.Text = "Dynamics data jobs";
             // 
             // dataJobsGrid
             // 
@@ -485,7 +488,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.dataJobsGrid.RowHeadersVisible = false;
             this.dataJobsGrid.RowHeadersWidth = 4;
             this.dataJobsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataJobsGrid.Size = new System.Drawing.Size(376, 400);
+            this.dataJobsGrid.Size = new System.Drawing.Size(378, 400);
             this.dataJobsGrid.TabIndex = 0;
             this.dataJobsGrid.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataJobsGrid_CellContentDoubleClick);
             this.dataJobsGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.DataJobsDataGridView_RowsRemoved);
@@ -698,14 +701,14 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobGroupsGroupBox.Controls.Add(this.jobGroupsGrid);
             this.jobGroupsGroupBox.Controls.Add(this.jobGroupsToolStrip);
             this.jobGroupsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.jobGroupsGroupBox.Location = new System.Drawing.Point(809, 501);
+            this.jobGroupsGroupBox.Location = new System.Drawing.Point(814, 501);
             this.jobGroupsGroupBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.jobGroupsGroupBox.Name = "jobGroupsGroupBox";
             this.jobGroupsGroupBox.Padding = new System.Windows.Forms.Padding(7, 14, 7, 7);
-            this.jobGroupsGroupBox.Size = new System.Drawing.Size(390, 484);
+            this.jobGroupsGroupBox.Size = new System.Drawing.Size(392, 484);
             this.jobGroupsGroupBox.TabIndex = 1;
             this.jobGroupsGroupBox.TabStop = false;
-            this.jobGroupsGroupBox.Text = "Job groups";
+            this.jobGroupsGroupBox.Text = "RIS job groups";
             // 
             // jobGroupsGrid
             // 
@@ -728,7 +731,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobGroupsGrid.RowHeadersVisible = false;
             this.jobGroupsGrid.RowHeadersWidth = 4;
             this.jobGroupsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.jobGroupsGrid.Size = new System.Drawing.Size(376, 401);
+            this.jobGroupsGrid.Size = new System.Drawing.Size(378, 401);
             this.jobGroupsGrid.TabIndex = 1;
             this.jobGroupsGrid.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.JobGroupsGrid_CellContentDoubleClick);
             this.jobGroupsGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.JobGroupsDataGridView_RowsRemoved);
@@ -747,12 +750,11 @@ namespace RecurringIntegrationsScheduler.Forms
             this.foldersGroupBox.Controls.Add(this.uploadJobsFoldersGroupBox);
             this.foldersGroupBox.Controls.Add(this.processingJobsFoldersGroupBox);
             this.foldersGroupBox.Controls.Add(this.downloadJobsFolderGroupBox);
-            this.foldersGroupBox.Location = new System.Drawing.Point(1208, 5);
+            this.foldersGroupBox.Location = new System.Drawing.Point(1215, 5);
             this.foldersGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.foldersGroupBox.Name = "foldersGroupBox";
             this.foldersGroupBox.Padding = new System.Windows.Forms.Padding(7, 14, 7, 7);
-            this.tableLayoutPanel1.SetRowSpan(this.foldersGroupBox, 2);
-            this.foldersGroupBox.Size = new System.Drawing.Size(345, 492);
+            this.foldersGroupBox.Size = new System.Drawing.Size(337, 477);
             this.foldersGroupBox.TabIndex = 2;
             this.foldersGroupBox.TabStop = false;
             this.foldersGroupBox.Text = "Default folder names";
@@ -766,10 +768,10 @@ namespace RecurringIntegrationsScheduler.Forms
             this.applicationsGroupBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.applicationsGroupBox.Name = "applicationsGroupBox";
             this.applicationsGroupBox.Padding = new System.Windows.Forms.Padding(7, 14, 7, 7);
-            this.applicationsGroupBox.Size = new System.Drawing.Size(391, 484);
+            this.applicationsGroupBox.Size = new System.Drawing.Size(394, 484);
             this.applicationsGroupBox.TabIndex = 8;
             this.applicationsGroupBox.TabStop = false;
-            this.applicationsGroupBox.Text = "Azure AD applications";
+            this.applicationsGroupBox.Text = "Azure App registrations";
             // 
             // applicationsGrid
             // 
@@ -795,7 +797,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.applicationsGrid.RowHeadersVisible = false;
             this.applicationsGrid.RowHeadersWidth = 4;
             this.applicationsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.applicationsGrid.Size = new System.Drawing.Size(377, 401);
+            this.applicationsGrid.Size = new System.Drawing.Size(380, 401);
             this.applicationsGrid.TabIndex = 1;
             this.applicationsGrid.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ApplicationsGrid_CellContentDoubleClick);
             this.applicationsGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.ApplicationsGrid_RowsRemoved);
@@ -849,7 +851,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.applicationsToolStrip.Location = new System.Drawing.Point(7, 437);
             this.applicationsToolStrip.Name = "applicationsToolStrip";
             this.applicationsToolStrip.Padding = new System.Windows.Forms.Padding(0);
-            this.applicationsToolStrip.Size = new System.Drawing.Size(377, 40);
+            this.applicationsToolStrip.Size = new System.Drawing.Size(380, 40);
             this.applicationsToolStrip.TabIndex = 4;
             // 
             // applicationsAddButton
@@ -897,6 +899,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.tableLayoutPanel1.Controls.Add(this.instancesGroupBox, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.usersGroupBox, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.applicationsGroupBox, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.miscSettingsGroupBox, 3, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -906,6 +909,26 @@ namespace RecurringIntegrationsScheduler.Forms
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1558, 991);
             this.tableLayoutPanel1.TabIndex = 9;
+            // 
+            // miscSettingsGroupBox
+            // 
+            this.miscSettingsGroupBox.Controls.Add(this.v3formsCheckbox);
+            this.miscSettingsGroupBox.Location = new System.Drawing.Point(1214, 498);
+            this.miscSettingsGroupBox.Name = "miscSettingsGroupBox";
+            this.miscSettingsGroupBox.Size = new System.Drawing.Size(338, 487);
+            this.miscSettingsGroupBox.TabIndex = 9;
+            this.miscSettingsGroupBox.TabStop = false;
+            this.miscSettingsGroupBox.Text = "Miscellaneous";
+            // 
+            // v3formsCheckbox
+            // 
+            this.v3formsCheckbox.AutoSize = true;
+            this.v3formsCheckbox.Location = new System.Drawing.Point(14, 39);
+            this.v3formsCheckbox.Name = "v3formsCheckbox";
+            this.v3formsCheckbox.Size = new System.Drawing.Size(439, 51);
+            this.v3formsCheckbox.TabIndex = 0;
+            this.v3formsCheckbox.Text = "Use alternative job forms";
+            this.v3formsCheckbox.UseVisualStyleBackColor = true;
             // 
             // Parameters
             // 
@@ -957,6 +980,8 @@ namespace RecurringIntegrationsScheduler.Forms
             this.applicationsToolStrip.ResumeLayout(false);
             this.applicationsToolStrip.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
+            this.miscSettingsGroupBox.ResumeLayout(false);
+            this.miscSettingsGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1025,5 +1050,7 @@ namespace RecurringIntegrationsScheduler.Forms
         private System.Windows.Forms.DataGridViewTextBoxColumn applicationType;
         private System.Windows.Forms.DataGridViewTextBoxColumn applicationClientId;
         private System.Windows.Forms.DataGridViewTextBoxColumn applicationSecret;
+        private System.Windows.Forms.GroupBox miscSettingsGroupBox;
+        private System.Windows.Forms.CheckBox v3formsCheckbox;
     }
 }

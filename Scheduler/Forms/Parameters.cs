@@ -29,6 +29,7 @@ namespace RecurringIntegrationsScheduler.Forms
             Properties.Settings.Default.UploadErrorsFolder = uploadErrorsFolder.Text;
             Properties.Settings.Default.UploadInputFolder = uploadInputFolder.Text;
             Properties.Settings.Default.UploadSuccessFolder = uploadSuccessFolder.Text;
+            Properties.Settings.Default.V3Forms = v3formsCheckbox.Checked;
             Properties.Settings.Default.Save();
         }
 
@@ -45,6 +46,13 @@ namespace RecurringIntegrationsScheduler.Forms
             instancesGrid.DataSource = Properties.Settings.Default.Instances;
             applicationsGrid.DataSource = Properties.Settings.Default.AadApplications;
             usersDataGrid.DataSource = Properties.Settings.Default.Users;
+            processingErrorsFolder.Text = Properties.Settings.Default.ProcessingErrorsFolder;
+            processingSuccessFolder.Text = Properties.Settings.Default.ProcessingSuccessFolder;
+            downloadErrorsFolder.Text = Properties.Settings.Default.DownloadErrorsFolder;
+            uploadErrorsFolder.Text = Properties.Settings.Default.UploadErrorsFolder;
+            uploadInputFolder.Text = Properties.Settings.Default.UploadInputFolder;
+            uploadSuccessFolder.Text = Properties.Settings.Default.UploadSuccessFolder;
+            v3formsCheckbox.Checked = Properties.Settings.Default.V3Forms;
         }
 
         private void InstancesDataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
@@ -94,14 +102,12 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void UsersAddButton_Click(object sender, EventArgs e)
         {
-            using (UserForm form = new UserForm())
-            {
-                if (form.ShowDialog() != DialogResult.OK) return;
-                var axUser = form.User;
-                if (axUser != null)
-                    axUser.Password = EncryptDecrypt.Encrypt(axUser.Password);
-                Properties.Settings.Default.Users.Add(axUser);
-            }
+            using UserForm form = new UserForm();
+            if (form.ShowDialog() != DialogResult.OK) return;
+            var axUser = form.User;
+            if (axUser != null)
+                axUser.Password = EncryptDecrypt.Encrypt(axUser.Password);
+            Properties.Settings.Default.Users.Add(axUser);
         }
 
         private void UsersDeleteButton_Click(object sender, EventArgs e)
@@ -127,11 +133,9 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void DataJobsAddButton_Click(object sender, EventArgs e)
         {
-            using (DataJobForm form = new DataJobForm())
-            {
-                if (form.ShowDialog() == DialogResult.OK)
-                    Properties.Settings.Default.DataJobs.Add(form.DataJob);
-            }
+            using DataJobForm form = new DataJobForm();
+            if (form.ShowDialog() == DialogResult.OK)
+                Properties.Settings.Default.DataJobs.Add(form.DataJob);
         }
 
         private void DataJobsDeleteButton_Click(object sender, EventArgs e)
@@ -157,11 +161,9 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void JobGroupsAddButton_Click(object sender, EventArgs e)
         {
-            using (JobGroupForm form = new JobGroupForm())
-            {
-                if (form.ShowDialog() == DialogResult.OK)
-                    Properties.Settings.Default.JobGroups.Add(form.JobGroup);
-            }
+            using JobGroupForm form = new JobGroupForm();
+            if (form.ShowDialog() == DialogResult.OK)
+                Properties.Settings.Default.JobGroups.Add(form.JobGroup);
         }
 
         private void JobGroupsDeleteButton_Click(object sender, EventArgs e)
@@ -172,10 +174,8 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void InstancesValidateButton_Click(object sender, EventArgs e)
         {
-            using (ValidateConnection form = new ValidateConnection { Instance = (Instance)instancesGrid.SelectedRows[0].DataBoundItem })
-            {
-                form.ShowDialog();
-            }
+            using ValidateConnection form = new ValidateConnection { Instance = (Instance)instancesGrid.SelectedRows[0].DataBoundItem };
+            form.ShowDialog();
         }
 
         private void InstancesDataGridView_SelectionChanged(object sender, EventArgs e)
@@ -188,16 +188,14 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void ApplicationsAddButton_Click(object sender, EventArgs e)
         {
-            using (AadApplicationForm form = new AadApplicationForm())
-            {
-                if (form.ShowDialog() != DialogResult.OK) return;
+            using AadApplicationForm form = new AadApplicationForm();
+            if (form.ShowDialog() != DialogResult.OK) return;
 
-                var application = form.AadApplication;
-                if ((application != null) && (application.Secret != string.Empty))
-                    application.Secret = EncryptDecrypt.Encrypt(application.Secret);
+            var application = form.AadApplication;
+            if ((application != null) && (application.Secret != string.Empty))
+                application.Secret = EncryptDecrypt.Encrypt(application.Secret);
 
-                Properties.Settings.Default.AadApplications.Add(application);
-            }
+            Properties.Settings.Default.AadApplications.Add(application);
         }
 
         private void ApplicationsDeleteButton_Click(object sender, EventArgs e)
@@ -223,33 +221,27 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void InstancesEdit()
         {
-            using (InstanceForm form = new InstanceForm { Instance = (Instance)instancesGrid.SelectedRows[0].DataBoundItem })
-            {
-                var index =
-                    Properties.Settings.Default.Instances.IndexOf((Instance)instancesGrid.SelectedRows[0].DataBoundItem);
+            using InstanceForm form = new InstanceForm { Instance = (Instance)instancesGrid.SelectedRows[0].DataBoundItem };
+            var index = Properties.Settings.Default.Instances.IndexOf((Instance)instancesGrid.SelectedRows[0].DataBoundItem);
 
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    Properties.Settings.Default.Instances.RemoveAt(index);
-                    Properties.Settings.Default.Instances.Insert(index, form.Instance);
-                }
-                instancesGrid.Rows[index].Selected = true;
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                Properties.Settings.Default.Instances.RemoveAt(index);
+                Properties.Settings.Default.Instances.Insert(index, form.Instance);
             }
+            instancesGrid.Rows[index].Selected = true;
         }
 
         private void DataJobsEdit()
         {
-            using (DataJobForm form = new DataJobForm { DataJob = (DataJob)dataJobsGrid.SelectedRows[0].DataBoundItem })
+            using DataJobForm form = new DataJobForm { DataJob = (DataJob)dataJobsGrid.SelectedRows[0].DataBoundItem };
+            var index = Properties.Settings.Default.DataJobs.IndexOf((DataJob)dataJobsGrid.SelectedRows[0].DataBoundItem);
+            if (form.ShowDialog() == DialogResult.OK)
             {
-                var index =
-                    Properties.Settings.Default.DataJobs.IndexOf((DataJob)dataJobsGrid.SelectedRows[0].DataBoundItem);
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    Properties.Settings.Default.DataJobs.RemoveAt(index);
-                    Properties.Settings.Default.DataJobs.Insert(index, form.DataJob);
-                }
-                dataJobsGrid.Rows[index].Selected = true;
+                Properties.Settings.Default.DataJobs.RemoveAt(index);
+                Properties.Settings.Default.DataJobs.Insert(index, form.DataJob);
             }
+            dataJobsGrid.Rows[index].Selected = true;
         }
 
         private void ApplicationsEdit()
@@ -266,36 +258,32 @@ namespace RecurringIntegrationsScheduler.Forms
                 MessageBox.Show(Resources.Existing_application_secret_could_not_be_decrypted);
             }
 
-            using (AadApplicationForm form = new AadApplicationForm { AadApplication = application })
+            using AadApplicationForm form = new AadApplicationForm { AadApplication = application };
+            var index = Properties.Settings.Default.AadApplications.IndexOf((AadApplication)applicationsGrid.SelectedRows[0].DataBoundItem);
+
+            if (form.ShowDialog() == DialogResult.OK)
             {
-                var index =
-                    Properties.Settings.Default.AadApplications.IndexOf(
-                        (AadApplication)applicationsGrid.SelectedRows[0].DataBoundItem);
+                Properties.Settings.Default.AadApplications.RemoveAt(index);
+                application = form.AadApplication;
 
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    Properties.Settings.Default.AadApplications.RemoveAt(index);
-                    application = form.AadApplication;
+                if ((application != null) && (application.Secret != string.Empty))
+                    application.Secret = EncryptDecrypt.Encrypt(application.Secret);
 
-                    if ((application != null) && (application.Secret != string.Empty))
-                        application.Secret = EncryptDecrypt.Encrypt(application.Secret);
-
-                    Properties.Settings.Default.AadApplications.Insert(index, application);
-                }
-                else
-                {
-                    try
-                    {
-                        application.Secret = EncryptDecrypt.Encrypt(application.Secret);
-                    }
-                    catch
-                    {
-                        application.Secret = string.Empty;
-                        MessageBox.Show(Resources.Existing_application_secret_could_not_be_encrypted);
-                    }
-                }
-                applicationsGrid.Rows[index].Selected = true;
+                Properties.Settings.Default.AadApplications.Insert(index, application);
             }
+            else
+            {
+                try
+                {
+                    application.Secret = EncryptDecrypt.Encrypt(application.Secret);
+                }
+                catch
+                {
+                    application.Secret = string.Empty;
+                    MessageBox.Show(Resources.Existing_application_secret_could_not_be_encrypted);
+                }
+            }
+            applicationsGrid.Rows[index].Selected = true;
         }
 
         private void UsersEdit()
@@ -311,46 +299,41 @@ namespace RecurringIntegrationsScheduler.Forms
                 MessageBox.Show(Resources.Existing_password_could_not_be_decrypted);
             }
 
-            using (UserForm form = new UserForm { User = user })
+            using UserForm form = new UserForm { User = user };
+            var index = Properties.Settings.Default.Users.IndexOf((User)usersDataGrid.SelectedRows[0].DataBoundItem);
+            if (form.ShowDialog() == DialogResult.OK)
             {
-                var index = Properties.Settings.Default.Users.IndexOf((User)usersDataGrid.SelectedRows[0].DataBoundItem);
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    Properties.Settings.Default.Users.RemoveAt(index);
-                    user = form.User;
-                    if (user != null)
-                        user.Password = EncryptDecrypt.Encrypt(user.Password);
-                    Properties.Settings.Default.Users.Insert(index, user);
-                }
-                else
-                {
-                    try
-                    {
-                        user.Password = EncryptDecrypt.Encrypt(user.Password);
-                    }
-                    catch
-                    {
-                        user.Password = string.Empty;
-                        MessageBox.Show(Resources.Existing_password_could_not_be_encrypted);
-                    }
-                }
-                usersDataGrid.Rows[index].Selected = true;
+                Properties.Settings.Default.Users.RemoveAt(index);
+                user = form.User;
+                if (user != null)
+                    user.Password = EncryptDecrypt.Encrypt(user.Password);
+                Properties.Settings.Default.Users.Insert(index, user);
             }
+            else
+            {
+                try
+                {
+                    user.Password = EncryptDecrypt.Encrypt(user.Password);
+                }
+                catch
+                {
+                    user.Password = string.Empty;
+                    MessageBox.Show(Resources.Existing_password_could_not_be_encrypted);
+                }
+            }
+            usersDataGrid.Rows[index].Selected = true;
         }
 
         private void JobGroupsEdit()
         {
-            using (JobGroupForm form = new JobGroupForm { JobGroup = (JobGroup)jobGroupsGrid.SelectedRows[0].DataBoundItem })
+            using JobGroupForm form = new JobGroupForm { JobGroup = (JobGroup)jobGroupsGrid.SelectedRows[0].DataBoundItem };
+            var index = Properties.Settings.Default.JobGroups.IndexOf((JobGroup)jobGroupsGrid.SelectedRows[0].DataBoundItem);
+            if (form.ShowDialog() == DialogResult.OK)
             {
-                var index =
-                    Properties.Settings.Default.JobGroups.IndexOf((JobGroup)jobGroupsGrid.SelectedRows[0].DataBoundItem);
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    Properties.Settings.Default.JobGroups.RemoveAt(index);
-                    Properties.Settings.Default.JobGroups.Insert(index, form.JobGroup);
-                }
-                jobGroupsGrid.Rows[index].Selected = true;
+                Properties.Settings.Default.JobGroups.RemoveAt(index);
+                Properties.Settings.Default.JobGroups.Insert(index, form.JobGroup);
             }
+            jobGroupsGrid.Rows[index].Selected = true;
         }
 
         private void InstancesEditButton_Click(object sender, EventArgs e)

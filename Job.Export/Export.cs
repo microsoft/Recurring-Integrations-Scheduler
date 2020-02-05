@@ -159,9 +159,9 @@ namespace RecurringIntegrationsScheduler.Job
                 var attempt = 0;
                 do
                 {
-                    if (attempt > 0 && _settings.StatusCheckInterval > 0) //Only delay after first file and never after last.
+                    if (attempt > 0 && _settings.DelayBetweenStatusCheck > 0) //Only delay after first file and never after last.
                     {
-                        System.Threading.Thread.Sleep(_settings.StatusCheckInterval * 1000);
+                        System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_settings.DelayBetweenStatusCheck));
                     }
                     attempt++;
 
@@ -181,9 +181,9 @@ namespace RecurringIntegrationsScheduler.Job
                     Uri packageUrl = null;
                     do
                     {
-                        if (attempt > 0 && _settings.Interval > 0) //Only delay after first file and never after last.
+                        if (attempt > 0 && _settings.DelayBetweenFiles > 0) //Only delay after first file and never after last.
                         {
-                            System.Threading.Thread.Sleep(_settings.Interval * 1000);
+                            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_settings.DelayBetweenFiles));
                         }
                         attempt++;
 

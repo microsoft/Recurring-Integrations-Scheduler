@@ -502,6 +502,31 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             }
         }
 
+        /// <summary>
+        /// Get execution errors
+        /// </summary>
+        /// <param name="executionId">Execution Id</param>
+        /// <returns></returns>
+        public async Task<HttpResponseMessage> GetExecutionErrors(string executionId)
+        {
+            var requestUri = GetAosRequestUri(_settings.GetExecutionErrorsPath);
+
+            var parameters = new
+            {
+                executionId
+            };
+            string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
+            if (response.IsSuccessStatusCode)
+            {
+                return response;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         private Uri GetAosRequestUri(string requestRelativePath) 
              { 
                     var aosUri = new Uri(_settings.AosUri); 

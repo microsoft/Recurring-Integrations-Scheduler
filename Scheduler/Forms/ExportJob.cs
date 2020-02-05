@@ -117,9 +117,9 @@ namespace RecurringIntegrationsScheduler.Forms
 
                 legalEntity.Text = JobDetail.JobDataMap[SettingsConstants.Company]?.ToString() ?? string.Empty;
 
-                statusCheckInterval.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.StatusCheckInterval]));
+                statusCheckInterval.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.DelayBetweenStatusCheck]));
 
-                numericUpDownInterval.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.Interval]));
+                numericUpDownInterval.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.DelayBetweenFiles]));
 
                 if (!serviceAuthRadioButton.Checked)
                 {
@@ -401,8 +401,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.DeletePackage, deletePackageCheckBox.Checked.ToString()},
                 {SettingsConstants.DataProject, dataProject.Text},
                 {SettingsConstants.Company, legalEntity.Text},
-                {SettingsConstants.Interval, numericUpDownInterval.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.StatusCheckInterval, statusCheckInterval.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.DelayBetweenFiles, numericUpDownInterval.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.DelayBetweenStatusCheck, statusCheckInterval.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
@@ -426,7 +426,7 @@ namespace RecurringIntegrationsScheduler.Forms
         private void CronDocsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             cronmakerLinkLabel.LinkVisited = true;
-            Process.Start("http://www.quartz-scheduler.net/documentation/quartz-2.x/tutorial/crontrigger.html");
+            Process.Start("https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontrigger.html");
         }
 
         private void CalculateNextRunsButton_Click(object sender, EventArgs e)

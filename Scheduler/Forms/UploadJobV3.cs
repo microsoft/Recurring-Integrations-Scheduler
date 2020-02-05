@@ -18,11 +18,11 @@ using System.Windows.Forms;
 
 namespace RecurringIntegrationsScheduler.Forms
 {
-    public partial class UploadJob : Form
+    public partial class UploadJobV3 : Form
     {
         private const int CpNocloseButton = 0x200;
 
-        public UploadJob()
+        public UploadJobV3()
         {
             InitializeComponent();
         }
@@ -50,7 +50,7 @@ namespace RecurringIntegrationsScheduler.Forms
             Text = UploadJobDetail == null
                 ? Resources.Add_upload_job
                 : string.Format(Resources.Edit_job_0, UploadJobDetail.Key.Name);
-            addJobButton.Text = UploadJobDetail == null ? Resources.Add_to_schedule : Resources.Edit_job;
+            addToolStripButton.Text = UploadJobDetail == null ? Resources.Add_to_schedule : Resources.Edit_job;
             jobName.Enabled = UploadJobDetail == null;
 
             jobGroupComboBox.DataSource = Properties.Settings.Default.JobGroups;
@@ -111,7 +111,7 @@ namespace RecurringIntegrationsScheduler.Forms
 
                 legalEntityTextBox.Text = UploadJobDetail.JobDataMap[SettingsConstants.Company]?.ToString() ??
                                           string.Empty;
-                dataPackageCheckBox.Checked = (UploadJobDetail.JobDataMap[SettingsConstants.IsDataPackage] != null) &&
+                isDataPackageCheckBox.Checked = (UploadJobDetail.JobDataMap[SettingsConstants.IsDataPackage] != null) &&
                                               Convert.ToBoolean(
                                                   UploadJobDetail.JobDataMap[SettingsConstants.IsDataPackage].ToString());
                 statusFileExtensionTextBox.Text =
@@ -272,7 +272,11 @@ namespace RecurringIntegrationsScheduler.Forms
                     ProcessingJobDetail.JobDataMap[SettingsConstants.ProcessingSuccessDir]?.ToString() ?? string.Empty;
                 processingErrorsFolderTextBox.Text =
                     ProcessingJobDetail.JobDataMap[SettingsConstants.ProcessingErrorsDir]?.ToString() ?? string.Empty;
-                numericUpDownStatusCheckInterval.Value = Math.Round(Convert.ToDecimal(ProcessingJobDetail.JobDataMap[SettingsConstants.DelayBetweenStatusCheck]));
+                delayBetweenStatusCheckNumericUpDown.Value = Math.Round(Convert.ToDecimal(ProcessingJobDetail.JobDataMap[SettingsConstants.DelayBetweenStatusCheck]));
+
+                getExecutionErrorsCheckBox.Checked =
+                    (ProcessingJobDetail.JobDataMap[SettingsConstants.GetExecutionErrors] != null) &&
+                    Convert.ToBoolean(ProcessingJobDetail.JobDataMap[SettingsConstants.GetExecutionErrors].ToString());
 
                 if (ProcessingTrigger.GetType() == typeof(SimpleTriggerImpl))
                 {
@@ -373,35 +377,8 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void UpJobCronTriggerRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            upJobHoursDateTimePicker.Enabled = !upJobCronTriggerRadioButton.Checked;
-            upJobMinutesDateTimePicker.Enabled = !upJobCronTriggerRadioButton.Checked;
-            upJobStartAtDateTimePicker.Enabled = !upJobCronTriggerRadioButton.Checked;
-            upJobCronExpressionTextBox.Enabled = upJobCronTriggerRadioButton.Checked;
-            getCronScheduleForUploadButton.Enabled = upJobCronTriggerRadioButton.Checked;
-        }
-
-        private void AddJobButton_Click(object sender, EventArgs e)
-        {
-            if (UploadJobDetail == null)
-            {
-                var jobKey = new JobKey(jobName.Text, jobGroupComboBox.Text);
-                if (Scheduler.Instance.GetScheduler().CheckExists(jobKey).Result)
-                    if (
-                        MessageBox.Show(
-                            string.Format(Resources.Job_0_in_group_1_already_exists, jobKey.Name, jobKey.Group),
-                            Resources.Job_already_exists, MessageBoxButtons.YesNo) == DialogResult.No)
-                        return;
-            }
-
-            if (!ValidateJobSettings()) return;
-            UploadJobDetail = GetUploadJobDetail();
-            UploadTrigger = GetUploadTrigger(UploadJobDetail);
-            if (useMonitoringJobCheckBox.Checked)
-            {
-                ProcessingJobDetail = GetMonitorJobDetail();
-                ProcessingTrigger = GetProcessingTrigger(ProcessingJobDetail);
-            }
-            Close();
+            simpleTriggerUploadJobGroupBox.Enabled = !upJobCronTriggerRadioButton.Checked;
+            cronTriggerUploadJobGroupBox.Enabled = upJobCronTriggerRadioButton.Checked;
         }
 
         private bool ValidateJobSettings()
@@ -544,7 +521,7 @@ namespace RecurringIntegrationsScheduler.Forms
             if (upJobSimpleTriggerRadioButton.Checked)
             {
                 var minutes = upJobHoursDateTimePicker.Value.Hour*60;
-                minutes = minutes + upJobMinutesDateTimePicker.Value.Minute;
+                minutes += upJobMinutesDateTimePicker.Value.Minute;
 
                 return builder.WithSimpleSchedule(x => x
                         .WithIntervalInMinutes(minutes)
@@ -572,7 +549,7 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.UploadErrorsDir, uploadErrorsFolderTextBox.Text},
                 {SettingsConstants.Company, legalEntityTextBox.Text},
                 {SettingsConstants.EntityName, dataJob.EntityName},
-                {SettingsConstants.IsDataPackage, dataPackageCheckBox.Checked.ToString()},
+                {SettingsConstants.IsDataPackage, isDataPackageCheckBox.Checked.ToString()},
                 {SettingsConstants.StatusFileExtension, statusFileExtensionTextBox.Text},
                 {SettingsConstants.AadTenant, instance.AadTenant},
                 {SettingsConstants.AzureAuthEndpoint, instance.AzureAuthEndpoint},
@@ -625,7 +602,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
                 {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
-                {SettingsConstants.DelayBetweenStatusCheck, numericUpDownStatusCheckInterval.Value.ToString(CultureInfo.InvariantCulture)}
+                {SettingsConstants.DelayBetweenStatusCheck, delayBetweenStatusCheckNumericUpDown.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.GetExecutionErrors, getExecutionErrorsCheckBox.Checked.ToString()},
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -712,22 +690,14 @@ namespace RecurringIntegrationsScheduler.Forms
             form.ShowDialog();
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
-        {
-            Cancelled = true;
-            Close();
-        }
-
         private void UseMonitoringJobCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             processingJobGroupBox.Enabled = useMonitoringJobCheckBox.Checked;
-            statusFileExtensionTextBox.Enabled = useMonitoringJobCheckBox.Checked;
+
             processingSuccessFolderTextBox.Enabled = useMonitoringJobCheckBox.Checked && !useStandardSubfolder.Checked;
-            processingSuccessFolderBrowserButton.Enabled = useMonitoringJobCheckBox.Checked &&
-                                                           !useStandardSubfolder.Checked;
+            processingSuccessFolderBrowserButton.Enabled = useMonitoringJobCheckBox.Checked && !useStandardSubfolder.Checked;
             processingErrorsFolderTextBox.Enabled = useMonitoringJobCheckBox.Checked && !useStandardSubfolder.Checked;
-            processingErrorsFolderBrowserButton.Enabled = useMonitoringJobCheckBox.Checked &&
-                                                          !useStandardSubfolder.Checked;
+            processingErrorsFolderBrowserButton.Enabled = useMonitoringJobCheckBox.Checked && !useStandardSubfolder.Checked;
         }
 
         private void InputFolderButton_Click(object sender, EventArgs e)
@@ -750,11 +720,8 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void ProcJobCronTriggerRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            procJobHoursDateTimePicker.Enabled = !procJobCronTriggerRadioButton.Checked;
-            procJobMinutesDateTimePicker.Enabled = !procJobCronTriggerRadioButton.Checked;
-            procJobStartAtDateTimePicker.Enabled = !procJobCronTriggerRadioButton.Checked;
-            procJobCronExpressionTextBox.Enabled = procJobCronTriggerRadioButton.Checked;
-            getCronScheduleForProcButton.Enabled = procJobCronTriggerRadioButton.Checked;
+            simpleTriggerMonitoringJobGroupBox.Enabled = !procJobCronTriggerRadioButton.Checked;
+            cronTriggerMonitoringJobGroupBox.Enabled = procJobCronTriggerRadioButton.Checked;
         }
 
         private void GetCronScheduleForProcButton_Click(object sender, EventArgs e)
@@ -773,10 +740,9 @@ namespace RecurringIntegrationsScheduler.Forms
                     scheduleTimes.Add(date.Value);
                     time = date.Value;
                 }
-            calculatedRunsTextBox.Text = string.Empty;
+            calculatedRunsMonitoringTextBox.Text = string.Empty;
             foreach (var date in scheduleTimes)
-                calculatedRunsTextBox.Text = calculatedRunsTextBox.Text + $@"{date.ToLocalTime():yyyy-MM-dd HH:mm:ss}" +
-                                             Environment.NewLine;
+                calculatedRunsMonitoringTextBox.Text = calculatedRunsMonitoringTextBox.Text + $@"{date.ToLocalTime():yyyy-MM-dd HH:mm:ss}" + Environment.NewLine;
         }
 
         private void StatusFileExtensionTextBox_Leave(object sender, EventArgs e)
@@ -809,6 +775,50 @@ namespace RecurringIntegrationsScheduler.Forms
             aadApplicationComboBox.DisplayMember = "Name";
 
             userComboBox.Enabled = !serviceAuthRadioButton.Checked;
+        }
+
+        private void CancelToolStripButton_Click(object sender, EventArgs e)
+        {
+            Cancelled = true;
+            Close();
+        }
+
+        private void AddToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (UploadJobDetail == null)
+            {
+                var jobKey = new JobKey(jobName.Text, jobGroupComboBox.Text);
+                if (Scheduler.Instance.GetScheduler().CheckExists(jobKey).Result)
+                    if (
+                        MessageBox.Show(
+                            string.Format(Resources.Job_0_in_group_1_already_exists, jobKey.Name, jobKey.Group),
+                            Resources.Job_already_exists, MessageBoxButtons.YesNo) == DialogResult.No)
+                        return;
+            }
+
+            if (!ValidateJobSettings()) return;
+            UploadJobDetail = GetUploadJobDetail();
+            UploadTrigger = GetUploadTrigger(UploadJobDetail);
+            if (useMonitoringJobCheckBox.Checked)
+            {
+                ProcessingJobDetail = GetMonitorJobDetail();
+                ProcessingTrigger = GetProcessingTrigger(ProcessingJobDetail);
+            }
+            Close();
+        }
+
+        private void IsDataPackageCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (isDataPackageCheckBox.Checked)
+            {
+                searchPatternTextBox.Text = "*.zip";
+                searchPatternTextBox.Enabled = false;
+            }
+            else
+            {
+                searchPatternTextBox.Text = "*.*";
+                searchPatternTextBox.Enabled = true;
+            }
         }
     }
 }

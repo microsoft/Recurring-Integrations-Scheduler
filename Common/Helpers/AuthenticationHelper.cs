@@ -19,6 +19,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         private readonly Settings _settings;
         private string _authorizationHeader;
         private readonly AsyncRetryPolicy _retryPolicy;
+        private const string AuthEndpoint = "https://login.microsoftonline.com/";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticationHelper"/> class.
@@ -45,13 +46,14 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>Authorization header</returns>
         private async Task<string> AuthorizationHeader()
         {
-            if (!string.IsNullOrEmpty(_authorizationHeader) &&
-                (DateTime.UtcNow.AddSeconds(60) < AuthenticationResult.ExpiresOn)) return _authorizationHeader;
-
+            if (!string.IsNullOrEmpty(_authorizationHeader) && (DateTime.UtcNow.AddSeconds(60) < AuthenticationResult.ExpiresOn))
+            {
+                return _authorizationHeader;
+            }
             IConfidentialClientApplication appConfidential;
             IPublicClientApplication appPublic;
             var aosUriAuthUri = new Uri(_settings.AosUri);
-            string authority = "https://login.microsoftonline.com/"+ _settings.AadTenant;
+            string authority = AuthEndpoint + _settings.AadTenant;
             string[] scopes = new string[] { aosUriAuthUri.AbsoluteUri +  ".default" };
 
             if (_settings.UseServiceAuthentication)
@@ -69,7 +71,6 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                     .Build();
                 var accounts = await _retryPolicy.ExecuteAsync(() => appPublic.GetAccountsAsync());
 
-
                 if (accounts.Any())
                 {
                     AuthenticationResult = await _retryPolicy.ExecuteAsync(() => appPublic.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync());
@@ -78,8 +79,9 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 {
                     using var securePassword = new SecureString();
                     foreach (char c in _settings.UserPassword)
+                    {
                         securePassword.AppendChar(c);
-
+                    }
                     AuthenticationResult = await _retryPolicy.ExecuteAsync(() => appPublic.AcquireTokenByUsernamePassword(scopes, _settings.UserName, securePassword).ExecuteAsync());
                 }
             }

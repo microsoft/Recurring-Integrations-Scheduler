@@ -18,11 +18,11 @@ using System.Windows.Forms;
 
 namespace RecurringIntegrationsScheduler.Forms
 {
-    public partial class DownloadJob : Form
+    public partial class ExportJobV3 : Form
     {
         private const int CpNocloseButton = 0x200;
 
-        public DownloadJob()
+        public ExportJobV3()
         {
             InitializeComponent();
         }
@@ -41,14 +41,14 @@ namespace RecurringIntegrationsScheduler.Forms
         public IJobDetail JobDetail { get; set; }
         public ITrigger Trigger { get; set; }
 
-        private void DownloadJobForm_Load(object sender, EventArgs e)
+        private void ExportJobForm_Load(object sender, EventArgs e)
         {
             Cancelled = false;
             //Few changes based on form mode (create or edit)
             Text = JobDetail == null
-                ? Resources.Add_download_job
+                ? Resources.Add_export_job
                 : string.Format(Resources.Edit_job_0, JobDetail.Key.Name);
-            addJobButton.Text = JobDetail == null ? Resources.Add_to_schedule : Resources.Edit_job;
+            addToolStripButton.Text = JobDetail == null ? Resources.Add_to_schedule : Resources.Edit_job;
             jobName.Enabled = JobDetail == null;
 
             jobGroupComboBox.DataSource = Properties.Settings.Default.JobGroups;
@@ -60,12 +60,6 @@ namespace RecurringIntegrationsScheduler.Forms
             instanceComboBox.DataSource = Properties.Settings.Default.Instances;
             instanceComboBox.ValueMember = null;
             instanceComboBox.DisplayMember = "Name";
-
-            var dataJobs = Properties.Settings.Default.DataJobs.Where(x => x.Type == DataJobType.Download);
-            var dataJobsBindingList = new BindingList<DataJob>(dataJobs.ToList());
-            dataJobComboBox.DataSource = dataJobsBindingList;
-            dataJobComboBox.ValueMember = null;
-            dataJobComboBox.DisplayMember = "Name";
 
             var applications = Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.User);
             var applicationsBindingList = new BindingList<AadApplication>(applications.ToList());
@@ -81,6 +75,10 @@ namespace RecurringIntegrationsScheduler.Forms
 
             errorsFolder.Text = Properties.Settings.Default.DownloadErrorsFolder;
 
+            exportToPackageTextBox.Text = OdataActionsConstants.ExportToPackageActionPath;
+            getExecutionSummaryStatusTextBox.Text = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
+            getExportedPackageUrlTextBox.Text = OdataActionsConstants.GetExportedPackageUrlActionPath;
+
             if ((JobDetail != null) && (Trigger != null))
             {
                 jobName.Text = JobDetail.Key.Name;
@@ -92,10 +90,8 @@ namespace RecurringIntegrationsScheduler.Forms
 
                 jobDescription.Text = JobDetail.Description;
 
-                downloadFolder.Text = JobDetail.JobDataMap[SettingsConstants.DownloadSuccessDir]?.ToString() ??
-                                      string.Empty;
-                errorsFolder.Text = JobDetail.JobDataMap[SettingsConstants.DownloadErrorsDir]?.ToString() ??
-                                    string.Empty;
+                downloadFolder.Text = JobDetail.JobDataMap[SettingsConstants.DownloadSuccessDir]?.ToString() ?? string.Empty;
+                errorsFolder.Text = JobDetail.JobDataMap[SettingsConstants.DownloadErrorsDir]?.ToString() ?? string.Empty;
                 useStandardSubfolder.Checked = false;
 
                 unzipCheckBox.Checked = (JobDetail.JobDataMap[SettingsConstants.UnzipPackage] != null) &&
@@ -112,7 +108,14 @@ namespace RecurringIntegrationsScheduler.Forms
                                                  Convert.ToBoolean(
                                                      JobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication]
                                                          .ToString());
-                numericUpDownInterval.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.DelayBetweenFiles]));
+
+                dataProject.Text = JobDetail.JobDataMap[SettingsConstants.DataProject]?.ToString() ?? string.Empty;
+
+                legalEntity.Text = JobDetail.JobDataMap[SettingsConstants.Company]?.ToString() ?? string.Empty;
+
+                delayBetweenStatusCheckNumericUpDown.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.DelayBetweenStatusCheck]));
+
+                delayBetweenAttemptsNumericUpDown.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.DelayBetweenFiles]));
 
                 if (!serviceAuthRadioButton.Checked)
                 {
@@ -149,8 +152,7 @@ namespace RecurringIntegrationsScheduler.Forms
                             AuthenticationType = AuthenticationType.User
                         };
                         Properties.Settings.Default.AadApplications.Add(application);
-                        applications =
-                            Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.User);
+                        applications = Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.User);
                         applicationsBindingList = new BindingList<AadApplication>(applications.ToList());
                         aadApplicationComboBox.DataSource = applicationsBindingList;
                         aadApplicationComboBox.ValueMember = null;
@@ -171,26 +173,6 @@ namespace RecurringIntegrationsScheduler.Forms
                         authMethodPanel.Enabled = false;
                     }
                 aadApplicationComboBox.SelectedItem = application;
-
-                var dataJob =
-                    ((IEnumerable<DataJob>) dataJobComboBox.DataSource).FirstOrDefault(
-                        dj => dj.ActivityId == JobDetail.JobDataMap[SettingsConstants.ActivityId].ToString());
-                if (dataJob == null)
-                {
-                    dataJob = new DataJob
-                    {
-                        ActivityId = JobDetail.JobDataMap[SettingsConstants.ActivityId].ToString(),
-                        Type = DataJobType.Download,
-                        Name = Resources.IMPORTED_CHANGE_THIS
-                    };
-                    Properties.Settings.Default.DataJobs.Add(dataJob);
-                    dataJobs = Properties.Settings.Default.DataJobs.Where(x => x.Type == DataJobType.Download);
-                    dataJobsBindingList = new BindingList<DataJob>(dataJobs.ToList());
-                    dataJobComboBox.DataSource = dataJobsBindingList;
-                    dataJobComboBox.ValueMember = null;
-                    dataJobComboBox.DisplayMember = "Name";
-                }
-                dataJobComboBox.SelectedItem = dataJob;
 
                 var axInstance = ((IEnumerable<Instance>) instanceComboBox.DataSource).FirstOrDefault(x =>
                     (x.AosUri == JobDetail.JobDataMap[SettingsConstants.AosUri].ToString()) &&
@@ -238,6 +220,10 @@ namespace RecurringIntegrationsScheduler.Forms
                     (JobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
                     Convert.ToBoolean(JobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
 
+                exportToPackageTextBox.Text = JobDetail.JobDataMap[SettingsConstants.ExportToPackageActionPath]?.ToString() ?? OdataActionsConstants.ExportToPackageActionPath;
+                getExecutionSummaryStatusTextBox.Text = JobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryStatusActionPath;
+                getExportedPackageUrlTextBox.Text = JobDetail.JobDataMap[SettingsConstants.GetExportedPackageUrlActionPath]?.ToString() ?? OdataActionsConstants.GetExportedPackageUrlActionPath;
+
                 Properties.Settings.Default.Save();
             }
         }
@@ -277,30 +263,8 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void CronTriggerRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            hoursDateTimePicker.Enabled = !cronTriggerRadioButton.Checked;
-            minutesDateTimePicker.Enabled = !cronTriggerRadioButton.Checked;
-            startAtDateTimePicker.Enabled = !cronTriggerRadioButton.Checked;
-            cronExpressionTextBox.Enabled = cronTriggerRadioButton.Checked;
-            calculateNextRunsButton.Enabled = cronTriggerRadioButton.Checked;
-        }
-
-        private void AddJobButton_Click(object sender, EventArgs e)
-        {
-            if (JobDetail == null)
-            {
-                var jobKey = new JobKey(jobName.Text, jobGroupComboBox.Text);
-                if (Scheduler.Instance.GetScheduler().CheckExists(jobKey).Result)
-                    if (
-                        MessageBox.Show(
-                            string.Format(Resources.Job_0_in_group_1_already_exists, jobKey.Name, jobKey.Group),
-                            Resources.Job_already_exists, MessageBoxButtons.YesNo) == DialogResult.No)
-                        return;
-            }
-
-            if (!ValidateJobSettings()) return;
-            JobDetail = GetJobDetail();
-            Trigger = GetTrigger(JobDetail);
-            Close();
+            simpleTriggerJobGroupBox.Enabled = !cronTriggerRadioButton.Checked;
+            cronTriggerGroupBox.Enabled = cronTriggerRadioButton.Checked;
         }
 
         private bool ValidateJobSettings()
@@ -335,8 +299,20 @@ namespace RecurringIntegrationsScheduler.Forms
             if ((aadApplicationComboBox.SelectedItem == null) || string.IsNullOrEmpty(aadApplicationComboBox.Text))
                 message.AppendLine(Resources.AAD_client_application_is_not_selected);
 
-            if ((dataJobComboBox.SelectedItem == null) || string.IsNullOrEmpty(dataJobComboBox.Text))
-                message.AppendLine(Resources.Data_job_is_not_selected);
+            if (string.IsNullOrEmpty(dataProject.Text))
+                message.AppendLine(Resources.Data_project_is_missing);
+
+            if (string.IsNullOrEmpty(legalEntity.Text))
+                message.AppendLine(Resources.Legal_entity_is_missing);
+
+            if (string.IsNullOrEmpty(exportToPackageTextBox.Text))
+                message.AppendLine(Resources.URL_for_ExportToPackage_action_is_missing);
+
+            if (string.IsNullOrEmpty(getExecutionSummaryStatusTextBox.Text))
+                message.AppendLine(Resources.URL_for_GetExecutionSummaryStatus_action_is_missing);
+
+            if (string.IsNullOrEmpty(getExportedPackageUrlTextBox.Text))
+                message.AppendLine(Resources.URL_for_GetExportedPackageUrl_action_is_missing);
 
             if (message.Length > 0)
                 MessageBox.Show(message.ToString(), Resources.Job_configuration_is_not_valid);
@@ -348,7 +324,7 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             var detail = JobBuilder
                 .Create()
-                .OfType(Type.GetType("RecurringIntegrationsScheduler.Job.Download,RecurringIntegrationsScheduler.Job.Download", true))
+                .OfType(Type.GetType("RecurringIntegrationsScheduler.Job.Export,RecurringIntegrationsScheduler.Job.Export", true))
                 .WithDescription(jobDescription.Text)
                 .WithIdentity(new JobKey(jobName.Text, jobGroupComboBox.Text))
                 .UsingJobData(GetJobDataMap())
@@ -389,7 +365,6 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private JobDataMap GetJobDataMap()
         {
-            var dataJob = (DataJob) dataJobComboBox.SelectedItem;
             var instance = (Instance) instanceComboBox.SelectedItem;
             var user = (User) userComboBox.SelectedItem;
             var application = (AadApplication) aadApplicationComboBox.SelectedItem;
@@ -401,17 +376,22 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.AadTenant, instance.AadTenant},
                 {SettingsConstants.AzureAuthEndpoint, instance.AzureAuthEndpoint},
                 {SettingsConstants.AosUri, instance.AosUri},
-                {SettingsConstants.ActivityId, dataJob.ActivityId},
                 {SettingsConstants.UseServiceAuthentication, serviceAuthRadioButton.Checked.ToString()},
                 {SettingsConstants.AadClientId, application.ClientId},
                 {SettingsConstants.UnzipPackage, unzipCheckBox.Checked.ToString()},
                 {SettingsConstants.AddTimestamp, addTimestampCheckBox.Checked.ToString()},
                 {SettingsConstants.DeletePackage, deletePackageCheckBox.Checked.ToString()},
+                {SettingsConstants.DataProject, dataProject.Text},
+                {SettingsConstants.Company, legalEntity.Text},
+                {SettingsConstants.DelayBetweenFiles, delayBetweenAttemptsNumericUpDown.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.DelayBetweenStatusCheck, delayBetweenStatusCheckNumericUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
-                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
-                {SettingsConstants.DelayBetweenFiles, numericUpDownInterval.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.ExportToPackageActionPath, exportToPackageTextBox.Text},
+                {SettingsConstants.GetExecutionSummaryStatusActionPath, getExecutionSummaryStatusTextBox.Text},
+                {SettingsConstants.GetExportedPackageUrlActionPath, getExportedPackageUrlTextBox.Text},
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -428,14 +408,12 @@ namespace RecurringIntegrationsScheduler.Forms
         private void CronDocsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             cronmakerLinkLabel.LinkVisited = true;
-            Process.Start(
-                "https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontrigger.html");
+            Process.Start("https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontrigger.html");
         }
 
         private void CalculateNextRunsButton_Click(object sender, EventArgs e)
         {
             var scheduleTimes = new List<DateTimeOffset>();
-
             var time = DateTimeOffset.Now;
 
             if (!string.IsNullOrEmpty(cronExpressionTextBox.Text))
@@ -487,12 +465,6 @@ namespace RecurringIntegrationsScheduler.Forms
             form.ShowDialog();
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
-        {
-            Cancelled = true;
-            Close();
-        }
-
         private void UnzipCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             addTimestampCheckBox.Enabled = unzipCheckBox.Checked;
@@ -515,6 +487,31 @@ namespace RecurringIntegrationsScheduler.Forms
             aadApplicationComboBox.DisplayMember = "Name";
 
             userComboBox.Enabled = !serviceAuthRadioButton.Checked;
+        }
+
+        private void AddToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (JobDetail == null)
+            {
+                var jobKey = new JobKey(jobName.Text, jobGroupComboBox.Text);
+                if (Scheduler.Instance.GetScheduler().CheckExists(jobKey).Result)
+                    if (
+                        MessageBox.Show(
+                            string.Format(Resources.Job_0_in_group_1_already_exists, jobKey.Name, jobKey.Group),
+                            Resources.Job_already_exists, MessageBoxButtons.YesNo) == DialogResult.No)
+                        return;
+            }
+
+            if (!ValidateJobSettings()) return;
+            JobDetail = GetJobDetail();
+            Trigger = GetTrigger(JobDetail);
+            Close();
+        }
+
+        private void CancelToolStripButton_Click(object sender, EventArgs e)
+        {
+            Cancelled = true;
+            Close();
         }
     }
 }

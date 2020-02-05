@@ -162,4 +162,10 @@
   <data name="Job_0_was_paused_indefinitely" xml:space="preserve">
     <value>Job: {0} was paused indefinitely.</value>
   </data>
+  <data name="Job_0_download_of_execution_errors_failed_1" xml:space="preserve">
+    <value>Job: {0} Download of execution errors failed. {1}</value>
+  </data>
+  <data name="Job_0_Trying_to_download_execution_errors" xml:space="preserve">
+    <value>Job: {0} Trying to download execution errors.</value>
+  </data>
 </root>

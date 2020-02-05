@@ -4,7 +4,6 @@
 using log4net;
 using Polly;
 using Quartz;
-using Quartz.Util;
 using RecurringIntegrationsScheduler.Common.Contracts;
 using RecurringIntegrationsScheduler.Common.Helpers;
 using RecurringIntegrationsScheduler.Common.JobSettings;
@@ -186,9 +185,9 @@ namespace RecurringIntegrationsScheduler.Job
 
             while (EnqueuedJobs.TryDequeue(out DataMessage dataMessage))
             {
-                if (fileCount > 0 && _settings.StatusCheckInterval > 0) //Only delay after first file and never after last.
+                if (fileCount > 0 && _settings.DelayBetweenStatusCheck > 0) //Only delay after first file and never after last.
                 {
-                    System.Threading.Thread.Sleep(_settings.StatusCheckInterval * 1000);
+                    System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_settings.DelayBetweenStatusCheck));
                 }
                 fileCount++;
 
@@ -217,7 +216,7 @@ namespace RecurringIntegrationsScheduler.Job
                 case "Succeeded":
                     {
                         // Move message file and delete processing status file
-                        var processingSuccessDestination = Path.Combine(_settings.ProcessingSuccessDir, dataMessage.Name);
+                        var processingSuccessDestination = dataMessage.FullPath.Replace(_settings.UploadSuccessDir, _settings.ProcessingSuccessDir);
                         _retryPolicyForIo.Execute(() => FileOperationsHelper.MoveDataToTarget(dataMessage.FullPath, processingSuccessDestination, true, _settings.StatusFileExtension));
                         await CreateLinkToExecutionSummaryPage(dataMessage.MessageId, processingSuccessDestination);
                     }
@@ -227,7 +226,7 @@ namespace RecurringIntegrationsScheduler.Job
                 case "Failed":
                 case "Canceled":
                     {
-                        var processingErrorDestination = Path.Combine(_settings.ProcessingErrorsDir, dataMessage.Name);
+                        var processingErrorDestination = dataMessage.FullPath.Replace(_settings.UploadSuccessDir, _settings.ProcessingErrorsDir);
                         _retryPolicyForIo.Execute(() => FileOperationsHelper.MoveDataToTarget(dataMessage.FullPath, processingErrorDestination, true, _settings.StatusFileExtension));
                         await CreateLinkToExecutionSummaryPage(dataMessage.MessageId, processingErrorDestination);
                         if (_settings.GetImportTargetErrorKeysFile)
@@ -257,7 +256,7 @@ namespace RecurringIntegrationsScheduler.Job
                                         errorFileUrl = await _httpClientHelper.GetImportTargetErrorKeysFileUrl(dataMessage.MessageId, entity);
                                         if (errorFileUrl.Length == 0)
                                         {
-                                            System.Threading.Thread.Sleep(_settings.Interval);
+                                            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_settings.DelayBetweenStatusCheck));//TODO
                                         }
                                     }
                                     while (string.IsNullOrEmpty(errorFileUrl));
@@ -268,7 +267,7 @@ namespace RecurringIntegrationsScheduler.Job
 
                                     using Stream downloadedStream = await response.Content.ReadAsStreamAsync();
                                     var errorsFileName = $"{Path.GetFileNameWithoutExtension(dataMessage.Name)}-{entity}-ErrorKeys-{DateTime.Now:yyyy-MM-dd_HH-mm-ss-ffff}.txt";
-                                    var errorsFilePath = Path.Combine(_settings.ProcessingErrorsDir, errorsFileName);
+                                    var errorsFilePath = Path.Combine(Path.GetDirectoryName(dataMessage.FullPath.Replace(_settings.UploadSuccessDir, _settings.ProcessingErrorsDir)), errorsFileName);
                                     var dataMessageForErrorsFile = new DataMessage()
                                     {
                                         FullPath = errorsFilePath,
@@ -278,6 +277,28 @@ namespace RecurringIntegrationsScheduler.Job
                                     _retryPolicyForIo.Execute(() => FileOperationsHelper.Create(downloadedStream, dataMessageForErrorsFile.FullPath));
                                 }
                             }
+                        }
+
+                        if (_settings.GetExecutionErrors)
+                        {
+                            if (Log.IsDebugEnabled)
+                            {
+                                Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Trying_to_download_execution_errors, _context.JobDetail.Key));
+                            }
+                            var response = await _httpClientHelper.GetExecutionErrors(dataMessage.MessageId);
+                            if (!response.IsSuccessStatusCode)
+                                throw new JobExecutionException(string.Format(Resources.Job_0_download_of_execution_errors_failed_1, _context.JobDetail.Key, string.Format($"Status: {response.StatusCode}. Message: {response.Content}")));
+
+                            using Stream downloadedStream = await response.Content.ReadAsStreamAsync();
+                            var errorsFileName = $"{Path.GetFileNameWithoutExtension(dataMessage.Name)}-ExecutionErrors-{DateTime.Now:yyyy-MM-dd_HH-mm-ss-ffff}.txt";
+                            var errorsFilePath = Path.Combine(Path.GetDirectoryName(dataMessage.FullPath.Replace(_settings.UploadSuccessDir, _settings.ProcessingErrorsDir)), errorsFileName);
+                            var dataMessageForErrorsFile = new DataMessage()
+                            {
+                                FullPath = errorsFilePath,
+                                Name = errorsFileName,
+                                MessageStatus = MessageStatus.Failed
+                            };
+                            _retryPolicyForIo.Execute(() => FileOperationsHelper.Create(downloadedStream, dataMessageForErrorsFile.FullPath));
                         }
                     }
                     break;

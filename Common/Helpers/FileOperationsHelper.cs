@@ -247,6 +247,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>Boolean with operation result</returns>
         public static void Move(string sourceFilePath, string targetFilePath)
         {
+            new FileInfo(targetFilePath).Directory.Create();//Create subfolders if necessary
             if (File.Exists(targetFilePath))
             {
                 File.Delete(targetFilePath);

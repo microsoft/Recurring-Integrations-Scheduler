@@ -188,14 +188,14 @@ namespace RecurringIntegrationsScheduler.Job
             using (_httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp))
             {
                 var fileCount = 0;
-                string fileNameInPackage = "";
+                string fileNameInPackageTemplate = "";
                 FileStream zipToOpen = null;
                 ZipArchive archive = null;
 
-                if (!string.IsNullOrEmpty(_settings.PackageTemplate))
+                if (_settings.InputFilesArePackages == false)
                 {
-                    fileNameInPackage = GetFileNameInPackage();
-                    if (string.IsNullOrEmpty(fileNameInPackage))
+                    fileNameInPackageTemplate = GetFileNameInPackageTemplate();
+                    if (string.IsNullOrEmpty(fileNameInPackageTemplate))
                     {
                         throw new Exception(string.Format(Resources.Job_0_Please_check_your_package_template_Input_file_name_in_Manifest_cannot_be_identified, _context.JobDetail.Key));
                     }
@@ -205,9 +205,9 @@ namespace RecurringIntegrationsScheduler.Job
                 {
                     try
                     {
-                        if (fileCount > 0 && _settings.Interval > 0) //Only delay after first file and never after last.
+                        if (fileCount > 0 && _settings.DelayBetweenFiles > 0) //Only delay after first file and never after last.
                         {
-                            System.Threading.Thread.Sleep(_settings.Interval * 1000);
+                            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_settings.DelayBetweenFiles));
                         }
                         fileCount++;
 
@@ -217,7 +217,7 @@ namespace RecurringIntegrationsScheduler.Job
                         string tempFileName = "";
 
                         //If we need to "wrap" file in package envelope
-                        if (!string.IsNullOrEmpty(_settings.PackageTemplate))
+                        if (_settings.InputFilesArePackages == false)
                         {
                             using (zipToOpen = new FileStream(_settings.PackageTemplate, FileMode.Open))
                             {
@@ -227,17 +227,17 @@ namespace RecurringIntegrationsScheduler.Job
                                 using (archive = new ZipArchive(tempZipStream, ZipArchiveMode.Update))
                                 {
                                     //Check if package template contains input file and remove it first. It should not be there in the first place.
-                                    ZipArchiveEntry entry = archive.GetEntry(fileNameInPackage);
+                                    ZipArchiveEntry entry = archive.GetEntry(fileNameInPackageTemplate);
                                     if (entry != null)
                                     {
                                         entry.Delete();
-                                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Package_template_contains_input_file_1_Please_remove_it_from_the_template, _context.JobDetail.Key, fileNameInPackage));
+                                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Package_template_contains_input_file_1_Please_remove_it_from_the_template, _context.JobDetail.Key, fileNameInPackageTemplate));
                                     }
 
                                     // Update Manifest file with the original file name for end-to-end traceability. Use the new file name in the rest of the method.
-                                    fileNameInPackage = UpdateManifestFile(archive, dataMessage, fileNameInPackage);
+                                    fileNameInPackageTemplate = UpdateManifestFile(archive, dataMessage, fileNameInPackageTemplate);
 
-                                    var importedFile = archive.CreateEntry(fileNameInPackage, CompressionLevel.Fastest);
+                                    var importedFile = archive.CreateEntry(fileNameInPackageTemplate, CompressionLevel.Fastest);
                                     using var entryStream = importedFile.Open();
                                     sourceStream.CopyTo(entryStream);
                                     sourceStream.Close();
@@ -253,7 +253,7 @@ namespace RecurringIntegrationsScheduler.Job
                         var response = await _httpClientHelper.GetAzureWriteUrl();
                         if(string.IsNullOrEmpty(response))
                         {
-                            Log.ErrorFormat(CultureInfo.InvariantCulture, "Method GetAzureWriteUrl returned empty string");
+                            Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Method_GetAzureWriteUrl_returned_empty_string, _context.JobDetail.Key));
                             continue;
                         }
                         var blobInfo = (JObject)JsonConvert.DeserializeObject(response);
@@ -263,11 +263,12 @@ namespace RecurringIntegrationsScheduler.Job
 
                         //Upload package to blob storage
                         var uploadResponse = await _httpClientHelper.UploadContentsToBlob(blobUri, sourceStream);
+                        
                         if (sourceStream != null)
                         {
                             sourceStream.Close();
                             sourceStream.Dispose();
-                            if (!string.IsNullOrEmpty(_settings.PackageTemplate))
+                            if (!_settings.InputFilesArePackages)//if we wraped file in package envelop we need to delete temp file
                             {
                                 _retryPolicyForIo.Execute(() => FileOperationsHelper.Delete(tempFileName));
                             }
@@ -275,7 +276,30 @@ namespace RecurringIntegrationsScheduler.Job
                         if (uploadResponse.IsSuccessStatusCode)
                         {
                             //Now send import request
-                            var importResponse = await _httpClientHelper.ImportFromPackage(blobUri.AbsoluteUri, _settings.DataProject, CreateExecutionId(_settings.DataProject), _settings.ExecuteImport, _settings.OverwriteDataProject, _settings.Company);
+                            var targetLegalEntity = _settings.Company;
+                            if (_settings.GetLegalEntityFromSubfolder)
+                            {
+                                targetLegalEntity = new FileInfo(dataMessage.FullPath).Directory.Name;
+                            }
+                            if (_settings.GetLegalEntityFromFilename)
+                            {
+                                String[] separator = { _settings.FilenameSeparator };
+                                var tokenList = dataMessage.Name.Split(separator, 10, StringSplitOptions.RemoveEmptyEntries);
+
+                                targetLegalEntity = tokenList[_settings.LegalEntityTokenPosition - 1];
+                            }
+                            if(targetLegalEntity.Length > 4)
+                            {
+                                Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Target_legal_entity_is_not_valid_1, _context.JobDetail.Key, targetLegalEntity));
+                            }
+
+
+                            if(string.IsNullOrEmpty(targetLegalEntity))
+                            {
+                                throw new Exception(string.Format(Resources.Job_0_Unable_to_get_target_legal_entity_name, _context.JobDetail.Key));
+                            }
+                            var executionIdGenerated = CreateExecutionId(_settings.DataProject);
+                            var importResponse = await _httpClientHelper.ImportFromPackage(blobUri.AbsoluteUri, _settings.DataProject, executionIdGenerated, _settings.ExecuteImport, _settings.OverwriteDataProject, targetLegalEntity);
 
                             if (importResponse.IsSuccessStatusCode)
                             {
@@ -301,7 +325,7 @@ namespace RecurringIntegrationsScheduler.Job
                             else
                             {
                                 // import request failed. Move message to error location.
-                                Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Upload_failed_for_file_1_Failure_response_Status_2_Reason_3, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}"), importResponse.StatusCode, importResponse.ReasonPhrase));
+                                Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Upload_failed_for_file_1_Failure_response_Status_2_Reason_3, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}"), importResponse.StatusCode, importResponse.ReasonPhrase, $"{Environment.NewLine}packageUrl: {blobUri.AbsoluteUri}{Environment.NewLine}definitionGroupId: {_settings.DataProject}{Environment.NewLine}executionId: {executionIdGenerated}{Environment.NewLine}execute: {_settings.ExecuteImport.ToString()}{Environment.NewLine}overwrite: {_settings.OverwriteDataProject.ToString()}{Environment.NewLine}legalEntityId: {targetLegalEntity}"));
 
                                 var targetDataMessage = new DataMessage(dataMessage)
                                 {
@@ -352,7 +376,7 @@ namespace RecurringIntegrationsScheduler.Job
             }
         }
 
-        private string GetFileNameInPackage()
+        private string GetFileNameInPackageTemplate()
         {
             using var package = ZipFile.OpenRead(_settings.PackageTemplate);
             foreach (var entry in package.Entries)
@@ -404,9 +428,11 @@ namespace RecurringIntegrationsScheduler.Job
                 tempXmlDocManifest.SelectSingleNode("//InputFilePath[1]").InnerText = Path.GetFileName(dataMessage.FullPath);
 
                 // Save the document to a file and auto-indent the output.
-                using XmlTextWriter writer = new XmlTextWriter(tempManifestFileNameNew, null);
-                writer.Namespaces = false;
-                writer.Formatting = System.Xml.Formatting.Indented;
+                using XmlTextWriter writer = new XmlTextWriter(tempManifestFileNameNew, null)
+                {
+                    Namespaces = false,
+                    Formatting = System.Xml.Formatting.Indented
+                };
                 tempXmlDocManifest.Save(writer);
             }
 

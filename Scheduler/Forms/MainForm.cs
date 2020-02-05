@@ -78,18 +78,14 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void SettingsButton_Click(object sender, EventArgs e)
         {
-            using (Parameters form = new Parameters())
-            {
-                form.ShowDialog();
-            }
+            using Parameters form = new Parameters();
+            form.ShowDialog();
         }
 
         private void AboutButton_Click(object sender, EventArgs e)
         {
-            using (AboutBox form = new AboutBox())
-            {
-                form.ShowDialog();
-            }
+            using AboutBox form = new AboutBox();
+            form.ShowDialog();
         }
 
         private void JobsDataGridView_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
@@ -171,42 +167,40 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void ConnectToServerButton_Click(object sender, EventArgs e)
         {
-            using (var form = new Connect())
+            using var form = new Connect();
+            form.ShowDialog();
+            if (!form.Cancelled)
             {
-                form.ShowDialog();
-                if (!form.Cancelled)
+                try
                 {
-                    try
-                    {
-                        Scheduler.Instance.Connect(form.Server, form.Port, form.Scheduler);
+                    Scheduler.Instance.Connect(form.Server, form.Port, form.Scheduler);
 
-                        if (Scheduler.Instance.GetScheduler() != null)
-                        {
-                            toolStripConnectionStatus.Text =
-                                string.Format(Resources.Connected_to,
-                                              Scheduler.Instance.Address);
-                            connectToServerButton.Enabled = false;
-                            privateSchedulerButton.Enabled = false;
-                            addDownloadJobMenuItem.Enabled = true;
-                            addUploadJobMenuItem.Enabled = true;
-                            addImportJobMenuItem.Enabled = true;
-                            addExportJobMenuItem.Enabled = true;
-                            refreshButton.Enabled = true;
-
-                            RefreshGrid();
-                        }
-                    }
-                    catch (Exception ex)
+                    if (Scheduler.Instance.GetScheduler() != null)
                     {
-                        MessageBox.Show(
-                            ex.Message,
-                            string.Format(
-                                        Resources.Unable_to_connect_to_scheduler,
-                                        form.Scheduler,
-                                        form.Server,
-                                        form.Port)
-                                        );
+                        toolStripConnectionStatus.Text =
+                            string.Format(Resources.Connected_to,
+                                          Scheduler.Instance.Address);
+                        connectToServerButton.Enabled = false;
+                        privateSchedulerButton.Enabled = false;
+                        addDownloadJobMenuItem.Enabled = true;
+                        addUploadJobMenuItem.Enabled = true;
+                        addImportJobMenuItem.Enabled = true;
+                        addExportJobMenuItem.Enabled = true;
+                        refreshButton.Enabled = true;
+
+                        RefreshGrid();
                     }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        string.Format(
+                                    Resources.Unable_to_connect_to_scheduler,
+                                    form.Scheduler,
+                                    form.Server,
+                                    form.Port)
+                                    );
                 }
             }
         }
@@ -231,35 +225,33 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             try
             {
-                using (FileDialog dialog = new SaveFileDialog())
+                using FileDialog dialog = new SaveFileDialog();
+                dialog.Filter = Resources.Recurring_Integrations_Schedule_xml;
+                dialog.FileName = "Schedule";
+                dialog.DefaultExt = "xml";
+                dialog.AddExtension = true;
+
+                var defaultPath = Path.Combine(
+                                                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+                                                "RecurringIntegrationsScheduler");
+                if (Directory.Exists(defaultPath))
                 {
-                    dialog.Filter = Resources.Recurring_Integrations_Schedule_xml;
-                    dialog.FileName = "Schedule";
-                    dialog.DefaultExt = "xml";
-                    dialog.AddExtension = true;
-
-                    var defaultPath = Path.Combine(
-                                                    Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
-                                                    "RecurringIntegrationsScheduler");
-                    if (Directory.Exists(defaultPath))
-                    {
-                        dialog.InitialDirectory = defaultPath;
-                        dialog.RestoreDirectory = true;
-                    }
-
-                    dialog.ShowDialog();
-                    if (string.IsNullOrEmpty(dialog.FileName)) return;
-
-                    var file = new FileInfo(dialog.FileName);
-                    if (file.Exists)
-                    {
-                        File.Move(file.FullName,
-                            file.FullName.Replace(".xml", "-Backup-" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".xml"));
-                    }
-
-                    Scheduler.Instance.BackupToFile(file);
-                    _scheduleChanged = false;
+                    dialog.InitialDirectory = defaultPath;
+                    dialog.RestoreDirectory = true;
                 }
+
+                dialog.ShowDialog();
+                if (string.IsNullOrEmpty(dialog.FileName)) return;
+
+                var file = new FileInfo(dialog.FileName);
+                if (file.Exists)
+                {
+                    File.Move(file.FullName,
+                        file.FullName.Replace(".xml", "-Backup-" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".xml"));
+                }
+
+                Scheduler.Instance.BackupToFile(file);
+                _scheduleChanged = false;
             }
             catch (Exception ex)
             {
@@ -352,42 +344,72 @@ namespace RecurringIntegrationsScheduler.Forms
                 switch (jobDetail.JobType.FullName)
                 {
                     case SettingsConstants.DownloadJob:
-                        using (DownloadJob downloadForm = new DownloadJob
+                        if (Properties.Settings.Default.V3Forms)
                         {
-                            JobDetail = jobDetail,
-                            Trigger = jobTrigger
-                        })
-                        {
+                            using DownloadJobV3 downloadForm = new DownloadJobV3
+                            {
+                                JobDetail = jobDetail,
+                                Trigger = jobTrigger
+                            };
+
                             downloadForm.ShowDialog();
 
-                            if (!downloadForm.Cancelled && (downloadForm.JobDetail != null) &&
-                                (downloadForm.Trigger != null))
-                            {
-                                scheduler.ScheduleJob(
-                                    downloadForm.JobDetail, new HashSet<ITrigger> { downloadForm.Trigger }, true);
+                            if (downloadForm.Cancelled && downloadForm.JobDetail == null && downloadForm.Trigger == null) return;
 
-                                RefreshGrid();
-                            }
+                            scheduler.ScheduleJob(downloadForm.JobDetail, new HashSet<ITrigger> { downloadForm.Trigger }, true);
+
+                            RefreshGrid();
+                        }
+                        else
+                        {
+                            using DownloadJob downloadForm = new DownloadJob
+                            {
+                                JobDetail = jobDetail,
+                                Trigger = jobTrigger
+                            };
+
+                            downloadForm.ShowDialog();
+
+                            if (downloadForm.Cancelled && downloadForm.JobDetail == null && downloadForm.Trigger == null) return;
+
+                            scheduler.ScheduleJob(downloadForm.JobDetail, new HashSet<ITrigger> { downloadForm.Trigger }, true);
+
+                            RefreshGrid();
                         }
                         break;
 
                     case SettingsConstants.ExportJob:
-                        using (ExportJob exportForm = new ExportJob
+                        if (Properties.Settings.Default.V3Forms)
                         {
-                            JobDetail = jobDetail,
-                            Trigger = jobTrigger
-                        })
-                        {
+                            using ExportJob exportForm = new ExportJob
+                            {
+                                JobDetail = jobDetail,
+                                Trigger = jobTrigger
+                            };
+
                             exportForm.ShowDialog();
 
-                            if (!exportForm.Cancelled && (exportForm.JobDetail != null) &&
-                                (exportForm.Trigger != null))
-                            {
-                                scheduler.ScheduleJob(
-                                    exportForm.JobDetail, new HashSet<ITrigger> { exportForm.Trigger }, true);
+                            if (exportForm.Cancelled && exportForm.JobDetail == null && exportForm.Trigger == null) return;
 
-                                RefreshGrid();
-                            }
+                            scheduler.ScheduleJob(exportForm.JobDetail, new HashSet<ITrigger> { exportForm.Trigger }, true);
+
+                            RefreshGrid();
+                        }
+                        else
+                        {
+                            using ExportJobV3 exportForm = new ExportJobV3
+                            {
+                                JobDetail = jobDetail,
+                                Trigger = jobTrigger
+                            };
+
+                            exportForm.ShowDialog();
+
+                            if (exportForm.Cancelled && exportForm.JobDetail == null && exportForm.Trigger == null) return;
+
+                            scheduler.ScheduleJob(exportForm.JobDetail, new HashSet<ITrigger> { exportForm.Trigger }, true);
+
+                            RefreshGrid();
                         }
                         break;
 
@@ -402,13 +424,13 @@ namespace RecurringIntegrationsScheduler.Forms
                         {
                             processingJobTrigger = scheduler.GetTriggersOfJob(processingJobKey).Result.First();
                         }
-
-                        using (UploadJob uploadForm = new UploadJob
+                        if (Properties.Settings.Default.V3Forms)
                         {
-                            UploadJobDetail = jobDetail,
-                            UploadTrigger = jobTrigger
-                        })
-                        {
+                            using UploadJobV3 uploadForm = new UploadJobV3
+                            {
+                                UploadJobDetail = jobDetail,
+                                UploadTrigger = jobTrigger
+                            };
                             if ((processingJobDetail != null) && (processingJobTrigger != null))
                             {
                                 uploadForm.ProcessingJobDetail = processingJobDetail;
@@ -416,20 +438,43 @@ namespace RecurringIntegrationsScheduler.Forms
                             }
 
                             uploadForm.ShowDialog();
-                            if (!uploadForm.Cancelled && (uploadForm.UploadJobDetail != null) &&
-                                (uploadForm.UploadTrigger != null))
+
+                            if (uploadForm.Cancelled && uploadForm.UploadJobDetail == null && uploadForm.UploadTrigger == null) return;
+
+                            scheduler.ScheduleJob(uploadForm.UploadJobDetail, new HashSet<ITrigger> { uploadForm.UploadTrigger }, true);
+
+                            if ((uploadForm.ProcessingJobDetail != null) && (uploadForm.ProcessingTrigger != null))
                             {
-                                scheduler.ScheduleJob(
-                                    uploadForm.UploadJobDetail, new HashSet<ITrigger> { uploadForm.UploadTrigger }, true);
-
-                                if ((uploadForm.ProcessingJobDetail != null) && (uploadForm.ProcessingTrigger != null))
-                                {
-                                    scheduler.ScheduleJob(
-                                        uploadForm.ProcessingJobDetail, new HashSet<ITrigger> { uploadForm.ProcessingTrigger }, true);
-                                }
-
-                                RefreshGrid();
+                                scheduler.ScheduleJob(uploadForm.ProcessingJobDetail, new HashSet<ITrigger> { uploadForm.ProcessingTrigger }, true);
                             }
+
+                            RefreshGrid();
+                        }
+                        else
+                        {
+                            using UploadJob uploadForm = new UploadJob
+                            {
+                                UploadJobDetail = jobDetail,
+                                UploadTrigger = jobTrigger
+                            };
+                            if ((processingJobDetail != null) && (processingJobTrigger != null))
+                            {
+                                uploadForm.ProcessingJobDetail = processingJobDetail;
+                                uploadForm.ProcessingTrigger = processingJobTrigger;
+                            }
+
+                            uploadForm.ShowDialog();
+
+                            if (uploadForm.Cancelled && uploadForm.UploadJobDetail == null && uploadForm.UploadTrigger == null) return;
+
+                            scheduler.ScheduleJob(uploadForm.UploadJobDetail, new HashSet<ITrigger> { uploadForm.UploadTrigger }, true);
+
+                            if ((uploadForm.ProcessingJobDetail != null) && (uploadForm.ProcessingTrigger != null))
+                            {
+                                scheduler.ScheduleJob(uploadForm.ProcessingJobDetail, new HashSet<ITrigger> { uploadForm.ProcessingTrigger }, true);
+                            }
+
+                            RefreshGrid();
                         }
                         break;
 
@@ -444,40 +489,57 @@ namespace RecurringIntegrationsScheduler.Forms
                         {
                             executionJobTrigger = scheduler.GetTriggersOfJob(executionJobKey).Result.First();
                         }
+                        if (Properties.Settings.Default.V3Forms)
+                        {
+                            using ImportJobV3 importForm = new ImportJobV3
+                            {
+                                ImportJobDetail = jobDetail,
+                                ImportTrigger = jobTrigger
+                            };
 
-                        using (ImportJob importForm = new ImportJob
-                        {
-                            ImportJobDetail = jobDetail,
-                            ImportTrigger = jobTrigger
-                        })
-                        {
                             if ((executionJobDetail != null) && (executionJobTrigger != null))
                             {
                                 importForm.ExecutionJobDetail = executionJobDetail;
                                 importForm.ExecutionTrigger = executionJobTrigger;
                             }
-
                             importForm.ShowDialog();
-                            if (!importForm.Cancelled && (importForm.ImportJobDetail != null) &&
-                                (importForm.ImportTrigger != null))
+
+                            if (importForm.Cancelled && importForm.ImportJobDetail == null && importForm.ImportTrigger == null) return;
+                            
+                            scheduler.ScheduleJob(importForm.ImportJobDetail, new HashSet<ITrigger> { importForm.ImportTrigger }, true);
+
+                            if (importForm.ExecutionJobDetail != null && importForm.ExecutionTrigger != null)
                             {
-                                scheduler.ScheduleJob(
-                                    importForm.ImportJobDetail, new HashSet<ITrigger> { importForm.ImportTrigger }, true);
-
-                                if ((importForm.ExecutionJobDetail != null) && (importForm.ExecutionTrigger != null))
-                                {
-                                    scheduler.ScheduleJob(
-                                        importForm.ExecutionJobDetail, new HashSet<ITrigger> { importForm.ExecutionTrigger }, true);
-                                }
-
-                                RefreshGrid();
+                                scheduler.ScheduleJob(importForm.ExecutionJobDetail, new HashSet<ITrigger> { importForm.ExecutionTrigger }, true);
                             }
+                            RefreshGrid();
+                        }
+                        else
+                        {
+                            using ImportJob importForm = new ImportJob
+                            {
+                                ImportJobDetail = jobDetail,
+                                ImportTrigger = jobTrigger
+                            };
+                            if ((executionJobDetail != null) && (executionJobTrigger != null))
+                            {
+                                importForm.ExecutionJobDetail = executionJobDetail;
+                                importForm.ExecutionTrigger = executionJobTrigger;
+                            }
+                            importForm.ShowDialog();
+
+                            if (importForm.Cancelled && (importForm.ImportJobDetail == null) && (importForm.ImportTrigger == null))
+
+                            scheduler.ScheduleJob(importForm.ImportJobDetail, new HashSet<ITrigger> { importForm.ImportTrigger }, true);
+
+                            if (importForm.ExecutionJobDetail != null && importForm.ExecutionTrigger != null)
+                            {
+                                scheduler.ScheduleJob(importForm.ExecutionJobDetail, new HashSet<ITrigger> { importForm.ExecutionTrigger }, true);
+                            }
+                            RefreshGrid();
                         }
                         break;
 
-                    case SettingsConstants.ProcessingJob:
-                        MessageBox.Show(Resources.Processing_monitoring_job_is_not_supported);
-                        break;
                     default:
                         MessageBox.Show(Resources.This_type_of_job_is_not_supported_for_direct_editing);
                         return;
@@ -717,15 +779,15 @@ namespace RecurringIntegrationsScheduler.Forms
             var bd = (BindingSource)jobsDataGridView.DataSource;
             var dt = (DataTable)bd.DataSource;
             dt.DefaultView.RowFilter = string.Empty;
-            if (instanceFilter.Text != string.Empty && jobNameFilter.Text == string.Empty)
+            if (!string.IsNullOrEmpty(instanceFilter.Text) && string.IsNullOrEmpty(jobNameFilter.Text))
             {
                 dt.DefaultView.RowFilter = $"Instance like '%{instanceFilter.Text}%'";
             }
-            else if (instanceFilter.Text == string.Empty && jobNameFilter.Text != string.Empty)
+            else if (string.IsNullOrEmpty(instanceFilter.Text) && !string.IsNullOrEmpty(jobNameFilter.Text))
             {
                 dt.DefaultView.RowFilter = $"JobName like '%{jobNameFilter.Text}%'";
             }
-            else if (instanceFilter.Text != string.Empty && jobNameFilter.Text != string.Empty)
+            else if (!string.IsNullOrEmpty(instanceFilter.Text) && !string.IsNullOrEmpty(jobNameFilter.Text))
             {
                 dt.DefaultView.RowFilter = $"Instance like '%{instanceFilter.Text}%' and JobName like '%{jobNameFilter.Text}%'";
             }
@@ -743,7 +805,7 @@ namespace RecurringIntegrationsScheduler.Forms
             var scheduler = Scheduler.Instance.GetScheduler();
             var jobDetail = scheduler.GetJobDetail(_selectedJobKey).Result;
             var path = jobDetail.JobDataMap[SettingsConstants.DownloadSuccessDir]?.ToString();
-            if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
+            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
             {
                 try
                 {
@@ -765,7 +827,7 @@ namespace RecurringIntegrationsScheduler.Forms
             var scheduler = Scheduler.Instance.GetScheduler();
             var jobDetail = scheduler.GetJobDetail(_selectedJobKey).Result;
             var path = jobDetail.JobDataMap[SettingsConstants.ProcessingErrorsDir]?.ToString();
-            if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
+            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
             {
                 try
                 {
@@ -787,7 +849,7 @@ namespace RecurringIntegrationsScheduler.Forms
             var scheduler = Scheduler.Instance.GetScheduler();
             var jobDetail = scheduler.GetJobDetail(_selectedJobKey).Result;
             var path = jobDetail.JobDataMap[SettingsConstants.ProcessingSuccessDir]?.ToString();
-            if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
+            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
             {
                 try
                 {
@@ -809,7 +871,7 @@ namespace RecurringIntegrationsScheduler.Forms
             var scheduler = Scheduler.Instance.GetScheduler();
             var jobDetail = scheduler.GetJobDetail(_selectedJobKey).Result;
             var path = jobDetail.JobDataMap[SettingsConstants.UploadErrorsDir]?.ToString();
-            if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
+            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
             {
                 try
                 {
@@ -831,7 +893,7 @@ namespace RecurringIntegrationsScheduler.Forms
             var scheduler = Scheduler.Instance.GetScheduler();
             var jobDetail = scheduler.GetJobDetail(_selectedJobKey).Result;
             var path = jobDetail.JobDataMap[SettingsConstants.UploadSuccessDir]?.ToString();
-            if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
+            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
             {
                 try
                 {
@@ -853,7 +915,7 @@ namespace RecurringIntegrationsScheduler.Forms
             var scheduler = Scheduler.Instance.GetScheduler();
             var jobDetail = scheduler.GetJobDetail(_selectedJobKey).Result;
             var path = jobDetail.JobDataMap[SettingsConstants.InputDir]?.ToString();
-            if (!String.IsNullOrEmpty(path) && Directory.Exists(path))
+            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
             {
                 try
                 {
@@ -874,29 +936,47 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             try
             {
-                using (UploadJob form = new UploadJob())
+                IJobDetail uploadJob;
+                ITrigger uploadTrigger;
+                IJobDetail monitorJob;
+                ITrigger monitorTrigger;
+
+                if (Properties.Settings.Default.V3Forms)
                 {
+                    using UploadJobV3 form = new UploadJobV3();
                     form.ShowDialog();
                     if (form.Cancelled || (form.UploadJobDetail == null) || (form.UploadTrigger == null)) return;
-
-                    var scheduler = Scheduler.Instance.GetScheduler();
-                    if (scheduler == null)
-                    {
-                        MessageBox.Show(Resources.No_active_scheduler, Resources.Missing_scheduler);
-                        return;
-                    }
-
-                    scheduler.ScheduleJob(
-                        form.UploadJobDetail, new HashSet<ITrigger> { form.UploadTrigger }, true);
-
-                    if ((form.ProcessingJobDetail != null) && (form.ProcessingTrigger != null))
-                    {
-                        scheduler.ScheduleJob(
-                            form.ProcessingJobDetail, new HashSet<ITrigger> { form.ProcessingTrigger }, true);
-                    }
-                    _scheduleChanged = true;
-                    RefreshGrid();
+                    uploadJob = form.UploadJobDetail;
+                    uploadTrigger = form.UploadTrigger;
+                    monitorJob = form.ProcessingJobDetail;
+                    monitorTrigger = form.ProcessingTrigger;
                 }
+                else
+                {
+                    using UploadJob form = new UploadJob();
+                    form.ShowDialog();
+                    if (form.Cancelled || (form.UploadJobDetail == null) || (form.UploadTrigger == null)) return;
+                    uploadJob = form.UploadJobDetail;
+                    uploadTrigger = form.UploadTrigger;
+                    monitorJob = form.ProcessingJobDetail;
+                    monitorTrigger = form.ProcessingTrigger;
+                }
+                var scheduler = Scheduler.Instance.GetScheduler();
+                if (scheduler == null)
+                {
+                    MessageBox.Show(Resources.No_active_scheduler, Resources.Missing_scheduler);
+                    return;
+                }
+
+                scheduler.ScheduleJob(uploadJob, new HashSet<ITrigger> { uploadTrigger }, true);
+
+                if ((monitorJob != null) && (monitorTrigger != null))
+                {
+                    scheduler.ScheduleJob(monitorJob, new HashSet<ITrigger> { monitorTrigger }, true);
+                }
+                _scheduleChanged = true;
+
+                RefreshGrid();
             }
             catch (Exception ex)
             {
@@ -908,19 +988,36 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             try
             {
-                using (ExportJob form = new ExportJob())
+                IJobDetail exportJob;
+                ITrigger exportTrigger;
+
+                if (Properties.Settings.Default.V3Forms)
                 {
+                    using ExportJobV3 form = new ExportJobV3();
                     form.ShowDialog();
-
-                    if (!form.Cancelled && (form.JobDetail != null) && (form.Trigger != null))
-                    {
-                        Scheduler.Instance.GetScheduler()
-                            .ScheduleJob(form.JobDetail, new HashSet<ITrigger> { form.Trigger }, true);
-
-                        _scheduleChanged = true;
-                        RefreshGrid();
-                    }
+                    if (form.Cancelled && (form.JobDetail == null) && (form.Trigger == null)) return;
+                    exportJob = form.JobDetail;
+                    exportTrigger = form.Trigger;
                 }
+                else
+                {
+                    using ExportJob form = new ExportJob();
+                    form.ShowDialog();
+                    if (form.Cancelled && (form.JobDetail == null) && (form.Trigger == null)) return;
+                    exportJob = form.JobDetail;
+                    exportTrigger = form.Trigger;
+                }
+                var scheduler = Scheduler.Instance.GetScheduler();
+                if (scheduler == null)
+                {
+                    MessageBox.Show(Resources.No_active_scheduler, Resources.Missing_scheduler);
+                    return;
+                }
+                scheduler.ScheduleJob(exportJob, new HashSet<ITrigger> { exportTrigger }, true);
+                
+                _scheduleChanged = true;
+                
+                RefreshGrid();
             }
             catch (Exception ex)
             {
@@ -932,29 +1029,48 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             try
             {
-                using (ImportJob form = new ImportJob())
+                IJobDetail importJob;
+                ITrigger importTrigger;
+                IJobDetail monitorJob;
+                ITrigger monitorTrigger;
+                
+                if(Properties.Settings.Default.V3Forms)
                 {
+                    using ImportJobV3 form = new ImportJobV3();
                     form.ShowDialog();
                     if (form.Cancelled || (form.ImportJobDetail == null) || (form.ImportTrigger == null)) return;
-
-                    var scheduler = Scheduler.Instance.GetScheduler();
-                    if (scheduler == null)
-                    {
-                        MessageBox.Show(Resources.No_active_scheduler, Resources.Missing_scheduler);
-                        return;
-                    }
-
-                    scheduler.ScheduleJob(
-                        form.ImportJobDetail, new HashSet<ITrigger> { form.ImportTrigger }, true);
-
-                    if ((form.ExecutionJobDetail != null) && (form.ExecutionTrigger != null))
-                    {
-                        scheduler.ScheduleJob(
-                            form.ExecutionJobDetail, new HashSet<ITrigger> { form.ExecutionTrigger }, true);
-                    }
-                    _scheduleChanged = true;
-                    RefreshGrid();
+                    importJob = form.ImportJobDetail;
+                    importTrigger = form.ImportTrigger;
+                    monitorJob = form.ExecutionJobDetail;
+                    monitorTrigger = form.ExecutionTrigger;
                 }
+                else
+                {
+                    using ImportJob form = new ImportJob();
+                    form.ShowDialog();
+                    if (form.Cancelled || (form.ImportJobDetail == null) || (form.ImportTrigger == null)) return;
+                    importJob = form.ImportJobDetail;
+                    importTrigger = form.ImportTrigger;
+                    monitorJob = form.ExecutionJobDetail;
+                    monitorTrigger = form.ExecutionTrigger;
+                }
+
+                var scheduler = Scheduler.Instance.GetScheduler();
+                if (scheduler == null)
+                {
+                    MessageBox.Show(Resources.No_active_scheduler, Resources.Missing_scheduler);
+                    return;
+                }
+
+                scheduler.ScheduleJob(importJob, new HashSet<ITrigger> { importTrigger }, true);
+
+                if ((monitorJob != null) && (monitorTrigger != null))
+                {
+                    scheduler.ScheduleJob(monitorJob, new HashSet<ITrigger> { monitorTrigger }, true);
+                }
+                _scheduleChanged = true;
+
+                RefreshGrid();
             }
             catch (Exception ex)
             {
@@ -966,19 +1082,37 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             try
             {
-                using (DownloadJob form = new DownloadJob())
+                IJobDetail downloadJob;
+                ITrigger downloadTrigger;
+
+                if (Properties.Settings.Default.V3Forms)
                 {
+                    using DownloadJobV3 form = new DownloadJobV3();
                     form.ShowDialog();
-
-                    if (!form.Cancelled && (form.JobDetail != null) && (form.Trigger != null))
-                    {
-                        Scheduler.Instance.GetScheduler()
-                            .ScheduleJob(form.JobDetail, new HashSet<ITrigger> { form.Trigger }, true);
-
-                        _scheduleChanged = true;
-                        RefreshGrid();
-                    }
+                    if (form.Cancelled && (form.JobDetail == null) && (form.Trigger == null)) return;
+                    downloadJob = form.JobDetail;
+                    downloadTrigger = form.Trigger;
                 }
+                else
+                {
+                    using DownloadJob form = new DownloadJob();
+                    form.ShowDialog();
+                    if (form.Cancelled && (form.JobDetail == null) && (form.Trigger == null)) return;
+                    downloadJob = form.JobDetail;
+                    downloadTrigger = form.Trigger;
+                }
+                var scheduler = Scheduler.Instance.GetScheduler();
+                if (scheduler == null)
+                {
+                    MessageBox.Show(Resources.No_active_scheduler, Resources.Missing_scheduler);
+                    return;
+                }
+
+                scheduler.ScheduleJob(downloadJob, new HashSet<ITrigger> { downloadTrigger }, true);
+                
+                _scheduleChanged = true;
+                
+                RefreshGrid();
             }
             catch (Exception ex)
             {

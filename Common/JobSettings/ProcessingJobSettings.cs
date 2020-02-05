@@ -93,7 +93,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Extension_of_status_files_is_missing_in_job_configuration));
             }
 
-            StatusCheckInterval = dataMap.GetInt(SettingsConstants.StatusCheckInterval);
+            StatusCheckInterval = dataMap.GetInt(SettingsConstants.DelayBetweenStatusCheck);
         }
 
         #region Members

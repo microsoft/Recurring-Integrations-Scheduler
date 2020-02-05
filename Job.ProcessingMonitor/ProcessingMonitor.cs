@@ -183,7 +183,7 @@ namespace RecurringIntegrationsScheduler.Job
             {
                 if (fileCount > 0 && _settings.StatusCheckInterval > 0) //Only delay after first file and never after last.
                 {
-                    System.Threading.Thread.Sleep(_settings.StatusCheckInterval * 1000);
+                    System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_settings.StatusCheckInterval));
                 }
                 fileCount++;
 
@@ -192,7 +192,7 @@ namespace RecurringIntegrationsScheduler.Job
 
                 // If status was found and is not null,
                 if (jobStatusDetail != null)
-                    PostProcessMessage(jobStatusDetail, dataMessage);
+                    await PostProcessMessage(jobStatusDetail, dataMessage);
             }
         }
 
@@ -202,7 +202,7 @@ namespace RecurringIntegrationsScheduler.Job
         /// </summary>
         /// <param name="jobStatusDetail">DataJobStatusDetail object</param>
         /// <param name="dataMessage">Name of the file whose status is being processed</param>
-        private void PostProcessMessage(DataJobStatusDetail jobStatusDetail, DataMessage dataMessage)
+        private async Task PostProcessMessage(DataJobStatusDetail jobStatusDetail, DataMessage dataMessage)
         {
             if (jobStatusDetail?.DataJobStatus == null)
                 return;
@@ -231,6 +231,28 @@ namespace RecurringIntegrationsScheduler.Job
                     };
                     _retryPolicyForIo.Execute(() => FileOperationsHelper.MoveDataToTarget(dataMessage.FullPath, targetDataMessage.FullPath));
                     _retryPolicyForIo.Execute(() => FileOperationsHelper.WriteStatusLogFile(jobStatusDetail, targetDataMessage, null, _settings.StatusFileExtension));
+
+                    if (_settings.GetExecutionErrors)
+                    {
+                        if (Log.IsDebugEnabled)
+                        {
+                            Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Trying_to_download_execution_errors, _context.JobDetail.Key));
+                        }
+                        var response = await _httpClientHelper.GetExecutionErrors(dataMessage.MessageId);
+                        if (!response.IsSuccessStatusCode)
+                            throw new JobExecutionException(string.Format(Resources.Job_0_download_of_execution_errors_failed_1, _context.JobDetail.Key, string.Format($"Status: {response.StatusCode}. Message: {response.Content}")));
+
+                        using Stream downloadedStream = await response.Content.ReadAsStreamAsync();
+                        var errorsFileName = $"{Path.GetFileNameWithoutExtension(dataMessage.Name)}-ExecutionErrors-{DateTime.Now:yyyy-MM-dd_HH-mm-ss-ffff}.txt";
+                        var errorsFilePath = Path.Combine(Path.GetDirectoryName(dataMessage.FullPath.Replace(_settings.UploadSuccessDir, _settings.ProcessingErrorsDir)), errorsFileName);
+                        var dataMessageForErrorsFile = new DataMessage()
+                        {
+                            FullPath = errorsFilePath,
+                            Name = errorsFileName,
+                            MessageStatus = MessageStatus.Failed
+                        };
+                        _retryPolicyForIo.Execute(() => FileOperationsHelper.Create(downloadedStream, dataMessageForErrorsFile.FullPath));
+                    }
                 }
                 break;
             }

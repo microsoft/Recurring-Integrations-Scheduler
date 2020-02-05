@@ -864,4 +864,37 @@
 
 Default example above means: Each working day of the week (MON-FRI) run every 15 minutes (0/15) between 8:00 and 18:45 (8-18 - last run will be at 18:45)</value>
   </data>
+  <data name="Filename_separator_is_missing" xml:space="preserve">
+    <value>File name separator is missing</value>
+  </data>
+  <data name="Package_template_is_missing" xml:space="preserve">
+    <value>Package template file is missing</value>
+  </data>
+  <data name="URL_for_GenerateImportTargetErrorKeysFile_action_is_missing" xml:space="preserve">
+    <value>URL for GenerateImportTargetErrorKeysFile action is missing</value>
+  </data>
+  <data name="URL_for_GetAzureWriteUrl_action_is_missing" xml:space="preserve">
+    <value>URL for GetAzureWriteUrl action is missing</value>
+  </data>
+  <data name="URL_for_GetExecutionErrors_action_is_missing" xml:space="preserve">
+    <value>URL for GetExecutionErrors action is missing</value>
+  </data>
+  <data name="URL_for_GetExecutionSummaryPageUrl_action_is_missing" xml:space="preserve">
+    <value>URL for GetExecutionSummaryPageUrl action is missing</value>
+  </data>
+  <data name="URL_for_GetExecutionSummaryStatus_action_is_missing" xml:space="preserve">
+    <value>URL for GetExecutionSummaryStatus action is missing</value>
+  </data>
+  <data name="URL_for_GetImportTargetErrorKeysFileUrl_action_is_missing" xml:space="preserve">
+    <value>URL for GetImportTargetErrorKeysFileUrl action is missing</value>
+  </data>
+  <data name="URL_for_ImportFromPackage_action_is_missing" xml:space="preserve">
+    <value>URL for ImportFromPackage action is missing</value>
+  </data>
+  <data name="URL_for_ExportToPackage_action_is_missing" xml:space="preserve">
+    <value>URL for ExportToPackage action is missing</value>
+  </data>
+  <data name="URL_for_GetExportedPackageUrl_action_is_missing" xml:space="preserve">
+    <value>URL for GetExportedPackageUrl action is missing</value>
+  </data>
 </root>

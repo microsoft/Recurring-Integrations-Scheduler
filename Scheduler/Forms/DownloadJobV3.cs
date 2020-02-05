@@ -18,11 +18,11 @@ using System.Windows.Forms;
 
 namespace RecurringIntegrationsScheduler.Forms
 {
-    public partial class DownloadJob : Form
+    public partial class DownloadJobV3 : Form
     {
         private const int CpNocloseButton = 0x200;
 
-        public DownloadJob()
+        public DownloadJobV3()
         {
             InitializeComponent();
         }
@@ -48,7 +48,7 @@ namespace RecurringIntegrationsScheduler.Forms
             Text = JobDetail == null
                 ? Resources.Add_download_job
                 : string.Format(Resources.Edit_job_0, JobDetail.Key.Name);
-            addJobButton.Text = JobDetail == null ? Resources.Add_to_schedule : Resources.Edit_job;
+            addToolStripButton.Text = JobDetail == null ? Resources.Add_to_schedule : Resources.Edit_job;
             jobName.Enabled = JobDetail == null;
 
             jobGroupComboBox.DataSource = Properties.Settings.Default.JobGroups;
@@ -112,7 +112,7 @@ namespace RecurringIntegrationsScheduler.Forms
                                                  Convert.ToBoolean(
                                                      JobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication]
                                                          .ToString());
-                numericUpDownInterval.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.DelayBetweenFiles]));
+                delayBetweenFilesNumericUpDown.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.DelayBetweenFiles]));
 
                 if (!serviceAuthRadioButton.Checked)
                 {
@@ -256,16 +256,11 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void UseStandardSubfolder_CheckedChanged(object sender, EventArgs e)
         {
+            errorsFolder.Enabled = !useStandardSubfolder.Checked;
+            errorsFolderBrowserButton.Enabled = !useStandardSubfolder.Checked;
             if (useStandardSubfolder.Checked)
             {
-                errorsFolder.Enabled = false;
                 errorsFolder.Text = Path.Combine(downloadFolder.Text, Properties.Settings.Default.DownloadErrorsFolder);
-                errorsFolderBrowserButton.Enabled = false;
-            }
-            else
-            {
-                errorsFolder.Enabled = true;
-                errorsFolderBrowserButton.Enabled = true;
             }
         }
 
@@ -277,30 +272,8 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void CronTriggerRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            hoursDateTimePicker.Enabled = !cronTriggerRadioButton.Checked;
-            minutesDateTimePicker.Enabled = !cronTriggerRadioButton.Checked;
-            startAtDateTimePicker.Enabled = !cronTriggerRadioButton.Checked;
-            cronExpressionTextBox.Enabled = cronTriggerRadioButton.Checked;
-            calculateNextRunsButton.Enabled = cronTriggerRadioButton.Checked;
-        }
-
-        private void AddJobButton_Click(object sender, EventArgs e)
-        {
-            if (JobDetail == null)
-            {
-                var jobKey = new JobKey(jobName.Text, jobGroupComboBox.Text);
-                if (Scheduler.Instance.GetScheduler().CheckExists(jobKey).Result)
-                    if (
-                        MessageBox.Show(
-                            string.Format(Resources.Job_0_in_group_1_already_exists, jobKey.Name, jobKey.Group),
-                            Resources.Job_already_exists, MessageBoxButtons.YesNo) == DialogResult.No)
-                        return;
-            }
-
-            if (!ValidateJobSettings()) return;
-            JobDetail = GetJobDetail();
-            Trigger = GetTrigger(JobDetail);
-            Close();
+            simpleTriggerJobGroupBox.Enabled = !cronTriggerRadioButton.Checked;
+            cronTriggerJobGroupBox.Enabled = cronTriggerRadioButton.Checked;
         }
 
         private bool ValidateJobSettings()
@@ -411,7 +384,7 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
                 {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
-                {SettingsConstants.DelayBetweenFiles, numericUpDownInterval.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.DelayBetweenFiles, delayBetweenFilesNumericUpDown.Value.ToString(CultureInfo.InvariantCulture)},
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -487,21 +460,10 @@ namespace RecurringIntegrationsScheduler.Forms
             form.ShowDialog();
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
-        {
-            Cancelled = true;
-            Close();
-        }
-
         private void UnzipCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             addTimestampCheckBox.Enabled = unzipCheckBox.Checked;
             deletePackageCheckBox.Enabled = unzipCheckBox.Checked;
-            if (!unzipCheckBox.Checked)
-            {
-                addTimestampCheckBox.Checked = unzipCheckBox.Checked;
-                deletePackageCheckBox.Checked = unzipCheckBox.Checked;
-            }
         }
 
         private void ServiceAuthRadioButton_CheckedChanged(object sender, EventArgs e)
@@ -515,6 +477,31 @@ namespace RecurringIntegrationsScheduler.Forms
             aadApplicationComboBox.DisplayMember = "Name";
 
             userComboBox.Enabled = !serviceAuthRadioButton.Checked;
+        }
+
+        private void CancelToolStripButton_Click(object sender, EventArgs e)
+        {
+            Cancelled = true;
+            Close();
+        }
+
+        private void AddToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (JobDetail == null)
+            {
+                var jobKey = new JobKey(jobName.Text, jobGroupComboBox.Text);
+                if (Scheduler.Instance.GetScheduler().CheckExists(jobKey).Result)
+                    if (
+                        MessageBox.Show(
+                            string.Format(Resources.Job_0_in_group_1_already_exists, jobKey.Name, jobKey.Group),
+                            Resources.Job_already_exists, MessageBoxButtons.YesNo) == DialogResult.No)
+                        return;
+            }
+
+            if (!ValidateJobSettings()) return;
+            JobDetail = GetJobDetail();
+            Trigger = GetTrigger(JobDetail);
+            Close();
         }
     }
 }

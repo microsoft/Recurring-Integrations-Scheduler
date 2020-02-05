@@ -56,12 +56,12 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         /// <summary>
         /// The delay between files processing
         /// </summary>
-        public const string Interval = "Interval";
+        public const string DelayBetweenFiles = "DelayBetweenFiles";
 
         /// <summary>
         /// The delay between status check of export job
         /// </summary>
-        public const string StatusCheckInterval = "StatusCheckInterval";
+        public const string DelayBetweenStatusCheck = "DelayBetweenStatusCheck";
 
         /// <summary>
         /// The retry count
@@ -137,6 +137,11 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         /// The relative path to the GetImportTargetErrorKeysFileUrl Odata action
         /// </summary>
         public const string GetImportTargetErrorKeysFileUrlPath = "GetImportTargetErrorKeysFileUrlPath";
+
+        /// <summary>
+        /// The relative path to the GetExecutionErrors Odata action
+        /// </summary>
+        public const string GetExecutionErrorsPath = "GetExecutionErrorsPath";
 
         /// <summary>
         /// The download job
@@ -292,5 +297,40 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         /// Get import target error keys file
         /// </summary>
         public const string GetImportTargetErrorKeysFile = "GetImportTargetErrorKeysFile";
+
+        /// <summary>
+        /// Multicompany import
+        /// </summary>
+        public const string MultiCompanyImport = "MultiCompanyImport";
+
+        /// <summary>
+        /// Get legal entity from filename
+        /// </summary>
+        public const string GetLegalEntityFromFilename = "GetLegalEntityFromFilename";
+
+        /// <summary>
+        /// Get legal entity from subfolder
+        /// </summary>
+        public const string GetLegalEntityFromSubfolder = "GetLegalEntityFromSubfolder";
+
+        /// <summary>
+        /// Filename separator
+        /// </summary>
+        public const string FilenameSeparator = "FilenameSeparator";
+
+        /// <summary>
+        /// Legal entity token position
+        /// </summary>
+        public const string LegalEntityTokenPosition = "LegalEntityTokenPosition";
+
+        /// <summary>
+        /// Input files are packages
+        /// </summary>
+        public const string InputFilesArePackages = "InputFilesArePackages";
+
+        /// <summary>
+        /// Get execution errors
+        /// </summary>
+        public const string GetExecutionErrors = "GetExecutionErrors";
     }
 }
