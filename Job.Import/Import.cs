@@ -277,11 +277,11 @@ namespace RecurringIntegrationsScheduler.Job
                         {
                             //Now send import request
                             var targetLegalEntity = _settings.Company;
-                            if (_settings.GetLegalEntityFromSubfolder)
+                            if (_settings.MultiCompanyImport &&_settings.GetLegalEntityFromSubfolder)
                             {
                                 targetLegalEntity = new FileInfo(dataMessage.FullPath).Directory.Name;
                             }
-                            if (_settings.GetLegalEntityFromFilename)
+                            if (_settings.MultiCompanyImport &&_settings.GetLegalEntityFromFilename)
                             {
                                 String[] separator = { _settings.FilenameSeparator };
                                 var tokenList = dataMessage.Name.Split(separator, 10, StringSplitOptions.RemoveEmptyEntries);
@@ -292,7 +292,6 @@ namespace RecurringIntegrationsScheduler.Job
                             {
                                 Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Target_legal_entity_is_not_valid_1, _context.JobDetail.Key, targetLegalEntity));
                             }
-
 
                             if(string.IsNullOrEmpty(targetLegalEntity))
                             {
