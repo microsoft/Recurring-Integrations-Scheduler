@@ -332,5 +332,15 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         /// Get execution errors
         /// </summary>
         public const string GetExecutionErrors = "GetExecutionErrors";
+
+        /// <summary>
+        /// Log verbose
+        /// </summary>
+        public const string LogVerbose = "LogVerbose";
+
+        /// <summary>
+        /// Job key
+        /// </summary>
+        public const string JobKey = "JobKey";
     }
 }

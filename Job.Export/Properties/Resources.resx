@@ -136,7 +136,7 @@
     <value>Job: {0}. File: {1} was downloaded.</value>
   </data>
   <data name="Job_0_Download_failure_1" xml:space="preserve">
-    <value>Job: {0}. Download failure. {1}</value>
+    <value>Job: {0}. Download failure. Response message: {1}</value>
   </data>
   <data name="Job_0_Dequeued_1_file" xml:space="preserve">
     <value>Job: {0}. Dequeued {1} file(s).</value>
@@ -191,5 +191,8 @@
   </data>
   <data name="Job_0_Request_to_download_exported_package_reached_1_attempts_Exiting" xml:space="preserve">
     <value>Job: {0}. Request to download exported package reached {1} attempts. Exiting...</value>
+  </data>
+  <data name="Job_0_ExportToPackage_request_failed" xml:space="preserve">
+    <value>jon: {0} ExportToPackage request failed. Details below.{1}</value>
   </data>
 </root>

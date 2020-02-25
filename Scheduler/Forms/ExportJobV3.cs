@@ -32,7 +32,7 @@ namespace RecurringIntegrationsScheduler.Forms
             get
             {
                 var myCp = base.CreateParams;
-                myCp.ClassStyle = myCp.ClassStyle | CpNocloseButton;
+                myCp.ClassStyle |= CpNocloseButton;
                 return myCp;
             }
         }
@@ -75,9 +75,9 @@ namespace RecurringIntegrationsScheduler.Forms
 
             errorsFolder.Text = Properties.Settings.Default.DownloadErrorsFolder;
 
-            exportToPackageTextBox.Text = OdataActionsConstants.ExportToPackageActionPath;
-            getExecutionSummaryStatusTextBox.Text = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
-            getExportedPackageUrlTextBox.Text = OdataActionsConstants.GetExportedPackageUrlActionPath;
+            exportToPackageTextBox.Text = PackageApiActions.ExportToPackageActionPath;
+            getExecutionSummaryStatusTextBox.Text = PackageApiActions.GetExecutionSummaryStatusActionPath;
+            getExportedPackageUrlTextBox.Text = PackageApiActions.GetExportedPackageUrlActionPath;
 
             if ((JobDetail != null) && (Trigger != null))
             {
@@ -220,9 +220,13 @@ namespace RecurringIntegrationsScheduler.Forms
                     (JobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
                     Convert.ToBoolean(JobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
 
-                exportToPackageTextBox.Text = JobDetail.JobDataMap[SettingsConstants.ExportToPackageActionPath]?.ToString() ?? OdataActionsConstants.ExportToPackageActionPath;
-                getExecutionSummaryStatusTextBox.Text = JobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryStatusActionPath;
-                getExportedPackageUrlTextBox.Text = JobDetail.JobDataMap[SettingsConstants.GetExportedPackageUrlActionPath]?.ToString() ?? OdataActionsConstants.GetExportedPackageUrlActionPath;
+                exportToPackageTextBox.Text = JobDetail.JobDataMap[SettingsConstants.ExportToPackageActionPath]?.ToString() ?? PackageApiActions.ExportToPackageActionPath;
+                getExecutionSummaryStatusTextBox.Text = JobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? PackageApiActions.GetExecutionSummaryStatusActionPath;
+                getExportedPackageUrlTextBox.Text = JobDetail.JobDataMap[SettingsConstants.GetExportedPackageUrlActionPath]?.ToString() ?? PackageApiActions.GetExportedPackageUrlActionPath;
+
+                verboseLoggingCheckBox.Checked =
+                    (JobDetail.JobDataMap[SettingsConstants.LogVerbose] != null) &&
+                    Convert.ToBoolean(JobDetail.JobDataMap[SettingsConstants.LogVerbose].ToString());
 
                 Properties.Settings.Default.Save();
             }
@@ -349,7 +353,7 @@ namespace RecurringIntegrationsScheduler.Forms
             if (simpleTriggerRadioButton.Checked)
             {
                 var minutes = hoursDateTimePicker.Value.Hour*60;
-                minutes = minutes + minutesDateTimePicker.Value.Minute;
+                minutes += minutesDateTimePicker.Value.Minute;
 
                 return builder.WithSimpleSchedule(x => x
                         .WithIntervalInMinutes(minutes)
@@ -391,7 +395,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.ExportToPackageActionPath, exportToPackageTextBox.Text},
                 {SettingsConstants.GetExecutionSummaryStatusActionPath, getExecutionSummaryStatusTextBox.Text},
                 {SettingsConstants.GetExportedPackageUrlActionPath, getExportedPackageUrlTextBox.Text},
-                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
+                {SettingsConstants.LogVerbose, verboseLoggingCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {

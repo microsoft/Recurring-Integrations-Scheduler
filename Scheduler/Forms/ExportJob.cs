@@ -79,9 +79,9 @@ namespace RecurringIntegrationsScheduler.Forms
 
             errorsFolder.Text = Properties.Settings.Default.DownloadErrorsFolder;
 
-            exportToPackagePath = OdataActionsConstants.ExportToPackageActionPath;
-            getExecutionSummaryStatusPath = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
-            getExportedPackageUrlPath = OdataActionsConstants.GetExportedPackageUrlActionPath;
+            exportToPackagePath = PackageApiActions.ExportToPackageActionPath;
+            getExecutionSummaryStatusPath = PackageApiActions.GetExecutionSummaryStatusActionPath;
+            getExportedPackageUrlPath = PackageApiActions.GetExportedPackageUrlActionPath;
 
             if ((JobDetail != null) && (Trigger != null))
             {
@@ -225,9 +225,9 @@ namespace RecurringIntegrationsScheduler.Forms
                     (JobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
                     Convert.ToBoolean(JobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
 
-                exportToPackagePath = JobDetail.JobDataMap[SettingsConstants.ExportToPackageActionPath]?.ToString() ?? OdataActionsConstants.ExportToPackageActionPath;
-                getExecutionSummaryStatusPath = JobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryStatusActionPath;
-                getExportedPackageUrlPath = JobDetail.JobDataMap[SettingsConstants.GetExportedPackageUrlActionPath]?.ToString() ?? OdataActionsConstants.GetExportedPackageUrlActionPath;
+                exportToPackagePath = JobDetail.JobDataMap[SettingsConstants.ExportToPackageActionPath]?.ToString() ?? PackageApiActions.ExportToPackageActionPath;
+                getExecutionSummaryStatusPath = JobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? PackageApiActions.GetExecutionSummaryStatusActionPath;
+                getExportedPackageUrlPath = JobDetail.JobDataMap[SettingsConstants.GetExportedPackageUrlActionPath]?.ToString() ?? PackageApiActions.GetExportedPackageUrlActionPath;
 
                 Properties.Settings.Default.Save();
             }

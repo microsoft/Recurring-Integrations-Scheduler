@@ -32,7 +32,7 @@ namespace RecurringIntegrationsScheduler.Forms
             get
             {
                 var myCp = base.CreateParams;
-                myCp.ClassStyle = myCp.ClassStyle | CpNocloseButton;
+                myCp.ClassStyle |= CpNocloseButton;
                 return myCp;
             }
         }
@@ -263,6 +263,10 @@ namespace RecurringIntegrationsScheduler.Forms
                     (UploadJobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
                     Convert.ToBoolean(UploadJobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
 
+                verboseLoggingCheckBox.Checked =
+                    (UploadJobDetail.JobDataMap[SettingsConstants.LogVerbose] != null) &&
+                    Convert.ToBoolean(UploadJobDetail.JobDataMap[SettingsConstants.LogVerbose].ToString());
+
                 Properties.Settings.Default.Save();
             }
             if ((ProcessingJobDetail != null) && (ProcessingTrigger != null))
@@ -491,7 +495,7 @@ namespace RecurringIntegrationsScheduler.Forms
             if (procJobSimpleTriggerRadioButton.Checked)
             {
                 var minutes = procJobHoursDateTimePicker.Value.Hour*60;
-                minutes = minutes + procJobMinutesDateTimePicker.Value.Minute;
+                minutes += procJobMinutesDateTimePicker.Value.Minute;
 
                 return builder.WithSimpleSchedule(x => x
                         .WithIntervalInMinutes(minutes)
@@ -565,7 +569,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
                 {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
-                {SettingsConstants.DelayBetweenFiles, numericUpDownIntervalUploads.Value.ToString(CultureInfo.InvariantCulture)}
+                {SettingsConstants.DelayBetweenFiles, numericUpDownIntervalUploads.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.LogVerbose, verboseLoggingCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -604,6 +609,7 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
                 {SettingsConstants.DelayBetweenStatusCheck, delayBetweenStatusCheckNumericUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.GetExecutionErrors, getExecutionErrorsCheckBox.Checked.ToString()},
+                {SettingsConstants.LogVerbose, verboseLoggingCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {

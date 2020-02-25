@@ -50,9 +50,11 @@
       <Link>Version.cs</Link>
     </Compile>
     <Compile Include="Contracts\ContractEnums.cs" />
-    <Compile Include="Contracts\OdataActionsConstants.cs" />
+    <Compile Include="Contracts\ConnectorApiActions.cs" />
+    <Compile Include="Contracts\PackageApiActions.cs" />
     <Compile Include="Helpers\AuthenticationHelper.cs" />
     <Compile Include="Helpers\FileOperationsHelper.cs" />
+    <Compile Include="Helpers\HttpRetryHandler.cs" />
     <Compile Include="JobSettings\ExportJobSettings.cs" />
     <Compile Include="JobSettings\ImportJobSettings.cs" />
     <Compile Include="JobSettings\ExecutionJobSettings.cs" />
@@ -83,8 +85,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="log4net">
+      <Version>2.0.8</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Identity.Client">
-      <Version>4.8.1</Version>
+      <Version>4.8.2</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.3</Version>

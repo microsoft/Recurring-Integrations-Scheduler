@@ -15,7 +15,6 @@ using System.Collections.Concurrent;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -62,11 +61,6 @@ namespace RecurringIntegrationsScheduler.Job
         private Policy _retryPolicyForIo;
 
         /// <summary>
-        /// Retry policy for HTTP operations
-        /// </summary>
-        private Polly.Retry.AsyncRetryPolicy _retryPolicyForHttp;
-
-        /// <summary>
         /// Called by the <see cref="T:Quartz.IScheduler" /> when a <see cref="T:Quartz.ITrigger" />
         /// fires that is associated with the <see cref="T:Quartz.IJob" />.
         /// </summary>
@@ -103,54 +97,37 @@ namespace RecurringIntegrationsScheduler.Job
                     {
                         Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_IO_operation_Exception_1, _context.JobDetail.Key, exception.Message));
                     });
-                _retryPolicyForHttp = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(
-                    retryCount: _settings.RetryCount, 
-                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
-                    onRetry: (exception, calculatedWaitDuration) => 
-                    {
-                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_Http_operation_Exception_1, _context.JobDetail.Key, exception.Message));
-                    });
 
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_starting, _context.JobDetail.Key));
-
+                }
                 await Process();
 
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_ended, _context.JobDetail.Key));
+                }
             }
             catch (Exception ex)
             {
                 if (_settings.PauseJobOnException)
                 {
                     await context.Scheduler.PauseJob(context.JobDetail.Key);
-                    Log.WarnFormat(CultureInfo.InvariantCulture,
-                        string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
+                    Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
                 }
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
                 {
                     if (!string.IsNullOrEmpty(ex.Message))
                     {
                         Log.Error(ex.Message, ex);
                     }
-                    else
-                    {
-                        Log.Error("Unknown exception", ex);
-                    }
-
-                    while (ex.InnerException != null)
-                    {
-                        if (!string.IsNullOrEmpty(ex.InnerException.Message))
-                            Log.Error(ex.InnerException.Message, ex.InnerException);
-
-                        ex = ex.InnerException;
-                    }
                 }
                 if (context.Scheduler.SchedulerName != "Private")
+                {
                     throw new JobExecutionException(string.Format(Resources.Import_job_0_failed, _context.JobDetail.Key), ex, false);
-
-                if (!Log.IsDebugEnabled)
-                    Log.Error(string.Format(Resources.Job_0_thrown_an_error_1, _context.JobDetail.Key, ex.Message));
+                }
+                Log.Error(string.Format(Resources.Job_0_thrown_an_error_1, _context.JobDetail.Key, ex.Message));
             }
         }
 
@@ -165,8 +142,10 @@ namespace RecurringIntegrationsScheduler.Job
             foreach (
                 var dataMessage in FileOperationsHelper.GetFiles(MessageStatus.Input, _settings.InputDir, _settings.SearchPattern, SearchOption.AllDirectories, _settings.OrderBy, _settings.ReverseOrder))
             {
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_File_1_found_in_input_location, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}")));
+                }
                 InputQueue.Enqueue(dataMessage);
             }
 
@@ -185,7 +164,7 @@ namespace RecurringIntegrationsScheduler.Job
         /// </returns>
         private async Task ProcessInputQueue()
         {
-            using (_httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp))
+            using (_httpClientHelper = new HttpClientHelper(_settings))
             {
                 var fileCount = 0;
                 string fileNameInPackageTemplate = "";
@@ -197,7 +176,7 @@ namespace RecurringIntegrationsScheduler.Job
                     fileNameInPackageTemplate = GetFileNameInPackageTemplate();
                     if (string.IsNullOrEmpty(fileNameInPackageTemplate))
                     {
-                        throw new Exception(string.Format(Resources.Job_0_Please_check_your_package_template_Input_file_name_in_Manifest_cannot_be_identified, _context.JobDetail.Key));
+                        throw new JobExecutionException(string.Format(Resources.Job_0_Please_check_your_package_template_Input_file_name_in_Manifest_cannot_be_identified, _context.JobDetail.Key));
                     }
                 }
 
@@ -251,12 +230,11 @@ namespace RecurringIntegrationsScheduler.Job
 
                         // Get blob url and id. Returns in json format
                         var response = await _httpClientHelper.GetAzureWriteUrl();
-                        if(string.IsNullOrEmpty(response))
+                        if(!response.IsSuccessStatusCode)
                         {
-                            Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Method_GetAzureWriteUrl_returned_empty_string, _context.JobDetail.Key));
-                            continue;
+                            throw new JobExecutionException($"Job: {_settings.JobKey}. Request GetAzureWriteUrl failed.");
                         }
-                        var blobInfo = (JObject)JsonConvert.DeserializeObject(response);
+                        var blobInfo = (JObject)JsonConvert.DeserializeObject(HttpClientHelper.ReadResponseString(response));
                         var blobUrl = blobInfo["BlobUrl"].ToString();
 
                         var blobUri = new Uri(blobUrl);
@@ -277,11 +255,11 @@ namespace RecurringIntegrationsScheduler.Job
                         {
                             //Now send import request
                             var targetLegalEntity = _settings.Company;
-                            if (_settings.GetLegalEntityFromSubfolder)
+                            if (_settings.MultiCompanyImport && _settings.GetLegalEntityFromSubfolder)
                             {
                                 targetLegalEntity = new FileInfo(dataMessage.FullPath).Directory.Name;
                             }
-                            if (_settings.GetLegalEntityFromFilename)
+                            if (_settings.MultiCompanyImport && _settings.GetLegalEntityFromFilename)
                             {
                                 String[] separator = { _settings.FilenameSeparator };
                                 var tokenList = dataMessage.Name.Split(separator, 10, StringSplitOptions.RemoveEmptyEntries);
@@ -292,7 +270,6 @@ namespace RecurringIntegrationsScheduler.Job
                             {
                                 Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Target_legal_entity_is_not_valid_1, _context.JobDetail.Key, targetLegalEntity));
                             }
-
 
                             if(string.IsNullOrEmpty(targetLegalEntity))
                             {
@@ -325,7 +302,7 @@ namespace RecurringIntegrationsScheduler.Job
                             else
                             {
                                 // import request failed. Move message to error location.
-                                Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Upload_failed_for_file_1_Failure_response_Status_2_Reason_3, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}"), importResponse.StatusCode, importResponse.ReasonPhrase, $"{Environment.NewLine}packageUrl: {blobUri.AbsoluteUri}{Environment.NewLine}definitionGroupId: {_settings.DataProject}{Environment.NewLine}executionId: {executionIdGenerated}{Environment.NewLine}execute: {_settings.ExecuteImport.ToString()}{Environment.NewLine}overwrite: {_settings.OverwriteDataProject.ToString()}{Environment.NewLine}legalEntityId: {targetLegalEntity}"));
+                                Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Upload_failed_for_file_1_Failure_response_Status_2_Reason_3, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}"), importResponse.StatusCode, importResponse.ReasonPhrase, $"{Environment.NewLine}packageUrl: {blobUri.AbsoluteUri}{Environment.NewLine}definitionGroupId: {_settings.DataProject}{Environment.NewLine}executionId: {executionIdGenerated}{Environment.NewLine}execute: {_settings.ExecuteImport}{Environment.NewLine}overwrite: {_settings.OverwriteDataProject}{Environment.NewLine}legalEntityId: {targetLegalEntity}"));
 
                                 var targetDataMessage = new DataMessage(dataMessage)
                                 {
@@ -462,7 +439,7 @@ namespace RecurringIntegrationsScheduler.Job
 
         private static string CreateExecutionId(string dataProject)
         {
-            return $"{dataProject}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}-{Guid.NewGuid().ToString()}";
+            return $"{dataProject}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}-{Guid.NewGuid()}";
         }
     }
 }

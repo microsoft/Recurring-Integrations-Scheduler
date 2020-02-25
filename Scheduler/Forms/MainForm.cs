@@ -225,11 +225,13 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             try
             {
-                using FileDialog dialog = new SaveFileDialog();
-                dialog.Filter = Resources.Recurring_Integrations_Schedule_xml;
-                dialog.FileName = "Schedule";
-                dialog.DefaultExt = "xml";
-                dialog.AddExtension = true;
+                using FileDialog dialog = new SaveFileDialog
+                {
+                    Filter = Resources.Recurring_Integrations_Schedule_xml,
+                    FileName = "Schedule",
+                    DefaultExt = "xml",
+                    AddExtension = true
+                };
 
                 var defaultPath = Path.Combine(
                                                 Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
@@ -381,7 +383,7 @@ namespace RecurringIntegrationsScheduler.Forms
                     case SettingsConstants.ExportJob:
                         if (Properties.Settings.Default.V3Forms)
                         {
-                            using ExportJob exportForm = new ExportJob
+                            using ExportJobV3 exportForm = new ExportJobV3
                             {
                                 JobDetail = jobDetail,
                                 Trigger = jobTrigger
@@ -397,7 +399,7 @@ namespace RecurringIntegrationsScheduler.Forms
                         }
                         else
                         {
-                            using ExportJobV3 exportForm = new ExportJobV3
+                            using ExportJob exportForm = new ExportJob
                             {
                                 JobDetail = jobDetail,
                                 Trigger = jobTrigger

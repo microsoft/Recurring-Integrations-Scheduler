@@ -1,7 +1,6 @@
 ﻿/* Copyright (c) Microsoft Corporation. All rights reserved.
    Licensed under the MIT License. */
 
-using Polly;
 using RecurringIntegrationsScheduler.Common.Helpers;
 using RecurringIntegrationsScheduler.Properties;
 using RecurringIntegrationsScheduler.Settings;
@@ -9,7 +8,6 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -84,8 +82,7 @@ namespace RecurringIntegrationsScheduler.Forms
             }
             settings.UseServiceAuthentication = serviceAuthRadioButton.Checked;
 
-            var retryPolicy = Policy.Handle<HttpRequestException>().RetryAsync(retryCount: 1);
-            var httpClientHelper = new HttpClientHelper(settings, retryPolicy);
+            var httpClientHelper = new HttpClientHelper(settings);
 
             try
             {

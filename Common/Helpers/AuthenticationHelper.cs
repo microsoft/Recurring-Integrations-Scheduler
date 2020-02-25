@@ -2,7 +2,6 @@
    Licensed under the MIT License. */
 
 using Microsoft.Identity.Client;
-using Polly.Retry;
 using RecurringIntegrationsScheduler.Common.JobSettings;
 using System;
 using System.Linq;
@@ -18,18 +17,15 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
     {
         private readonly Settings _settings;
         private string _authorizationHeader;
-        private readonly AsyncRetryPolicy _retryPolicy;
         private const string AuthEndpoint = "https://login.microsoftonline.com/";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticationHelper"/> class.
         /// </summary>
         /// <param name="jobSettings">Job settings</param>
-        /// <param name="retryPolicy">Retry policy</param>
-        public AuthenticationHelper(Settings jobSettings, Polly.Retry.AsyncRetryPolicy retryPolicy)
+        public AuthenticationHelper(Settings jobSettings)
         {
             _settings = jobSettings;
-            _retryPolicy = retryPolicy;
         }
 
         /// <summary>
@@ -62,18 +58,18 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                     .WithClientSecret(_settings.AadClientSecret)
                     .WithAuthority(authority)
                     .Build();
-                AuthenticationResult = await _retryPolicy.ExecuteAsync(() => appConfidential.AcquireTokenForClient(scopes).ExecuteAsync());
+                AuthenticationResult = await appConfidential.AcquireTokenForClient(scopes).ExecuteAsync();
             }
             else
             {
                 appPublic = PublicClientApplicationBuilder.Create(_settings.AadClientId.ToString())
                     .WithAuthority(authority)
                     .Build();
-                var accounts = await _retryPolicy.ExecuteAsync(() => appPublic.GetAccountsAsync());
+                var accounts = await appPublic.GetAccountsAsync();
 
                 if (accounts.Any())
                 {
-                    AuthenticationResult = await _retryPolicy.ExecuteAsync(() => appPublic.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync());
+                    AuthenticationResult = await appPublic.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync();
                 }
                 else
                 {
@@ -82,7 +78,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                     {
                         securePassword.AppendChar(c);
                     }
-                    AuthenticationResult = await _retryPolicy.ExecuteAsync(() => appPublic.AcquireTokenByUsernamePassword(scopes, _settings.UserName, securePassword).ExecuteAsync());
+                    AuthenticationResult = await appPublic.AcquireTokenByUsernamePassword(scopes, _settings.UserName, securePassword).ExecuteAsync();
                 }
             }
             return _authorizationHeader = AuthenticationResult.CreateAuthorizationHeader();

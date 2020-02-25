@@ -214,6 +214,7 @@
     <Compile Include="Forms\ValidateConnection.Designer.cs">
       <DependentUpon>ValidateConnection.cs</DependentUpon>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

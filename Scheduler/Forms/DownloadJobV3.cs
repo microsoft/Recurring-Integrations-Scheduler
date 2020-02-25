@@ -238,6 +238,10 @@ namespace RecurringIntegrationsScheduler.Forms
                     (JobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
                     Convert.ToBoolean(JobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
 
+                verboseLoggingCheckBox.Checked =
+                    (JobDetail.JobDataMap[SettingsConstants.LogVerbose] != null) &&
+                    Convert.ToBoolean(JobDetail.JobDataMap[SettingsConstants.LogVerbose].ToString());
+
                 Properties.Settings.Default.Save();
             }
         }
@@ -385,6 +389,7 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
                 {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
                 {SettingsConstants.DelayBetweenFiles, delayBetweenFilesNumericUpDown.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.LogVerbose, verboseLoggingCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {

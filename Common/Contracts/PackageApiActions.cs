@@ -4,9 +4,9 @@
 namespace RecurringIntegrationsScheduler.Common.Contracts
 {
     /// <summary>
-    /// Class holding all constant values related to the Odata actions used in this solution
+    /// Class holding requests paths related to Package API
     /// </summary>
-    public static class OdataActionsConstants
+    public static class PackageApiActions
     {
         public const string GetAzureWriteUrlActionPath = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetAzureWriteUrl";
         public const string GetExecutionSummaryStatusActionPath = "data/DataManagementDefinitionGroups/Microsoft.Dynamics.DataEntities.GetExecutionSummaryStatus";

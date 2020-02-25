@@ -33,7 +33,7 @@ namespace RecurringIntegrationsScheduler.Forms
             get
             {
                 var myCp = base.CreateParams;
-                myCp.ClassStyle = myCp.ClassStyle | CpNocloseButton;
+                myCp.ClassStyle |= CpNocloseButton;
                 return myCp;
             }
         }
@@ -85,13 +85,13 @@ namespace RecurringIntegrationsScheduler.Forms
             processingSuccessFolderTextBox.Text = Properties.Settings.Default.ProcessingSuccessFolder;
             processingErrorsFolderTextBox.Text = Properties.Settings.Default.ProcessingErrorsFolder;
 
-            importFromPackageTextBox.Text = OdataActionsConstants.ImportFromPackageActionPath;
-            getAzureWriteUrlTextBox.Text = OdataActionsConstants.GetAzureWriteUrlActionPath;
-            getExecutionSummaryStatusTextBox.Text = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
-            getExecutionSummaryPageUrlTextBox.Text = OdataActionsConstants.GetExecutionSummaryPageUrlActionPath;
-            getImportTargetErrorKeysFileUrlTextBox.Text = OdataActionsConstants.GetImportTargetErrorKeysFileUrlPath;
-            generateImportTargetErrorKeysFileTextBox.Text = OdataActionsConstants.GenerateImportTargetErrorKeysFilePath;
-            getExecutionErrorsTextBox.Text = OdataActionsConstants.GetExecutionErrorsPath;
+            importFromPackageTextBox.Text = PackageApiActions.ImportFromPackageActionPath;
+            getAzureWriteUrlTextBox.Text = PackageApiActions.GetAzureWriteUrlActionPath;
+            getExecutionSummaryStatusTextBox.Text = PackageApiActions.GetExecutionSummaryStatusActionPath;
+            getExecutionSummaryPageUrlTextBox.Text = PackageApiActions.GetExecutionSummaryPageUrlActionPath;
+            getImportTargetErrorKeysFileUrlTextBox.Text = PackageApiActions.GetImportTargetErrorKeysFileUrlPath;
+            generateImportTargetErrorKeysFileTextBox.Text = PackageApiActions.GenerateImportTargetErrorKeysFilePath;
+            getExecutionErrorsTextBox.Text = PackageApiActions.GetExecutionErrorsPath;
 
             if (ImportJobDetail != null)
             {
@@ -260,8 +260,8 @@ namespace RecurringIntegrationsScheduler.Forms
                     (ImportJobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
                     Convert.ToBoolean(ImportJobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
 
-                importFromPackageTextBox.Text = ImportJobDetail.JobDataMap[SettingsConstants.ImportFromPackageActionPath]?.ToString() ?? OdataActionsConstants.ImportFromPackageActionPath;
-                getAzureWriteUrlTextBox.Text = ImportJobDetail.JobDataMap[SettingsConstants.GetAzureWriteUrlActionPath]?.ToString() ?? OdataActionsConstants.GetAzureWriteUrlActionPath;
+                importFromPackageTextBox.Text = ImportJobDetail.JobDataMap[SettingsConstants.ImportFromPackageActionPath]?.ToString() ?? PackageApiActions.ImportFromPackageActionPath;
+                getAzureWriteUrlTextBox.Text = ImportJobDetail.JobDataMap[SettingsConstants.GetAzureWriteUrlActionPath]?.ToString() ?? PackageApiActions.GetAzureWriteUrlActionPath;
 
                 multicompanyCheckBox.Checked =
                     (ImportJobDetail.JobDataMap[SettingsConstants.MultiCompanyImport] != null) &&
@@ -277,6 +277,10 @@ namespace RecurringIntegrationsScheduler.Forms
                 {
                     legalEntityTokenPositionNumericUpDown.Value = Convert.ToDecimal(ImportJobDetail.JobDataMap[SettingsConstants.LegalEntityTokenPosition]);
                 }
+
+                verboseLoggingCheckBox.Checked =
+                    (ImportJobDetail.JobDataMap[SettingsConstants.LogVerbose] != null) &&
+                    Convert.ToBoolean(ImportJobDetail.JobDataMap[SettingsConstants.LogVerbose].ToString());
 
                 Properties.Settings.Default.Save();
             }
@@ -302,11 +306,11 @@ namespace RecurringIntegrationsScheduler.Forms
                     monitoringJobCronExpressionTextBox.Text = localTrigger.CronExpressionString;
                 }
 
-                getExecutionSummaryStatusTextBox.Text = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryStatusActionPath;
-                getExecutionSummaryPageUrlTextBox.Text = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryPageUrlActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryPageUrlActionPath;
-                getImportTargetErrorKeysFileUrlTextBox.Text = ExecutionJobDetail.JobDataMap[SettingsConstants.GetImportTargetErrorKeysFileUrlPath]?.ToString() ?? OdataActionsConstants.GetImportTargetErrorKeysFileUrlPath;
-                generateImportTargetErrorKeysFileTextBox.Text = ExecutionJobDetail.JobDataMap[SettingsConstants.GenerateImportTargetErrorKeysFilePath]?.ToString() ?? OdataActionsConstants.GenerateImportTargetErrorKeysFilePath;
-                getExecutionErrorsTextBox.Text = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionErrorsPath]?.ToString() ?? OdataActionsConstants.GetExecutionErrorsPath;
+                getExecutionSummaryStatusTextBox.Text = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? PackageApiActions.GetExecutionSummaryStatusActionPath;
+                getExecutionSummaryPageUrlTextBox.Text = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryPageUrlActionPath]?.ToString() ?? PackageApiActions.GetExecutionSummaryPageUrlActionPath;
+                getImportTargetErrorKeysFileUrlTextBox.Text = ExecutionJobDetail.JobDataMap[SettingsConstants.GetImportTargetErrorKeysFileUrlPath]?.ToString() ?? PackageApiActions.GetImportTargetErrorKeysFileUrlPath;
+                generateImportTargetErrorKeysFileTextBox.Text = ExecutionJobDetail.JobDataMap[SettingsConstants.GenerateImportTargetErrorKeysFilePath]?.ToString() ?? PackageApiActions.GenerateImportTargetErrorKeysFilePath;
+                getExecutionErrorsTextBox.Text = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionErrorsPath]?.ToString() ?? PackageApiActions.GetExecutionErrorsPath;
 
                 downloadErrorKeysFileCheckBox.Checked =
                     (ExecutionJobDetail.JobDataMap[SettingsConstants.GetImportTargetErrorKeysFile] != null) &&
@@ -547,7 +551,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.GetLegalEntityFromFilename, getLegalEntityFromFilenameRadioButton.Checked.ToString()},
                 {SettingsConstants.FilenameSeparator, filenameSeparatorTextBox.Text},
                 {SettingsConstants.LegalEntityTokenPosition, legalEntityTokenPositionNumericUpDown.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.InputFilesArePackages, inputFilesArePackagesCheckBox.Checked.ToString()}
+                {SettingsConstants.InputFilesArePackages, inputFilesArePackagesCheckBox.Checked.ToString()},
+                {SettingsConstants.LogVerbose, verboseLoggingCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -590,7 +595,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.PackageTemplate, packageTemplateTextBox.Text},
                 {SettingsConstants.DelayBetweenStatusCheck, statusCheckDelayNumericUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.GetExecutionErrors, getExecutionErrorsCheckBox.Checked.ToString()},
-                {SettingsConstants.GetExecutionErrorsPath, getExecutionErrorsTextBox.Text}
+                {SettingsConstants.GetExecutionErrorsPath, getExecutionErrorsTextBox.Text},
+                {SettingsConstants.LogVerbose, verboseLoggingCheckBox.Checked.ToString()}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -638,28 +644,23 @@ namespace RecurringIntegrationsScheduler.Forms
                 topFolderBrowserButton.Enabled = true;
 
                 inputFolderTextBox.Enabled = false;
-                inputFolderTextBox.Text = Path.Combine(topFolderTextBox.Text,
-                    Properties.Settings.Default.UploadInputFolder);
+                inputFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.UploadInputFolder);
                 inputFolderBrowserButton.Enabled = false;
 
                 uploadSuccessFolderTextBox.Enabled = false;
-                uploadSuccessFolderTextBox.Text = Path.Combine(topFolderTextBox.Text,
-                    Properties.Settings.Default.UploadSuccessFolder);
+                uploadSuccessFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.UploadSuccessFolder);
                 uploadSuccessFolderBrowserButton.Enabled = false;
 
                 uploadErrorsFolderTextBox.Enabled = false;
-                uploadErrorsFolderTextBox.Text = Path.Combine(topFolderTextBox.Text,
-                    Properties.Settings.Default.UploadErrorsFolder);
+                uploadErrorsFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.UploadErrorsFolder);
                 uploadErrorsFolderBrowserButton.Enabled = false;
 
                 processingSuccessFolderTextBox.Enabled = false;
-                processingSuccessFolderTextBox.Text = Path.Combine(topFolderTextBox.Text,
-                    Properties.Settings.Default.ProcessingSuccessFolder);
+                processingSuccessFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.ProcessingSuccessFolder);
                 processingSuccessFolderBrowserButton.Enabled = false;
 
                 processingErrorsFolderTextBox.Enabled = false;
-                processingErrorsFolderTextBox.Text = Path.Combine(topFolderTextBox.Text,
-                    Properties.Settings.Default.ProcessingErrorsFolder);
+                processingErrorsFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.ProcessingErrorsFolder);
                 processingErrorsFolderBrowserButton.Enabled = false;
             }
             else
@@ -684,11 +685,11 @@ namespace RecurringIntegrationsScheduler.Forms
 
                 if (string.IsNullOrEmpty(topFolderTextBox.Text))
                 {
-                    inputFolderTextBox.Text = "";
-                    uploadSuccessFolderTextBox.Text = "";
-                    uploadErrorsFolderTextBox.Text = "";
-                    processingSuccessFolderTextBox.Text = "";
-                    processingErrorsFolderTextBox.Text = "";
+                    inputFolderTextBox.Text = string.Empty;
+                    uploadSuccessFolderTextBox.Text = string.Empty;
+                    uploadErrorsFolderTextBox.Text = string.Empty;
+                    processingSuccessFolderTextBox.Text = string.Empty;
+                    processingErrorsFolderTextBox.Text = string.Empty;
                 }
             }
         }
@@ -739,16 +740,11 @@ namespace RecurringIntegrationsScheduler.Forms
             {
                 if (useStandardSubfolder.Checked)
                 {
-                    inputFolderTextBox.Text = Path.Combine(topFolderTextBox.Text,
-                        Properties.Settings.Default.UploadInputFolder);
-                    uploadSuccessFolderTextBox.Text = Path.Combine(topFolderTextBox.Text,
-                        Properties.Settings.Default.UploadSuccessFolder);
-                    uploadErrorsFolderTextBox.Text = Path.Combine(topFolderTextBox.Text,
-                        Properties.Settings.Default.UploadErrorsFolder);
-                    processingSuccessFolderTextBox.Text = Path.Combine(topFolderTextBox.Text,
-                        Properties.Settings.Default.ProcessingSuccessFolder);
-                    processingErrorsFolderTextBox.Text = Path.Combine(topFolderTextBox.Text,
-                        Properties.Settings.Default.ProcessingErrorsFolder);
+                    inputFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.UploadInputFolder);
+                    uploadSuccessFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.UploadSuccessFolder);
+                    uploadErrorsFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.UploadErrorsFolder);
+                    processingSuccessFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.ProcessingSuccessFolder);
+                    processingErrorsFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.ProcessingErrorsFolder);
                     openFileDialog.InitialDirectory = topFolderTextBox.Text;
                 }
             }

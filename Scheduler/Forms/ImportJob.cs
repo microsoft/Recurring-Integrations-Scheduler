@@ -91,12 +91,12 @@ namespace RecurringIntegrationsScheduler.Forms
             processingSuccessFolderTextBox.Text = Properties.Settings.Default.ProcessingSuccessFolder;
             processingErrorsFolderTextBox.Text = Properties.Settings.Default.ProcessingErrorsFolder;
 
-            importFromPackagePath = OdataActionsConstants.ImportFromPackageActionPath;
-            getAzureWriteUrlPath = OdataActionsConstants.GetAzureWriteUrlActionPath;
-            getExecutionSummaryStatusPath = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
-            getExecutionSummaryPageUrlPath = OdataActionsConstants.GetExecutionSummaryPageUrlActionPath;
-            getImportTargetErrorKeysFileUrlPath = OdataActionsConstants.GetImportTargetErrorKeysFileUrlPath;
-            generateImportTargetErrorKeysFilePath = OdataActionsConstants.GenerateImportTargetErrorKeysFilePath;
+            importFromPackagePath = PackageApiActions.ImportFromPackageActionPath;
+            getAzureWriteUrlPath = PackageApiActions.GetAzureWriteUrlActionPath;
+            getExecutionSummaryStatusPath = PackageApiActions.GetExecutionSummaryStatusActionPath;
+            getExecutionSummaryPageUrlPath = PackageApiActions.GetExecutionSummaryPageUrlActionPath;
+            getImportTargetErrorKeysFileUrlPath = PackageApiActions.GetImportTargetErrorKeysFileUrlPath;
+            generateImportTargetErrorKeysFilePath = PackageApiActions.GenerateImportTargetErrorKeysFilePath;
 
             if (ImportJobDetail != null)
             {
@@ -262,8 +262,8 @@ namespace RecurringIntegrationsScheduler.Forms
                     (ImportJobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
                     Convert.ToBoolean(ImportJobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
 
-                importFromPackagePath = ImportJobDetail.JobDataMap[SettingsConstants.ImportFromPackageActionPath]?.ToString() ?? OdataActionsConstants.ImportFromPackageActionPath;
-                getAzureWriteUrlPath = ImportJobDetail.JobDataMap[SettingsConstants.GetAzureWriteUrlActionPath]?.ToString() ?? OdataActionsConstants.GetAzureWriteUrlActionPath;
+                importFromPackagePath = ImportJobDetail.JobDataMap[SettingsConstants.ImportFromPackageActionPath]?.ToString() ?? PackageApiActions.ImportFromPackageActionPath;
+                getAzureWriteUrlPath = ImportJobDetail.JobDataMap[SettingsConstants.GetAzureWriteUrlActionPath]?.ToString() ?? PackageApiActions.GetAzureWriteUrlActionPath;
 
                 Properties.Settings.Default.Save();
             }
@@ -289,10 +289,10 @@ namespace RecurringIntegrationsScheduler.Forms
                     procJobCronExpressionTextBox.Text = localTrigger.CronExpressionString;
                 }
 
-                getExecutionSummaryStatusPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryStatusActionPath;
-                getExecutionSummaryPageUrlPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryPageUrlActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryPageUrlActionPath;
-                getImportTargetErrorKeysFileUrlPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetImportTargetErrorKeysFileUrlPath]?.ToString() ?? OdataActionsConstants.GetImportTargetErrorKeysFileUrlPath;
-                generateImportTargetErrorKeysFilePath = ExecutionJobDetail.JobDataMap[SettingsConstants.GenerateImportTargetErrorKeysFilePath]?.ToString() ?? OdataActionsConstants.GenerateImportTargetErrorKeysFilePath;
+                getExecutionSummaryStatusPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? PackageApiActions.GetExecutionSummaryStatusActionPath;
+                getExecutionSummaryPageUrlPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryPageUrlActionPath]?.ToString() ?? PackageApiActions.GetExecutionSummaryPageUrlActionPath;
+                getImportTargetErrorKeysFileUrlPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetImportTargetErrorKeysFileUrlPath]?.ToString() ?? PackageApiActions.GetImportTargetErrorKeysFileUrlPath;
+                generateImportTargetErrorKeysFilePath = ExecutionJobDetail.JobDataMap[SettingsConstants.GenerateImportTargetErrorKeysFilePath]?.ToString() ?? PackageApiActions.GenerateImportTargetErrorKeysFilePath;
 
                 downloadErrorKeysFileCheckBox.Checked =
                     (ExecutionJobDetail.JobDataMap[SettingsConstants.GetImportTargetErrorKeysFile] != null) &&
