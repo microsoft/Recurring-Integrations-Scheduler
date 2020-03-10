@@ -62,12 +62,17 @@ namespace RecurringIntegrationsScheduler.Forms
                 return;
             }
 
-            var settings = new Common.JobSettings.DownloadJobSettings();
-
             Guid.TryParse(application.ClientId, out Guid aadClientGuid);
-            settings.AadClientId = aadClientGuid;
-            settings.AadClientSecret = EncryptDecrypt.Decrypt(application.Secret);
-            settings.ActivityId = Guid.Empty;
+
+            var settings = new Common.JobSettings.DownloadJobSettings
+            {
+                RetryCount = 1,
+                RetryDelay = 1,
+                AadClientId = aadClientGuid,
+                AadClientSecret = EncryptDecrypt.Decrypt(application.Secret),
+                ActivityId = Guid.Empty,
+                UseServiceAuthentication = serviceAuthRadioButton.Checked
+            };
 
             if (Instance != null)
             {
@@ -80,7 +85,6 @@ namespace RecurringIntegrationsScheduler.Forms
                 settings.UserName = user.Login;
                 settings.UserPassword = EncryptDecrypt.Decrypt(user.Password);
             }
-            settings.UseServiceAuthentication = serviceAuthRadioButton.Checked;
 
             var httpClientHelper = new HttpClientHelper(settings);
 

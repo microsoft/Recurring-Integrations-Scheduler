@@ -256,7 +256,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// Retry count.
         /// </value>
-        public int RetryCount { get; private set; }
+        public int RetryCount { get; set; }
 
         /// <summary>
         /// Gets or sets delay between retries.
@@ -264,7 +264,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// Delay between retries in seconds.
         /// </value>
-        public int RetryDelay { get; private set; }
+        public int RetryDelay { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [pause job when exception occurs].
