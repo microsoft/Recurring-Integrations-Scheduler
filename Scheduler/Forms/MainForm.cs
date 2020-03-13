@@ -603,85 +603,6 @@ namespace RecurringIntegrationsScheduler.Forms
             RefreshGrid();
         }
 
-        private void JobsDataGridView_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                DataGridView.HitTestInfo hitTestInfo = jobsDataGridView.HitTest(e.X, e.Y);
-                if (hitTestInfo.ColumnIndex != -1 && hitTestInfo.RowIndex != -1)
-                {
-                    jobsDataGridView.CurrentCell = jobsDataGridView[hitTestInfo.ColumnIndex, hitTestInfo.RowIndex];
-                    jobsDataGridView.ContextMenuStrip.Opening += (s, i) =>
-                    {
-                        if (jobsDataGridView.CurrentCell == null)
-                            i.Cancel = true;
-                        else
-                        {
-                            i.Cancel = false;
-                            SetContextMenuItems(hitTestInfo.RowIndex);
-                            contextMenuStrip1.Show(jobsDataGridView, new Point(e.X, e.Y));
-                        }
-                    };
-                }
-            }
-        }
-
-        private void SetContextMenuItems(int rowIndex)
-        {
-            try
-            {
-                var jobName = jobsDataGridView.Rows[rowIndex].Cells["JobName"].Value.ToString();
-                var jobGroup = jobsDataGridView.Rows[rowIndex].Cells["JobGroup"].Value.ToString();
-                _selectedJobKey = new JobKey(jobName, jobGroup);
-
-                var scheduler = Scheduler.Instance.GetScheduler();
-                if (scheduler == null)
-                {
-                    MessageBox.Show(Resources.No_active_scheduler, Resources.Missing_scheduler);
-                    return;
-                }
-
-                var jobDetail = scheduler.GetJobDetail(_selectedJobKey).Result;
-
-                switch (jobDetail.JobType.FullName)
-                {
-                    case SettingsConstants.DownloadJob:
-                    case SettingsConstants.ExportJob:
-                        openFailedProcessingFolderToolStripMenuItem.Visible = false;
-                        openFailedUploadsFolderToolStripMenuItem.Visible = false;
-                        openInputFolderToolStripMenuItem.Visible = false;
-                        openSuccessfulProcessingFolderToolStripMenuItem.Visible = false;
-                        openSuccessfulUploadsFolderToolStripMenuItem.Visible = false;
-                        openSuccessfulDownloadsFolderToolStripMenuItem.Visible = true;
-                        break;
-                    case SettingsConstants.UploadJob:
-                    case SettingsConstants.ImportJob:
-                        openFailedProcessingFolderToolStripMenuItem.Visible = false;
-                        openSuccessfulDownloadsFolderToolStripMenuItem.Visible = false;
-                        openSuccessfulProcessingFolderToolStripMenuItem.Visible = false;
-                        openFailedUploadsFolderToolStripMenuItem.Visible = true;
-                        openInputFolderToolStripMenuItem.Visible = true;
-                        openSuccessfulUploadsFolderToolStripMenuItem.Visible = true;
-                        break;
-                    case SettingsConstants.ProcessingJob:
-                    case SettingsConstants.ExecutionJob:
-                        openFailedUploadsFolderToolStripMenuItem.Visible = false;
-                        openInputFolderToolStripMenuItem.Visible = false;
-                        openSuccessfulDownloadsFolderToolStripMenuItem.Visible = false;
-                        openFailedProcessingFolderToolStripMenuItem.Visible = true;
-                        openSuccessfulProcessingFolderToolStripMenuItem.Visible = true;
-                        openSuccessfulUploadsFolderToolStripMenuItem.Visible = true;
-                        break;
-                    default:
-                        return;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, Resources.Unexpected_error);
-            }
-        }
-
         private void PauseJobToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -1119,6 +1040,103 @@ namespace RecurringIntegrationsScheduler.Forms
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, Resources.Unexpected_error);
+            }
+        }
+
+        private void JobsDataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.ColumnIndex != -1 && e.RowIndex != -1 && e.Button == MouseButtons.Right)
+            {
+                DataGridViewCell c = (sender as DataGridView)[e.ColumnIndex, e.RowIndex];
+                if (!c.Selected)
+                {
+                    c.DataGridView.ClearSelection();
+                    c.DataGridView.CurrentCell = c;
+                    c.Selected = true;
+                }
+            }
+        }
+
+        private void JobsDataGridView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if ((e.KeyCode == Keys.F10 && e.Shift) || e.KeyCode == Keys.Apps)
+            {
+                e.SuppressKeyPress = true;
+                DataGridViewCell currentCell = (sender as DataGridView).CurrentCell;
+                if (currentCell != null)
+                {
+                    ContextMenuStrip cms = currentCell.ContextMenuStrip;
+                    if (cms != null)
+                    {
+                        Rectangle r = currentCell.DataGridView.GetCellDisplayRectangle(currentCell.ColumnIndex, currentCell.RowIndex, false);
+                        Point p = new Point(r.X + r.Width, r.Y + r.Height);
+                        cms.Show(currentCell.DataGridView, p);
+                    }
+                }
+            }
+        }
+
+        private void JobsDataGridView_CellContextMenuStripNeeded(object sender, DataGridViewCellContextMenuStripNeededEventArgs e)
+        {
+            DataGridView dgv = (DataGridView)sender;
+
+            if (e.RowIndex == -1 || e.ColumnIndex == -1)
+                return;
+
+            foreach (DataGridViewRow row in dgv.SelectedRows)
+            {
+                try
+                {
+                    var jobName = row.Cells["JobName"].Value.ToString();
+                    var jobGroup = row.Cells["JobGroup"].Value.ToString();
+                    _selectedJobKey = new JobKey(jobName, jobGroup);
+
+                    var scheduler = Scheduler.Instance.GetScheduler();
+                    if (scheduler == null)
+                    {
+                        MessageBox.Show(Resources.No_active_scheduler, Resources.Missing_scheduler);
+                        return;
+                    }
+
+                    var jobDetail = scheduler.GetJobDetail(_selectedJobKey).Result;
+
+                    switch (jobDetail.JobType.FullName)
+                    {
+                        case SettingsConstants.DownloadJob:
+                        case SettingsConstants.ExportJob:
+                            openFailedProcessingFolderToolStripMenuItem.Visible = false;
+                            openFailedUploadsFolderToolStripMenuItem.Visible = false;
+                            openInputFolderToolStripMenuItem.Visible = false;
+                            openSuccessfulProcessingFolderToolStripMenuItem.Visible = false;
+                            openSuccessfulUploadsFolderToolStripMenuItem.Visible = false;
+                            openSuccessfulDownloadsFolderToolStripMenuItem.Visible = true;
+                            break;
+                        case SettingsConstants.UploadJob:
+                        case SettingsConstants.ImportJob:
+                            openFailedProcessingFolderToolStripMenuItem.Visible = false;
+                            openSuccessfulDownloadsFolderToolStripMenuItem.Visible = false;
+                            openSuccessfulProcessingFolderToolStripMenuItem.Visible = false;
+                            openFailedUploadsFolderToolStripMenuItem.Visible = true;
+                            openInputFolderToolStripMenuItem.Visible = true;
+                            openSuccessfulUploadsFolderToolStripMenuItem.Visible = true;
+                            break;
+                        case SettingsConstants.ProcessingJob:
+                        case SettingsConstants.ExecutionJob:
+                            openFailedUploadsFolderToolStripMenuItem.Visible = false;
+                            openInputFolderToolStripMenuItem.Visible = false;
+                            openSuccessfulDownloadsFolderToolStripMenuItem.Visible = false;
+                            openFailedProcessingFolderToolStripMenuItem.Visible = true;
+                            openSuccessfulProcessingFolderToolStripMenuItem.Visible = true;
+                            openSuccessfulUploadsFolderToolStripMenuItem.Visible = true;
+                            break;
+                        default:
+                            return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, Resources.Unexpected_error);
+                }
             }
         }
     }

@@ -105,7 +105,7 @@ namespace RecurringIntegrationsScheduler.Forms
                 }
                 else
                 {
-                    messagesTextBox.Text += $"{Resources.Warning_HTTP_response_status_for_D365FO_instance_is} {response.Result.StatusCode.ToString()} {response.Result.ReasonPhrase}." + Environment.NewLine;
+                    messagesTextBox.Text += $"{Resources.Warning_HTTP_response_status_for_D365FO_instance_is} {response.Result.StatusCode} {response.Result.ReasonPhrase}." + Environment.NewLine;
                 }
 
                 var checkAccess = httpClientHelper.GetDequeueUri();
