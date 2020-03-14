@@ -79,9 +79,9 @@ namespace RecurringIntegrationsScheduler.Forms
 
             errorsFolder.Text = Properties.Settings.Default.DownloadErrorsFolder;
 
-            exportToPackagePath = OdataActionsConstants.ExportToPackageActionPath;
-            getExecutionSummaryStatusPath = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
-            getExportedPackageUrlPath = OdataActionsConstants.GetExportedPackageUrlActionPath;
+            exportToPackagePath = PackageApiActions.ExportToPackageActionPath;
+            getExecutionSummaryStatusPath = PackageApiActions.GetExecutionSummaryStatusActionPath;
+            getExportedPackageUrlPath = PackageApiActions.GetExportedPackageUrlActionPath;
 
             if ((JobDetail != null) && (Trigger != null))
             {
@@ -117,7 +117,9 @@ namespace RecurringIntegrationsScheduler.Forms
 
                 legalEntity.Text = JobDetail.JobDataMap[SettingsConstants.Company]?.ToString() ?? string.Empty;
 
-                interval.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.Interval]) / 1000);
+                statusCheckInterval.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.DelayBetweenStatusCheck]));
+
+                numericUpDownInterval.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.DelayBetweenFiles]));
 
                 if (!serviceAuthRadioButton.Checked)
                 {
@@ -223,9 +225,9 @@ namespace RecurringIntegrationsScheduler.Forms
                     (JobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
                     Convert.ToBoolean(JobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
 
-                exportToPackagePath = JobDetail.JobDataMap[SettingsConstants.ExportToPackageActionPath]?.ToString() ?? OdataActionsConstants.ExportToPackageActionPath;
-                getExecutionSummaryStatusPath = JobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryStatusActionPath;
-                getExportedPackageUrlPath = JobDetail.JobDataMap[SettingsConstants.GetExportedPackageUrlActionPath]?.ToString() ?? OdataActionsConstants.GetExportedPackageUrlActionPath;
+                exportToPackagePath = JobDetail.JobDataMap[SettingsConstants.ExportToPackageActionPath]?.ToString() ?? PackageApiActions.ExportToPackageActionPath;
+                getExecutionSummaryStatusPath = JobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? PackageApiActions.GetExecutionSummaryStatusActionPath;
+                getExportedPackageUrlPath = JobDetail.JobDataMap[SettingsConstants.GetExportedPackageUrlActionPath]?.ToString() ?? PackageApiActions.GetExportedPackageUrlActionPath;
 
                 Properties.Settings.Default.Save();
             }
@@ -399,7 +401,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.DeletePackage, deletePackageCheckBox.Checked.ToString()},
                 {SettingsConstants.DataProject, dataProject.Text},
                 {SettingsConstants.Company, legalEntity.Text},
-                {SettingsConstants.Interval, (interval.Value * 1000).ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.DelayBetweenFiles, numericUpDownInterval.Value.ToString(CultureInfo.InvariantCulture)},
+                {SettingsConstants.DelayBetweenStatusCheck, statusCheckInterval.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
@@ -423,7 +426,7 @@ namespace RecurringIntegrationsScheduler.Forms
         private void CronDocsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             cronmakerLinkLabel.LinkVisited = true;
-            Process.Start("http://www.quartz-scheduler.net/documentation/quartz-2.x/tutorial/crontrigger.html");
+            Process.Start("https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontrigger.html");
         }
 
         private void CalculateNextRunsButton_Click(object sender, EventArgs e)

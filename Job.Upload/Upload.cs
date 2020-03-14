@@ -12,7 +12,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.IO;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RecurringIntegrationsScheduler.Job
@@ -58,11 +57,6 @@ namespace RecurringIntegrationsScheduler.Job
         private Policy _retryPolicyForIo;
 
         /// <summary>
-        /// Retry policy for HTTP operations
-        /// </summary>
-        private Polly.Retry.AsyncRetryPolicy _retryPolicyForHttp;
-
-        /// <summary>
         /// Called by the <see cref="T:Quartz.IScheduler" /> when a <see cref="T:Quartz.ITrigger" />
         /// fires that is associated with the <see cref="T:Quartz.IJob" />.
         /// </summary>
@@ -99,21 +93,17 @@ namespace RecurringIntegrationsScheduler.Job
                     {
                         Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_IO_operation_Exception_1, _context.JobDetail.Key, exception.Message));
                     });
-                _retryPolicyForHttp = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(
-                    retryCount: _settings.RetryCount, 
-                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
-                    onRetry: (exception, calculatedWaitDuration) => 
-                    {
-                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_Http_operation_Exception_1, _context.JobDetail.Key, exception.Message));
-                    });
 
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_starting, _context.JobDetail.Key));
-
+                }
                 await Process();
 
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_ended, _context.JobDetail.Key));
+                }
             }
             catch (Exception ex)
             {
@@ -123,30 +113,18 @@ namespace RecurringIntegrationsScheduler.Job
                     Log.WarnFormat(CultureInfo.InvariantCulture,
                         string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
                 }
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
                 {
                     if (!string.IsNullOrEmpty(ex.Message))
                     {
                         Log.Error(ex.Message, ex);
                     }
-                    else
-                    {
-                        Log.Error("Uknown exception", ex);
-                    }
-
-                    while (ex.InnerException != null)
-                    {
-                        if (!string.IsNullOrEmpty(ex.InnerException.Message))
-                            Log.Error(ex.InnerException.Message, ex.InnerException);
-
-                        ex = ex.InnerException;
-                    }
                 }
                 if (context.Scheduler.SchedulerName != "Private")
+                {
                     throw new JobExecutionException(string.Format(Resources.Upload_job_0_failed, _context.JobDetail.Key), ex, false);
-
-                if (!Log.IsDebugEnabled)
-                    Log.Error(string.Format(Resources.Job_0_thrown_an_error_1, _context.JobDetail.Key, ex.Message));
+                }
+                Log.Error(string.Format(Resources.Job_0_thrown_an_error_1, _context.JobDetail.Key, ex.Message));
             }
         }
 
@@ -160,8 +138,11 @@ namespace RecurringIntegrationsScheduler.Job
 
             foreach (var dataMessage in FileOperationsHelper.GetFiles(MessageStatus.Input, _settings.InputDir, _settings.SearchPattern, SearchOption.AllDirectories, _settings.OrderBy, _settings.ReverseOrder))
             {
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_File_1_found_in_input_location, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}")));
+
+                }
                 InputQueue.Enqueue(dataMessage);
             }
 
@@ -180,31 +161,29 @@ namespace RecurringIntegrationsScheduler.Job
         /// </returns>
         private async Task ProcessInputQueue()
         {
-            using (_httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp))
+            using (_httpClientHelper = new HttpClientHelper(_settings))
             {
-                var firstFile = true;
+                var fileCount = 0;
 
                 while (InputQueue.TryDequeue(out DataMessage dataMessage))
                 {
                     try
                     {
-                        if (!firstFile)
+                        if (fileCount > 0 && _settings.DelayBetweenFiles > 0) //Only delay after first file and never after last.
                         {
-                            System.Threading.Thread.Sleep(_settings.Interval);
+                            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_settings.DelayBetweenFiles));
                         }
-                        else
-                        {
-                            firstFile = false;
-                        }
+                        fileCount++;
 
-                        var sourceStream = _retryPolicyForIo.Execute(() => FileOperationsHelper.Read(dataMessage.FullPath));
+                        var sourceStream = _retryPolicyForIo.Execute(() => FileOperationsHelper.Read(dataMessage.FullPath, FileShare.None));
                         if (sourceStream == null) continue;//Nothing to do here
 
                         sourceStream.Seek(0, SeekOrigin.Begin);
 
-                        if (Log.IsDebugEnabled)
+                        if (_settings.LogVerbose || Log.IsDebugEnabled)
+                        {
                             Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Uploading_file_1_File_size_2_bytes, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}"), sourceStream.Length));
-
+                        }
                         // Post enqueue file request
                         var response = await _httpClientHelper.PostStreamRequestAsync(_httpClientHelper.GetEnqueueUri(), sourceStream, dataMessage.Name);
                         sourceStream.Close();
@@ -220,14 +199,16 @@ namespace RecurringIntegrationsScheduler.Job
                                 MessageStatus = MessageStatus.Enqueued
                             };
 
-                            // Move to inprocess/success location
+                            // Move to success location
                             _retryPolicyForIo.Execute(() => FileOperationsHelper.Move(dataMessage.FullPath, targetDataMessage.FullPath));
 
                             if (_settings.ProcessingJobPresent)
                                 _retryPolicyForIo.Execute(() => FileOperationsHelper.WriteStatusFile(targetDataMessage, _settings.StatusFileExtension));
 
-                            if (Log.IsDebugEnabled)
+                            if (_settings.LogVerbose || Log.IsDebugEnabled)
+                            {
                                 Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_File_1_uploaded_successfully_Message_Id_2, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}"), targetDataMessage.MessageId));
+                            }
                         }
                         else
                         {

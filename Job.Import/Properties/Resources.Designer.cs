@@ -19,7 +19,7 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -142,6 +142,15 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Job: {0}. Method GetAzureWriteUrl returned empty string.
+        /// </summary>
+        internal static string Job_0_Method_GetAzureWriteUrl_returned_empty_string {
+            get {
+                return ResourceManager.GetString("Job_0_Method_GetAzureWriteUrl_returned_empty_string", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Job: {0} Package template contains input file: {1}. Please remove it from the template..
         /// </summary>
         internal static string Job_0_Package_template_contains_input_file_1_Please_remove_it_from_the_template {
@@ -197,6 +206,15 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Job: {0}. Target legal entity is not valid: {1}.
+        /// </summary>
+        internal static string Job_0_Target_legal_entity_is_not_valid_1 {
+            get {
+                return ResourceManager.GetString("Job_0_Target_legal_entity_is_not_valid_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Job: {0} thrown an error. Exception : {1}.
         /// </summary>
         internal static string Job_0_thrown_an_error_1 {
@@ -206,7 +224,16 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Job: {0}. Upload failed for file: {1}. Failure response:  Status: {2}, Reason: {3}.
+        ///   Looks up a localized string similar to Job: {0}. Unable to get target legal entity name. Check job configuration..
+        /// </summary>
+        internal static string Job_0_Unable_to_get_target_legal_entity_name {
+            get {
+                return ResourceManager.GetString("Job_0_Unable_to_get_target_legal_entity_name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job: {0}. Upload failed for file: {1}. Failure response:  Status: {2}, Reason: {3}. ImportFromPackage failed request&apos;s parameters: {4}.
         /// </summary>
         internal static string Job_0_Upload_failed_for_file_1_Failure_response_Status_2_Reason_3 {
             get {

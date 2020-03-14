@@ -112,6 +112,7 @@ namespace RecurringIntegrationsScheduler.Forms
                                                  Convert.ToBoolean(
                                                      JobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication]
                                                          .ToString());
+                numericUpDownInterval.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.DelayBetweenFiles]));
 
                 if (!serviceAuthRadioButton.Checked)
                 {
@@ -409,7 +410,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
-                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
+                {SettingsConstants.DelayBetweenFiles, numericUpDownInterval.Value.ToString(CultureInfo.InvariantCulture)},
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -427,7 +429,7 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             cronmakerLinkLabel.LinkVisited = true;
             Process.Start(
-                "http://www.quartz-scheduler.net/documentation/quartz-2.x/tutorial/crontrigger.html");
+                "https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontrigger.html");
         }
 
         private void CalculateNextRunsButton_Click(object sender, EventArgs e)

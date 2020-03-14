@@ -49,11 +49,6 @@ namespace RecurringIntegrationsScheduler.Job
         private Policy _retryPolicyForIo;
 
         /// <summary>
-        /// Retry policy for HTTP operations
-        /// </summary>
-        private Polly.Retry.AsyncRetryPolicy _retryPolicyForHttp;
-
-        /// <summary>
         /// Called by the <see cref="T:Quartz.IScheduler" /> when a <see cref="T:Quartz.ITrigger" />
         /// fires that is associated with the <see cref="T:Quartz.IJob" />.
         /// </summary>
@@ -78,66 +73,48 @@ namespace RecurringIntegrationsScheduler.Job
                 if (_settings.IndefinitePause)
                 {
                     await context.Scheduler.PauseJob(context.JobDetail.Key);
-                    Log.InfoFormat(CultureInfo.InvariantCulture,
-                        string.Format(Resources.Job_0_was_paused_indefinitely, _context.JobDetail.Key));
+                    Log.InfoFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_was_paused_indefinitely, _context.JobDetail.Key));
                     return;
                 }
 
                 _retryPolicyForIo = Policy.Handle<IOException>().WaitAndRetry(
-                    retryCount: _settings.RetryCount, 
+                    retryCount: _settings.RetryCount,
                     sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
-                    onRetry: (exception, calculatedWaitDuration) => 
+                    onRetry: (exception, calculatedWaitDuration) =>
                     {
                         Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_IO_operation_Exception_1, _context.JobDetail.Key, exception.Message));
                     });
-                _retryPolicyForHttp = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(
-                    retryCount: _settings.RetryCount, 
-                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
-                    onRetry: (exception, calculatedWaitDuration) => 
-                    {
-                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_Http_operation_Exception_1, _context.JobDetail.Key, exception.Message));
-                    });
 
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_starting, _context.JobDetail.Key));
-
+                }
                 await Process();
 
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_ended, _context.JobDetail.Key));
+                }
             }
             catch (Exception ex)
             {
                 if (_settings.PauseJobOnException)
                 {
                     await context.Scheduler.PauseJob(context.JobDetail.Key);
-                    Log.WarnFormat(CultureInfo.InvariantCulture,
-                        string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
+                    Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
                 }
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
                 {
                     if (!string.IsNullOrEmpty(ex.Message))
                     {
                         Log.Error(ex.Message, ex);
                     }
-                    else
-                    {
-                        Log.Error("Uknown exception", ex);
-                    }
-
-                    while (ex.InnerException != null)
-                    {
-                        if (!string.IsNullOrEmpty(ex.InnerException.Message))
-                            Log.Error(ex.InnerException.Message, ex.InnerException);
-
-                        ex = ex.InnerException;
-                    }
                 }
                 if (context.Scheduler.SchedulerName != "Private")
+                {
                     throw new JobExecutionException(string.Format(Resources.Job_0_failed, _context.JobDetail.Key), ex, false);
-
-                if (!Log.IsDebugEnabled)
-                    Log.Error(string.Format(Resources.Job_0_thrown_an_error_1, _context.JobDetail.Key, ex.Message));
+                }
+                Log.Error(string.Format(Resources.Job_0_thrown_an_error_1, _context.JobDetail.Key, ex.Message));
             }
         }
 
@@ -147,68 +124,93 @@ namespace RecurringIntegrationsScheduler.Job
         /// <returns></returns>
         private async Task Process()
         {
-            using (_httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp))
+            using (_httpClientHelper = new HttpClientHelper(_settings))
             {
-                var executionId = CreateExecutionId(_settings.DataProject);
+                var executionId = $"{_settings.DataProject}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}-{Guid.NewGuid()}";
+                
                 var responseExportToPackage = await _httpClientHelper.ExportToPackage(_settings.DataProject, executionId, executionId, _settings.Company);
 
                 if (!responseExportToPackage.IsSuccessStatusCode)
-                    throw new Exception(string.Format(Resources.Job_0_Download_failure_1, _context.JobDetail.Key, responseExportToPackage.StatusCode));
+                {
+                    throw new JobExecutionException($@"Job: {_settings.JobKey}. ExportToPackage request failed.");
+                }
 
                 string executionStatus;
                 var attempt = 0;
                 do
                 {
-                    attempt++;
-                    if(attempt != 1)
-                        System.Threading.Thread.Sleep(_settings.Interval);
-                    executionStatus = await _httpClientHelper.GetExecutionSummaryStatus(executionId);
-                    if (Log.IsDebugEnabled)
-                        Log.Debug(string.Format(Resources.Job_0_Checking_if_export_is_completed_Try_1_Status_2, _context.JobDetail.Key, attempt, executionStatus));
-                    if (attempt == 1000)
+                    if (attempt > 0 && _settings.DelayBetweenStatusCheck > 0) //Only delay after first file and never after last.
                     {
-                        throw new Exception(string.Format(Resources.Job_0_Checking_for_status_reached_1_attempts_Status_is_2_Exiting, _context.JobDetail.Key, attempt, executionStatus));
+                        System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_settings.DelayBetweenStatusCheck));
+                    }
+                    attempt++;
+
+                    var responseGetExecutionSummaryStatus = await _httpClientHelper.GetExecutionSummaryStatus(executionId);
+                    if (!responseGetExecutionSummaryStatus.IsSuccessStatusCode)
+                    {
+                        throw new JobExecutionException($@"Job: {_settings.JobKey}. GetExecutionSummaryStatus request failed.");
+                    }
+                    executionStatus = HttpClientHelper.ReadResponseString(responseGetExecutionSummaryStatus);
+
+                    if (_settings.LogVerbose || Log.IsDebugEnabled)
+                    {
+                        Log.Debug(string.Format(Resources.Job_0_Checking_if_export_is_completed_Try_1_Status_2, _context.JobDetail.Key, attempt, executionStatus));
+                    }
+                    if (attempt == 100)//TODO hardcoded
+                    {
+                        throw new JobExecutionException(string.Format(Resources.Job_0_Checking_for_status_reached_1_attempts_Status_is_2_Exiting, _context.JobDetail.Key, attempt, executionStatus));
                     }
                 }
                 while (executionStatus == "NotRun" || executionStatus == "Executing" || executionStatus == "Bad request");
 
                 if (executionStatus == "Succeeded" || executionStatus == "PartiallySucceeded")
                 {
-                    attempt = 0;
-                    Uri packageUrl = null;
+                    attempt = 0;//Reset for get url request attempts
+                    HttpResponseMessage packageUrlResponse;
                     do
                     {
-                        attempt++;
-                        if (attempt != 1)
-                            System.Threading.Thread.Sleep(_settings.Interval);
-                        packageUrl = await _httpClientHelper.GetExportedPackageUrl(executionId);
-                        if (Log.IsDebugEnabled)
-                            Log.Debug(string.Format(Resources.Job_0_Trying_to_get_exported_package_URL_Try_1, _context.JobDetail.Key, attempt));
-                        if (attempt == 100)
+                        if (attempt > 0 && _settings.DelayBetweenFiles > 0) //Only delay after first file and never after last.
                         {
-                            throw new Exception(string.Format(Resources.Job_0_Request_to_download_exported_package_reached_1_attempts_Exiting, _context.JobDetail.Key, attempt));
+                            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_settings.DelayBetweenFiles));
+                        }
+                        attempt++;
+
+                        packageUrlResponse = await _httpClientHelper.GetExportedPackageUrl(executionId);
+                        if (!packageUrlResponse.IsSuccessStatusCode)
+                        {
+                            throw new JobExecutionException($"Job: {_context.JobDetail.Key}. GetExportedPackageUrl request failed.");
+                        }
+                        if (_settings.LogVerbose || Log.IsDebugEnabled)
+                        {
+                            Log.Debug(string.Format(Resources.Job_0_Trying_to_get_exported_package_URL_Try_1, _context.JobDetail.Key, attempt));
+                        }
+                        if (attempt == 100)//TODO hardcoded
+                        {
+                            throw new JobExecutionException(string.Format(Resources.Job_0_Request_to_download_exported_package_reached_1_attempts_Exiting, _context.JobDetail.Key, attempt));
                         }
                     }
-                    while (packageUrl == null);
+                    while (string.IsNullOrEmpty(HttpClientHelper.ReadResponseString(packageUrlResponse)));
 
-                    var response = await _httpClientHelper.GetRequestAsync(new UriBuilder(packageUrl).Uri, false);
+                    var packageUri = new Uri(HttpClientHelper.ReadResponseString(packageUrlResponse));             
+                    var response = await _httpClientHelper.GetRequestAsync(packageUri, false);
                     if (!response.IsSuccessStatusCode)
-                        throw new JobExecutionException(string.Format(Resources.Job_0_Download_failure_1, _context.JobDetail.Key, string.Format($"Status: {response.StatusCode}. Message: {response.Content}")));
-
-                    using (Stream downloadedStream = await response.Content.ReadAsStreamAsync())
                     {
-                        var fileName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-ffff}.zip";
-                        var successPath = Path.Combine(_settings.DownloadSuccessDir, fileName);
-                        var dataMessage = new DataMessage()
-                        {
-                            FullPath = successPath,
-                            Name = fileName,
-                            MessageStatus = MessageStatus.Succeeded
-                        };
-                        _retryPolicyForIo.Execute(() => FileOperationsHelper.Create(downloadedStream, dataMessage.FullPath));
+                        throw new JobExecutionException(string.Format(Resources.Job_0_Download_failure_1, _context.JobDetail.Key, string.Format($"Status: {response.StatusCode}. Message: {response.Content}")));
+                    }
+                    using Stream downloadedStream = await response.Content.ReadAsStreamAsync();
 
-                        if (_settings.UnzipPackage)
-                            _retryPolicyForIo.Execute(() => FileOperationsHelper.UnzipPackage(dataMessage.FullPath, _settings.DeletePackage, _settings.AddTimestamp));
+                    var fileName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-ffff}.zip";
+                    var dataMessage = new DataMessage()
+                    {
+                        FullPath = Path.Combine(_settings.DownloadSuccessDir, fileName),
+                        Name = fileName,
+                        MessageStatus = MessageStatus.Succeeded
+                    };
+                    _retryPolicyForIo.Execute(() => FileOperationsHelper.Create(downloadedStream, dataMessage.FullPath));
+
+                    if (_settings.UnzipPackage)
+                    {
+                        _retryPolicyForIo.Execute(() => FileOperationsHelper.UnzipPackage(dataMessage.FullPath, _settings.DeletePackage, _settings.AddTimestamp));
                     }
                 }
                 else if (executionStatus == "Unknown" || executionStatus == "Failed" || executionStatus == "Canceled")
@@ -220,11 +222,6 @@ namespace RecurringIntegrationsScheduler.Job
                     Log.Error(string.Format(Resources.Job_0_Execution_status_1_Execution_Id_2, _context.JobDetail.Key, executionStatus, executionId));
                 }
             }
-        }
-
-        private string CreateExecutionId(string dataProject)
-        {
-            return $"{dataProject}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}-{Guid.NewGuid().ToString()}";
         }
     }
 }

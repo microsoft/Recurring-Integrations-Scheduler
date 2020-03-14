@@ -41,6 +41,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -51,6 +52,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Assets\Recurring Integrations Scheduler.ico</ApplicationIcon>
@@ -64,13 +66,13 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Polly, Version=7.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Polly.7.1.0\lib\netstandard2.0\Polly.dll</HintPath>
+      <HintPath>..\packages\Polly.7.2.0\lib\net472\Polly.dll</HintPath>
     </Reference>
-    <Reference Include="PortableSettingsProvider, Version=0.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PortableSettingsProvider.0.2.2\lib\net45\PortableSettingsProvider.dll</HintPath>
+    <Reference Include="PortableSettingsProvider, Version=0.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PortableSettingsProvider.0.2.3\lib\net45\PortableSettingsProvider.dll</HintPath>
     </Reference>
     <Reference Include="Quartz, Version=3.0.7.0, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
       <HintPath>..\packages\Quartz.3.0.7\lib\net452\Quartz.dll</HintPath>
@@ -96,8 +98,8 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Topshelf, Version=4.2.1.215, Culture=neutral, PublicKeyToken=b800c4cfcdeea87b, processorArchitecture=MSIL">
-      <HintPath>..\packages\Topshelf.4.2.1\lib\net452\Topshelf.dll</HintPath>
+    <Reference Include="Topshelf, Version=4.1.0.172, Culture=neutral, PublicKeyToken=b800c4cfcdeea87b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Topshelf.4.1.0\lib\net452\Topshelf.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -122,11 +124,29 @@
     <Compile Include="Forms\AadApplicationForm.Designer.cs">
       <DependentUpon>AadApplicationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\DownloadJobV3.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DownloadJobV3.Designer.cs">
+      <DependentUpon>DownloadJobV3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ExportJobV3.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ExportJobV3.Designer.cs">
+      <DependentUpon>ExportJobV3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ExportJobOptions.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\ExportJobOptions.Designer.cs">
       <DependentUpon>ExportJobOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ImportJobV3.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ImportJobV3.Designer.cs">
+      <DependentUpon>ImportJobV3.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ImportJobOptions.cs">
       <SubType>Form</SubType>
@@ -158,6 +178,12 @@
     <Compile Include="Forms\ImportJob.Designer.cs">
       <DependentUpon>ImportJob.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\UploadJobV3.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\UploadJobV3.Designer.cs">
+      <DependentUpon>UploadJobV3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\UserForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -188,21 +214,13 @@
     <Compile Include="Forms\ValidateConnection.Designer.cs">
       <DependentUpon>ValidateConnection.cs</DependentUpon>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Settings\AadApplication.cs" />
-    <Compile Include="Settings\AadApplications.cs" />
-    <Compile Include="Settings\JobGroup.cs" />
-    <Compile Include="Settings\JobGroups.cs" />
-    <Compile Include="Settings\User.cs" />
-    <Compile Include="Settings\Instance.cs" />
-    <Compile Include="Settings\Users.cs" />
-    <Compile Include="Settings\DataJob.cs" />
-    <Compile Include="Settings\Instances.cs" />
-    <Compile Include="Settings\DataJobs.cs" />
+    <Compile Include="Settings\Settings.cs" />
     <Compile Include="Forms\Parameters.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -235,9 +253,18 @@
       <DependentUpon>AadApplicationForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DownloadJobV3.resx">
+      <DependentUpon>DownloadJobV3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ExportJobV3.resx">
+      <DependentUpon>ExportJobV3.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ExportJobOptions.resx">
       <DependentUpon>ExportJobOptions.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ImportJobV3.resx">
+      <DependentUpon>ImportJobV3.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ImportJobOptions.resx">
       <DependentUpon>ImportJobOptions.cs</DependentUpon>
@@ -255,6 +282,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ImportJob.resx">
       <DependentUpon>ImportJob.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\UploadJobV3.resx">
+      <DependentUpon>UploadJobV3.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\UserForm.resx">
       <DependentUpon>UserForm.cs</DependentUpon>
@@ -314,7 +344,7 @@
     <None Include="Assets\Folder open_32xMD_exp.png" />
     <None Include="Assets\Add_16xMD.png" />
     <None Include="Assets\Edit_16xMD.png" />
-    <Content Include="Assets\RecurringIntegrationsScheduler.ico" />
+    <None Include="Assets\RecurringIntegrationsScheduler.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

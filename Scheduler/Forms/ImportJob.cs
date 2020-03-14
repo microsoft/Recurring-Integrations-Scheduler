@@ -91,12 +91,12 @@ namespace RecurringIntegrationsScheduler.Forms
             processingSuccessFolderTextBox.Text = Properties.Settings.Default.ProcessingSuccessFolder;
             processingErrorsFolderTextBox.Text = Properties.Settings.Default.ProcessingErrorsFolder;
 
-            importFromPackagePath = OdataActionsConstants.ImportFromPackageActionPath;
-            getAzureWriteUrlPath = OdataActionsConstants.GetAzureWriteUrlActionPath;
-            getExecutionSummaryStatusPath = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
-            getExecutionSummaryPageUrlPath = OdataActionsConstants.GetExecutionSummaryPageUrlActionPath;
-            getImportTargetErrorKeysFileUrlPath = OdataActionsConstants.GetImportTargetErrorKeysFileUrlPath;
-            generateImportTargetErrorKeysFilePath = OdataActionsConstants.GenerateImportTargetErrorKeysFilePath;
+            importFromPackagePath = PackageApiActions.ImportFromPackageActionPath;
+            getAzureWriteUrlPath = PackageApiActions.GetAzureWriteUrlActionPath;
+            getExecutionSummaryStatusPath = PackageApiActions.GetExecutionSummaryStatusActionPath;
+            getExecutionSummaryPageUrlPath = PackageApiActions.GetExecutionSummaryPageUrlActionPath;
+            getImportTargetErrorKeysFileUrlPath = PackageApiActions.GetImportTargetErrorKeysFileUrlPath;
+            generateImportTargetErrorKeysFilePath = PackageApiActions.GenerateImportTargetErrorKeysFilePath;
 
             if (ImportJobDetail != null)
             {
@@ -136,6 +136,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 executeImportCheckBox.Checked =
                     (ImportJobDetail.JobDataMap[SettingsConstants.ExecuteImport] != null) &&
                     Convert.ToBoolean(ImportJobDetail.JobDataMap[SettingsConstants.ExecuteImport].ToString());
+
+                numericUpDownInterval.Value = Math.Round(Convert.ToDecimal(ImportJobDetail.JobDataMap[SettingsConstants.DelayBetweenFiles]));
 
                 serviceAuthRadioButton.Checked =
                     (ImportJobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication] != null) &&
@@ -260,8 +262,8 @@ namespace RecurringIntegrationsScheduler.Forms
                     (ImportJobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
                     Convert.ToBoolean(ImportJobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
 
-                importFromPackagePath = ImportJobDetail.JobDataMap[SettingsConstants.ImportFromPackageActionPath]?.ToString() ?? OdataActionsConstants.ImportFromPackageActionPath;
-                getAzureWriteUrlPath = ImportJobDetail.JobDataMap[SettingsConstants.GetAzureWriteUrlActionPath]?.ToString() ?? OdataActionsConstants.GetAzureWriteUrlActionPath;
+                importFromPackagePath = ImportJobDetail.JobDataMap[SettingsConstants.ImportFromPackageActionPath]?.ToString() ?? PackageApiActions.ImportFromPackageActionPath;
+                getAzureWriteUrlPath = ImportJobDetail.JobDataMap[SettingsConstants.GetAzureWriteUrlActionPath]?.ToString() ?? PackageApiActions.GetAzureWriteUrlActionPath;
 
                 Properties.Settings.Default.Save();
             }
@@ -287,14 +289,16 @@ namespace RecurringIntegrationsScheduler.Forms
                     procJobCronExpressionTextBox.Text = localTrigger.CronExpressionString;
                 }
 
-                getExecutionSummaryStatusPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryStatusActionPath;
-                getExecutionSummaryPageUrlPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryPageUrlActionPath]?.ToString() ?? OdataActionsConstants.GetExecutionSummaryPageUrlActionPath;
-                getImportTargetErrorKeysFileUrlPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetImportTargetErrorKeysFileUrlPath]?.ToString() ?? OdataActionsConstants.GetImportTargetErrorKeysFileUrlPath;
-                generateImportTargetErrorKeysFilePath = ExecutionJobDetail.JobDataMap[SettingsConstants.GenerateImportTargetErrorKeysFilePath]?.ToString() ?? OdataActionsConstants.GenerateImportTargetErrorKeysFilePath;
+                getExecutionSummaryStatusPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryStatusActionPath]?.ToString() ?? PackageApiActions.GetExecutionSummaryStatusActionPath;
+                getExecutionSummaryPageUrlPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetExecutionSummaryPageUrlActionPath]?.ToString() ?? PackageApiActions.GetExecutionSummaryPageUrlActionPath;
+                getImportTargetErrorKeysFileUrlPath = ExecutionJobDetail.JobDataMap[SettingsConstants.GetImportTargetErrorKeysFileUrlPath]?.ToString() ?? PackageApiActions.GetImportTargetErrorKeysFileUrlPath;
+                generateImportTargetErrorKeysFilePath = ExecutionJobDetail.JobDataMap[SettingsConstants.GenerateImportTargetErrorKeysFilePath]?.ToString() ?? PackageApiActions.GenerateImportTargetErrorKeysFilePath;
 
                 downloadErrorKeysFileCheckBox.Checked =
                     (ExecutionJobDetail.JobDataMap[SettingsConstants.GetImportTargetErrorKeysFile] != null) &&
                     Convert.ToBoolean(ExecutionJobDetail.JobDataMap[SettingsConstants.GetImportTargetErrorKeysFile].ToString());
+
+               numericUpDownStatusCheckInterval.Value = Math.Round(Convert.ToDecimal(ExecutionJobDetail.JobDataMap[SettingsConstants.DelayBetweenStatusCheck]));
             }
         }
 
@@ -576,7 +580,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
                 {SettingsConstants.GetAzureWriteUrlActionPath, getAzureWriteUrlPath},
                 {SettingsConstants.ImportFromPackageActionPath, importFromPackagePath},
-                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
+                {SettingsConstants.DelayBetweenFiles, numericUpDownInterval.Value.ToString(CultureInfo.InvariantCulture)}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -616,7 +621,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.GetImportTargetErrorKeysFile, downloadErrorKeysFileCheckBox.Checked.ToString()},
                 {SettingsConstants.GetImportTargetErrorKeysFileUrlPath, getImportTargetErrorKeysFileUrlPath},
                 {SettingsConstants.GenerateImportTargetErrorKeysFilePath, generateImportTargetErrorKeysFilePath},
-                {SettingsConstants.PackageTemplate, packageTemplateTextBox.Text}
+                {SettingsConstants.PackageTemplate, packageTemplateTextBox.Text},
+                {SettingsConstants.DelayBetweenStatusCheck, numericUpDownStatusCheckInterval.Value.ToString(CultureInfo.InvariantCulture)}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -634,7 +640,7 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             cronmakerLinkLabel.LinkVisited = true;
             Process.Start(
-                "http://www.quartz-scheduler.net/documentation/quartz-2.x/tutorial/crontrigger.html");
+                "https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontrigger.html");
         }
 
         private void GetCronScheduleForUploadButton_Click(object sender, EventArgs e)

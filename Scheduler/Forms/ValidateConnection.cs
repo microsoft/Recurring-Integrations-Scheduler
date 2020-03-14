@@ -1,9 +1,6 @@
 ﻿/* Copyright (c) Microsoft Corporation. All rights reserved.
    Licensed under the MIT License. */
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Polly;
 using RecurringIntegrationsScheduler.Common.Helpers;
 using RecurringIntegrationsScheduler.Properties;
 using RecurringIntegrationsScheduler.Settings;
@@ -11,7 +8,6 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -66,12 +62,17 @@ namespace RecurringIntegrationsScheduler.Forms
                 return;
             }
 
-            var settings = new Common.JobSettings.DownloadJobSettings();
-
             Guid.TryParse(application.ClientId, out Guid aadClientGuid);
-            settings.AadClientId = aadClientGuid;
-            settings.AadClientSecret = EncryptDecrypt.Decrypt(application.Secret);
-            settings.ActivityId = Guid.Empty;
+
+            var settings = new Common.JobSettings.DownloadJobSettings
+            {
+                RetryCount = 1,
+                RetryDelay = 1,
+                AadClientId = aadClientGuid,
+                AadClientSecret = EncryptDecrypt.Decrypt(application.Secret),
+                ActivityId = Guid.Empty,
+                UseServiceAuthentication = serviceAuthRadioButton.Checked
+            };
 
             if (Instance != null)
             {
@@ -84,10 +85,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 settings.UserName = user.Login;
                 settings.UserPassword = EncryptDecrypt.Decrypt(user.Password);
             }
-            settings.UseServiceAuthentication = serviceAuthRadioButton.Checked;
 
-            var retryPolicy = Policy.Handle<HttpRequestException>().RetryAsync(retryCount: 1);
-            var httpClientHelper = new HttpClientHelper(settings, retryPolicy);
+            var httpClientHelper = new HttpClientHelper(settings);
 
             try
             {
@@ -106,7 +105,7 @@ namespace RecurringIntegrationsScheduler.Forms
                 }
                 else
                 {
-                    messagesTextBox.Text += $"{Resources.Warning_HTTP_response_status_for_D365FO_instance_is} {response.Result.StatusCode.ToString()} {response.Result.ReasonPhrase}." + Environment.NewLine;
+                    messagesTextBox.Text += $"{Resources.Warning_HTTP_response_status_for_D365FO_instance_is} {response.Result.StatusCode} {response.Result.ReasonPhrase}." + Environment.NewLine;
                 }
 
                 var checkAccess = httpClientHelper.GetDequeueUri();

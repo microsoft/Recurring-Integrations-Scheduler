@@ -234,4 +234,7 @@
   <data name="GetAzureWriteUrl_returned_empty_string_Check_previous_errors" xml:space="preserve">
     <value>Method GetAzureWriteUrl returned empty string. Check previous errors.</value>
   </data>
+  <data name="no_separator" xml:space="preserve">
+    <value>Job is configured to get target legal entity from file name, but no separator was configured.</value>
+  </data>
 </root>

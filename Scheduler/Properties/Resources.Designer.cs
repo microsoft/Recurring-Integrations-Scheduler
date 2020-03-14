@@ -19,7 +19,7 @@ namespace RecurringIntegrationsScheduler.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -1037,6 +1037,15 @@ namespace RecurringIntegrationsScheduler.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File name separator is missing.
+        /// </summary>
+        internal static string Filename_separator_is_missing {
+            get {
+                return ResourceManager.GetString("Filename_separator_is_missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Files filter and order.
         /// </summary>
         internal static string Files_filter_and_order {
@@ -1578,6 +1587,15 @@ namespace RecurringIntegrationsScheduler.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package template file is missing.
+        /// </summary>
+        internal static string Package_template_is_missing {
+            get {
+                return ResourceManager.GetString("Package_template_is_missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parameters.
         /// </summary>
         internal static string Parameters {
@@ -2106,6 +2124,87 @@ namespace RecurringIntegrationsScheduler.Properties {
         internal static string Uri_or_Guid {
             get {
                 return ResourceManager.GetString("Uri_or_Guid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL for ExportToPackage action is missing.
+        /// </summary>
+        internal static string URL_for_ExportToPackage_action_is_missing {
+            get {
+                return ResourceManager.GetString("URL_for_ExportToPackage_action_is_missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL for GenerateImportTargetErrorKeysFile action is missing.
+        /// </summary>
+        internal static string URL_for_GenerateImportTargetErrorKeysFile_action_is_missing {
+            get {
+                return ResourceManager.GetString("URL_for_GenerateImportTargetErrorKeysFile_action_is_missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL for GetAzureWriteUrl action is missing.
+        /// </summary>
+        internal static string URL_for_GetAzureWriteUrl_action_is_missing {
+            get {
+                return ResourceManager.GetString("URL_for_GetAzureWriteUrl_action_is_missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL for GetExecutionErrors action is missing.
+        /// </summary>
+        internal static string URL_for_GetExecutionErrors_action_is_missing {
+            get {
+                return ResourceManager.GetString("URL_for_GetExecutionErrors_action_is_missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL for GetExecutionSummaryPageUrl action is missing.
+        /// </summary>
+        internal static string URL_for_GetExecutionSummaryPageUrl_action_is_missing {
+            get {
+                return ResourceManager.GetString("URL_for_GetExecutionSummaryPageUrl_action_is_missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL for GetExecutionSummaryStatus action is missing.
+        /// </summary>
+        internal static string URL_for_GetExecutionSummaryStatus_action_is_missing {
+            get {
+                return ResourceManager.GetString("URL_for_GetExecutionSummaryStatus_action_is_missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL for GetExportedPackageUrl action is missing.
+        /// </summary>
+        internal static string URL_for_GetExportedPackageUrl_action_is_missing {
+            get {
+                return ResourceManager.GetString("URL_for_GetExportedPackageUrl_action_is_missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL for GetImportTargetErrorKeysFileUrl action is missing.
+        /// </summary>
+        internal static string URL_for_GetImportTargetErrorKeysFileUrl_action_is_missing {
+            get {
+                return ResourceManager.GetString("URL_for_GetImportTargetErrorKeysFileUrl_action_is_missing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL for ImportFromPackage action is missing.
+        /// </summary>
+        internal static string URL_for_ImportFromPackage_action_is_missing {
+            get {
+                return ResourceManager.GetString("URL_for_ImportFromPackage_action_is_missing", resourceCulture);
             }
         }
         

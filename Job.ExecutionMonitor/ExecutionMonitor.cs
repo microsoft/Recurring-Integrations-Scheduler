@@ -2,8 +2,6 @@
    Licensed under the MIT License. */
 
 using log4net;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Polly;
 using Quartz;
 using RecurringIntegrationsScheduler.Common.Contracts;
@@ -65,11 +63,6 @@ namespace RecurringIntegrationsScheduler.Job
         private Policy _retryPolicyForIo;
 
         /// <summary>
-        /// Retry policy for HTTP operations
-        /// </summary>
-        private Polly.Retry.AsyncRetryPolicy _retryPolicyForHttp;
-
-        /// <summary>
         /// Called by the <see cref="T:Quartz.IScheduler" /> when a <see cref="T:Quartz.ITrigger" />
         /// fires that is associated with the <see cref="T:Quartz.IJob" />.
         /// </summary>
@@ -106,53 +99,37 @@ namespace RecurringIntegrationsScheduler.Job
                     {
                         Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_IO_operation_Exception_1, _context.JobDetail.Key, exception.Message));
                     });
-                _retryPolicyForHttp = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(
-                    retryCount: _settings.RetryCount, 
-                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
-                    onRetry: (exception, calculatedWaitDuration) => 
-                    {
-                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_Http_operation_Exception_1, _context.JobDetail.Key, exception.Message));
-                    });
-                if (Log.IsDebugEnabled)
-                    Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_starting, _context.JobDetail.Key));
 
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
+                    Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_starting, _context.JobDetail.Key));
+                }
                 await Process();
 
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_ended, _context.JobDetail.Key));
+                }
             }
             catch (Exception ex)
             {
                 if (_settings.PauseJobOnException)
                 {
                     await context.Scheduler.PauseJob(context.JobDetail.Key);
-                    Log.WarnFormat(CultureInfo.InvariantCulture,
-                        string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
+                    Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
                 }
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
                 {
                     if (!string.IsNullOrEmpty(ex.Message))
                     {
                         Log.Error(ex.Message, ex);
                     }
-                    else
-                    {
-                        Log.Error("Uknown exception", ex);
-                    }
-
-                    while (ex.InnerException != null)
-                    {
-                        if (!string.IsNullOrEmpty(ex.InnerException.Message))
-                            Log.Error(ex.InnerException.Message, ex.InnerException);
-
-                        ex = ex.InnerException;
-                    }
                 }
                 if (context.Scheduler.SchedulerName != "Private")
+                {
                     throw new JobExecutionException(string.Format(Resources.Execution_monitor_job_0_failed, _context.JobDetail.Key), ex, false);
-
-                if (!Log.IsDebugEnabled)
-                    Log.Error(string.Format(Resources.Job_0_thrown_an_error_1, _context.JobDetail.Key, ex.Message));
+                }
+                Log.Error(string.Format(Resources.Job_0_thrown_an_error_1, _context.JobDetail.Key, ex.Message));
             }
         }
 
@@ -165,15 +142,17 @@ namespace RecurringIntegrationsScheduler.Job
             EnqueuedJobs = new ConcurrentQueue<DataMessage>();
             foreach (var dataMessage in FileOperationsHelper.GetStatusFiles(MessageStatus.InProcess, _settings.UploadSuccessDir, "*" + _settings.StatusFileExtension))
             {
-                if (Log.IsDebugEnabled)
-                    Log.DebugFormat(CultureInfo.InvariantCulture,
-                        string.Format(Resources.Job_0_File_1_found_in_processing_location_and_added_to_queue_for_status_check, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}")));
-
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
+                    Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_File_1_found_in_processing_location_and_added_to_queue_for_status_check, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}")));
+                }
                 EnqueuedJobs.Enqueue(dataMessage);
             }
 
             if (!EnqueuedJobs.IsEmpty)
+            {
                 await ProcessEnqueuedQueue();
+            }
         }
 
         /// <summary>
@@ -182,16 +161,30 @@ namespace RecurringIntegrationsScheduler.Job
         /// <returns></returns>
         private async Task ProcessEnqueuedQueue()
         {
-            _httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp);
+            var fileCount = 0;
+            _httpClientHelper = new HttpClientHelper(_settings);
 
             while (EnqueuedJobs.TryDequeue(out DataMessage dataMessage))
             {
+                if (fileCount > 0 && _settings.DelayBetweenStatusCheck > 0) //Only delay after first file and never after last.
+                {
+                    System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_settings.DelayBetweenStatusCheck));
+                }
+                fileCount++;
+
                 // Check status for current item with message id - item.Key
-                var jobStatusDetail = await _httpClientHelper.GetExecutionSummaryStatus(dataMessage.MessageId);
+                var responseGetExecutionSummaryStatus = await _httpClientHelper.GetExecutionSummaryStatus(dataMessage.MessageId);
+                if(!responseGetExecutionSummaryStatus.IsSuccessStatusCode)
+                {
+                    throw new JobExecutionException($@"Job: {_settings.JobKey}. GetExecutionSummaryStatus request failed.");
+                }
+                var jobStatusDetail = HttpClientHelper.ReadResponseString(responseGetExecutionSummaryStatus);
 
                 // If status was found and is not null,
                 if (jobStatusDetail != null)
+                {
                     await PostProcessMessage(jobStatusDetail, dataMessage);
+                }
             }
         }
 
@@ -203,15 +196,16 @@ namespace RecurringIntegrationsScheduler.Job
         /// <param name="dataMessage">Name of the file whose status is being processed</param>
         private async Task PostProcessMessage(string executionStatus, DataMessage dataMessage)
         {
-            if (Log.IsDebugEnabled)
-                Log.DebugFormat(CultureInfo.InvariantCulture,
-                    string.Format(Resources.Job_0_ExecutionId_1_status_check_returned_2, _context.JobDetail.Key, dataMessage.MessageId, executionStatus));
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
+            {
+                Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_ExecutionId_1_status_check_returned_2, _context.JobDetail.Key, dataMessage.MessageId, executionStatus));
+            }
             switch (executionStatus)
             {
                 case "Succeeded":
                     {
                         // Move message file and delete processing status file
-                        var processingSuccessDestination = Path.Combine(_settings.ProcessingSuccessDir, dataMessage.Name);
+                        var processingSuccessDestination = dataMessage.FullPath.Replace(_settings.UploadSuccessDir, _settings.ProcessingSuccessDir);
                         _retryPolicyForIo.Execute(() => FileOperationsHelper.MoveDataToTarget(dataMessage.FullPath, processingSuccessDestination, true, _settings.StatusFileExtension));
                         await CreateLinkToExecutionSummaryPage(dataMessage.MessageId, processingSuccessDestination);
                     }
@@ -221,12 +215,12 @@ namespace RecurringIntegrationsScheduler.Job
                 case "Failed":
                 case "Canceled":
                     {
-                        var processingErrorDestination = Path.Combine(_settings.ProcessingErrorsDir, dataMessage.Name);
+                        var processingErrorDestination = dataMessage.FullPath.Replace(_settings.UploadSuccessDir, _settings.ProcessingErrorsDir);
                         _retryPolicyForIo.Execute(() => FileOperationsHelper.MoveDataToTarget(dataMessage.FullPath, processingErrorDestination, true, _settings.StatusFileExtension));
                         await CreateLinkToExecutionSummaryPage(dataMessage.MessageId, processingErrorDestination);
                         if (_settings.GetImportTargetErrorKeysFile)
                         {
-                            if (Log.IsDebugEnabled)
+                            if (_settings.LogVerbose || Log.IsDebugEnabled)
                             {
                                 Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Checking_if_error_keys_file_was_generated, _context.JobDetail.Key));
                             }
@@ -238,30 +232,35 @@ namespace RecurringIntegrationsScheduler.Job
                             var entitiesInPackage = GetEntitiesNamesInPackage(fileWithManifest);
                             foreach(var entity in entitiesInPackage)
                             {
-                                if (Log.IsDebugEnabled)
+                                if (_settings.LogVerbose || Log.IsDebugEnabled)
                                 {
                                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Checking_for_error_keys_for_data_entity_1, _context.JobDetail.Key, entity));
                                 }
-                                var errorsExist = await _httpClientHelper.GenerateImportTargetErrorKeysFile(dataMessage.MessageId, entity);
-                                if (errorsExist)
+                                var errorsExistResponse = await _httpClientHelper.GenerateImportTargetErrorKeysFile(dataMessage.MessageId, entity);
+                                if (errorsExistResponse.IsSuccessStatusCode && Convert.ToBoolean(HttpClientHelper.ReadResponseString(errorsExistResponse)))
                                 {
-                                    var errorFileUrl = "";
-                                    while (errorFileUrl == "")
+                                    var errorFileUrl = string.Empty;
+                                    HttpResponseMessage errorFileUrlResponse;
+                                    do
                                     {
-                                        errorFileUrl = await _httpClientHelper.GetImportTargetErrorKeysFileUrl(dataMessage.MessageId, entity);
-                                        if (errorFileUrl == "")
+                                        errorFileUrlResponse = await _httpClientHelper.GetImportTargetErrorKeysFileUrl(dataMessage.MessageId, entity);
+                                        if(errorFileUrlResponse.IsSuccessStatusCode)
                                         {
-                                            System.Threading.Thread.Sleep(_settings.Interval);
+                                            errorFileUrl = HttpClientHelper.ReadResponseString(errorFileUrlResponse);
+                                            if (errorFileUrl.Length == 0)
+                                            {
+                                                System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_settings.DelayBetweenStatusCheck));
+                                            }
                                         }
                                     }
-                                    var response = await _httpClientHelper.GetRequestAsync(new UriBuilder(errorFileUrl).Uri, false);
-                                    if (!response.IsSuccessStatusCode)
-                                        throw new JobExecutionException(string.Format(Resources.Job_0_download_of_error_keys_file_failed_1, _context.JobDetail.Key, string.Format($"Status: {response.StatusCode}. Message: {response.Content}")));
+                                    while (errorFileUrlResponse.IsSuccessStatusCode && string.IsNullOrEmpty(errorFileUrl));
 
-                                    using (Stream downloadedStream = await response.Content.ReadAsStreamAsync())
+                                    var response = await _httpClientHelper.GetRequestAsync(new UriBuilder(errorFileUrl).Uri, false);
+                                    if (response.IsSuccessStatusCode)
                                     {
+                                        using Stream downloadedStream = await response.Content.ReadAsStreamAsync();
                                         var errorsFileName = $"{Path.GetFileNameWithoutExtension(dataMessage.Name)}-{entity}-ErrorKeys-{DateTime.Now:yyyy-MM-dd_HH-mm-ss-ffff}.txt";
-                                        var errorsFilePath = Path.Combine(_settings.ProcessingErrorsDir, errorsFileName);
+                                        var errorsFilePath = Path.Combine(Path.GetDirectoryName(dataMessage.FullPath.Replace(_settings.UploadSuccessDir, _settings.ProcessingErrorsDir)), errorsFileName);
                                         var dataMessageForErrorsFile = new DataMessage()
                                         {
                                             FullPath = errorsFilePath,
@@ -270,7 +269,43 @@ namespace RecurringIntegrationsScheduler.Job
                                         };
                                         _retryPolicyForIo.Execute(() => FileOperationsHelper.Create(downloadedStream, dataMessageForErrorsFile.FullPath));
                                     }
+                                    else
+                                    {
+                                        Log.Warn($@"Job: {_settings.JobKey}. Download of error keys file failed. Job will continue processing other packages.
+Uploaded file: {dataMessage.FullPath}
+Execution status: {executionStatus}
+Error file URL: {errorFileUrl}");
+                                    }
                                 }
+                            }
+                        }
+
+                        if (_settings.GetExecutionErrors)
+                        {
+                            if (_settings.LogVerbose || Log.IsDebugEnabled)
+                            {
+                                Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Trying_to_download_execution_errors, _context.JobDetail.Key));
+                            }
+                            var response = await _httpClientHelper.GetExecutionErrors(dataMessage.MessageId);
+                            if (response.IsSuccessStatusCode)
+                            {
+                                using Stream downloadedStream = await response.Content.ReadAsStreamAsync();
+                                var errorsFileName = $"{Path.GetFileNameWithoutExtension(dataMessage.Name)}-ExecutionErrors-{DateTime.Now:yyyy-MM-dd_HH-mm-ss-ffff}.txt";
+                                var errorsFilePath = Path.Combine(Path.GetDirectoryName(dataMessage.FullPath.Replace(_settings.UploadSuccessDir, _settings.ProcessingErrorsDir)), errorsFileName);
+                                var dataMessageForErrorsFile = new DataMessage()
+                                {
+                                    FullPath = errorsFilePath,
+                                    Name = errorsFileName,
+                                    MessageStatus = MessageStatus.Failed
+                                };
+                                _retryPolicyForIo.Execute(() => FileOperationsHelper.Create(downloadedStream, dataMessageForErrorsFile.FullPath));
+                            }
+                            else
+                            {
+                                Log.Warn($@"Job: {_settings.JobKey}. Download of execution error details failed. Job will continue processing other packages.
+Uploaded file: {dataMessage.FullPath}
+Execution status: {executionStatus}
+Message Id: {dataMessage.MessageId}");
                             }
                         }
                     }
@@ -305,33 +340,36 @@ namespace RecurringIntegrationsScheduler.Job
         /// <returns>Entities list</returns>
         private List<string> GetEntitiesNamesInPackage(string fileName)
         {
-            var manifestPath = "";
-            if (Log.IsDebugEnabled)
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
             {
                 Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Looking_for_data_entities_in_manifest_file_1, _context.JobDetail.Key, fileName));
             }
+
+            var enitiesList = new List<string>();
+
             using (var package = ZipFile.OpenRead(fileName))
             {
                 foreach (var entry in package.Entries)
                 {
                     if (entry.FullName.Equals("Manifest.xml", StringComparison.OrdinalIgnoreCase))
                     {
-                        manifestPath = Path.Combine(Path.GetTempPath(), $"{_context.JobDetail.Key}-{entry.FullName}");
+                        var manifestPath = Path.Combine(Path.GetTempPath(), $"{_context.JobDetail.Key}-{entry.FullName}");
                         entry.ExtractToFile(manifestPath, true);
+
+                        var doc = new XmlDocument();
+                        XmlNodeList entities;
+                        using (var manifestFile = new StreamReader(manifestPath))
+                        {
+                            doc.Load(new XmlTextReader(manifestFile) { Namespaces = false });
+                            entities = doc.SelectNodes("//EntityName");
+                        }
+
+                        foreach (XmlNode node in entities)
+                        {
+                            enitiesList.Add(node.InnerText);
+                        }
                     }
                 }
-            }
-            var doc = new XmlDocument();
-            XmlNodeList entities;
-            using (var manifestFile = new StreamReader(manifestPath))
-            {
-                doc.Load(new XmlTextReader(manifestFile) { Namespaces = false });
-                entities = doc.SelectNodes("//EntityName");
-            }
-            var enitiesList = new List<string>();
-            foreach(XmlNode node in entities)
-            {
-                enitiesList.Add(node.InnerText);
             }
             return enitiesList;
         }

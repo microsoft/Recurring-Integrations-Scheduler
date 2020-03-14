@@ -81,8 +81,14 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
 
             ExecutionJobPresent = Convert.ToBoolean(dataMap.GetString(SettingsConstants.ExecutionJobPresent));
 
+            MultiCompanyImport = Convert.ToBoolean(dataMap.GetString(SettingsConstants.MultiCompanyImport));
+
+            GetLegalEntityFromSubfolder = Convert.ToBoolean(dataMap.GetString(SettingsConstants.GetLegalEntityFromSubfolder));
+
+            GetLegalEntityFromFilename = Convert.ToBoolean(dataMap.GetString(SettingsConstants.GetLegalEntityFromFilename));
+
             Company = dataMap.GetString(SettingsConstants.Company);
-            if (string.IsNullOrEmpty(Company))
+            if (!MultiCompanyImport && string.IsNullOrEmpty(Company))
             {
                 throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Company_is_missing_in_job_configuration));
             }
@@ -135,6 +141,16 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                     throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Verification_of_package_template_location_failed_0, PackageTemplate), ex);
                 }
             }
+
+            FilenameSeparator = dataMap.GetString(SettingsConstants.FilenameSeparator);
+            if (GetLegalEntityFromFilename && string.IsNullOrEmpty(FilenameSeparator))
+            {
+                throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.no_separator));
+            }
+
+            LegalEntityTokenPosition = dataMap.GetInt(SettingsConstants.LegalEntityTokenPosition);
+
+            InputFilesArePackages = Convert.ToBoolean(dataMap.GetString(SettingsConstants.InputFilesArePackages));
         }
 
         #region Members
@@ -242,7 +258,55 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// Package template location.
         /// </value>
         public string PackageTemplate { get; private set; }
-        
+
+        /// <summary>
+        /// Multicompany import.
+        /// </summary>
+        /// <value>
+        /// Multicompany import.
+        /// </value>
+        public bool MultiCompanyImport { get; private set; }
+
+        /// <summary>
+        /// Get target legal entity from subfolder name.
+        /// </summary>
+        /// <value>
+        /// Get target legal entity from subfolder name.
+        /// </value>
+        public bool GetLegalEntityFromSubfolder { get; private set; }
+
+        /// <summary>
+        /// Get target legal entity from file name.
+        /// </summary>
+        /// <value>
+        /// Get target legal entity from file name.
+        /// </value>
+        public bool GetLegalEntityFromFilename { get; private set; }
+
+        /// <summary>
+        /// Separator in file name to get legal entity.
+        /// </summary>
+        /// <value>
+        /// Separator in file name to get legal entity.
+        /// </value>
+        public string FilenameSeparator { get; private set; }
+
+        /// <summary>
+        /// Position of legal entity token in splitted file name.
+        /// </summary>
+        /// <value>
+        /// Position of legal entity token in splitted file name.
+        /// </value>
+        public int LegalEntityTokenPosition { get; private set; }
+
+        /// <summary>
+        /// Input files are packages.
+        /// </summary>
+        /// <value>
+        /// Input files are packages.
+        /// </value>
+        public bool InputFilesArePackages { get; private set; }
+
         #endregion
     }
 }

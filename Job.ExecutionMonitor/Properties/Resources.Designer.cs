@@ -97,6 +97,15 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Job: {0} Download of execution errors failed. {1}.
+        /// </summary>
+        internal static string Job_0_download_of_execution_errors_failed_1 {
+            get {
+                return ResourceManager.GetString("Job_0_download_of_execution_errors_failed_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Job: {0} ended..
         /// </summary>
         internal static string Job_0_ended {
@@ -219,6 +228,15 @@ namespace RecurringIntegrationsScheduler.Job.Properties {
         internal static string Job_0_thrown_an_error_1 {
             get {
                 return ResourceManager.GetString("Job_0_thrown_an_error_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job: {0} Trying to download execution errors..
+        /// </summary>
+        internal static string Job_0_Trying_to_download_execution_errors {
+            get {
+                return ResourceManager.GetString("Job_0_Trying_to_download_execution_errors", resourceCulture);
             }
         }
         

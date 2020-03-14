@@ -81,6 +81,8 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             {
                 throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Company_is_missing_in_job_configuration));
             }
+
+            DelayBetweenStatusCheck = dataMap.GetInt(SettingsConstants.DelayBetweenStatusCheck);
         }
 
         #region Members
@@ -140,6 +142,14 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// Legal entity id.
         /// </value>
         public string Company { get; private set; }
+
+        /// <summary>
+        /// Gets or sets delay between status check.
+        /// </summary>
+        /// <value>
+        /// Delay between status checks.
+        /// </value>
+        public int DelayBetweenStatusCheck { get; private set; }
 
         #endregion
     }

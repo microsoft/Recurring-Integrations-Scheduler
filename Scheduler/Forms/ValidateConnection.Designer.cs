@@ -55,19 +55,21 @@ namespace RecurringIntegrationsScheduler.Forms
             // userComboBox
             // 
             this.userComboBox.FormattingEnabled = true;
-            this.userComboBox.Location = new System.Drawing.Point(358, 173);
+            this.userComboBox.Location = new System.Drawing.Point(558, 260);
+            this.userComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.userComboBox.Name = "userComboBox";
-            this.userComboBox.Size = new System.Drawing.Size(185, 24);
+            this.userComboBox.Size = new System.Drawing.Size(187, 32);
             this.userComboBox.TabIndex = 0;
             // 
             // userLabel
             // 
             this.userLabel.AutoSize = true;
-            this.userLabel.Location = new System.Drawing.Point(264, 176);
+            this.userLabel.Location = new System.Drawing.Point(426, 263);
+            this.userLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.userLabel.Name = "userLabel";
-            this.userLabel.Size = new System.Drawing.Size(88, 17);
+            this.userLabel.Size = new System.Drawing.Size(124, 25);
             this.userLabel.TabIndex = 1;
-            this.userLabel.Text = Resources.Choose_user;
+            this.userLabel.Text = "Choose user";
             // 
             // validateGroupBox
             // 
@@ -86,48 +88,55 @@ namespace RecurringIntegrationsScheduler.Forms
             this.validateGroupBox.Controls.Add(this.axInstanceNameLabel);
             this.validateGroupBox.Controls.Add(this.userLabel);
             this.validateGroupBox.Controls.Add(this.userComboBox);
-            this.validateGroupBox.Location = new System.Drawing.Point(13, 13);
+            this.validateGroupBox.Location = new System.Drawing.Point(18, 20);
+            this.validateGroupBox.Margin = new System.Windows.Forms.Padding(4);
             this.validateGroupBox.Name = "validateGroupBox";
-            this.validateGroupBox.Size = new System.Drawing.Size(685, 367);
+            this.validateGroupBox.Padding = new System.Windows.Forms.Padding(4);
+            this.validateGroupBox.Size = new System.Drawing.Size(942, 550);
             this.validateGroupBox.TabIndex = 2;
             this.validateGroupBox.TabStop = false;
             // 
             // aadClientLabel
             // 
             this.aadClientLabel.AutoSize = true;
-            this.aadClientLabel.Location = new System.Drawing.Point(197, 203);
+            this.aadClientLabel.Location = new System.Drawing.Point(271, 303);
+            this.aadClientLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.aadClientLabel.Name = "aadClientLabel";
-            this.aadClientLabel.Size = new System.Drawing.Size(155, 17);
+            this.aadClientLabel.Size = new System.Drawing.Size(279, 25);
             this.aadClientLabel.TabIndex = 16;
-            this.aadClientLabel.Text = Resources.Choose_AAD_Client_app;
+            this.aadClientLabel.Text = "Choose Azure App registration";
             // 
             // aadApplicationComboBox
             // 
             this.aadApplicationComboBox.FormattingEnabled = true;
-            this.aadApplicationComboBox.Location = new System.Drawing.Point(358, 200);
+            this.aadApplicationComboBox.Location = new System.Drawing.Point(558, 300);
+            this.aadApplicationComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.aadApplicationComboBox.Name = "aadApplicationComboBox";
-            this.aadApplicationComboBox.Size = new System.Drawing.Size(185, 24);
+            this.aadApplicationComboBox.Size = new System.Drawing.Size(187, 32);
             this.aadApplicationComboBox.TabIndex = 15;
             // 
             // authMethodGroupBox
             // 
             this.authMethodGroupBox.Controls.Add(this.serviceAuthRadioButton);
             this.authMethodGroupBox.Controls.Add(this.userAuthRadioButton);
-            this.authMethodGroupBox.Location = new System.Drawing.Point(7, 147);
+            this.authMethodGroupBox.Location = new System.Drawing.Point(10, 220);
+            this.authMethodGroupBox.Margin = new System.Windows.Forms.Padding(4);
             this.authMethodGroupBox.Name = "authMethodGroupBox";
-            this.authMethodGroupBox.Size = new System.Drawing.Size(179, 84);
+            this.authMethodGroupBox.Padding = new System.Windows.Forms.Padding(4);
+            this.authMethodGroupBox.Size = new System.Drawing.Size(246, 126);
             this.authMethodGroupBox.TabIndex = 14;
             this.authMethodGroupBox.TabStop = false;
-            this.authMethodGroupBox.Text = Resources.Authentication_method;
+            this.authMethodGroupBox.Text = "Authentication method";
             // 
             // serviceAuthRadioButton
             // 
             this.serviceAuthRadioButton.AutoSize = true;
-            this.serviceAuthRadioButton.Location = new System.Drawing.Point(7, 54);
+            this.serviceAuthRadioButton.Location = new System.Drawing.Point(10, 81);
+            this.serviceAuthRadioButton.Margin = new System.Windows.Forms.Padding(4);
             this.serviceAuthRadioButton.Name = "serviceAuthRadioButton";
-            this.serviceAuthRadioButton.Size = new System.Drawing.Size(169, 21);
+            this.serviceAuthRadioButton.Size = new System.Drawing.Size(229, 29);
             this.serviceAuthRadioButton.TabIndex = 1;
-            this.serviceAuthRadioButton.Text = Resources.Service_authentication;
+            this.serviceAuthRadioButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Service_authentication;
             this.serviceAuthRadioButton.UseVisualStyleBackColor = true;
             this.serviceAuthRadioButton.CheckedChanged += new System.EventHandler(this.ServiceAuthRadioButton_CheckedChanged);
             // 
@@ -135,30 +144,33 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.userAuthRadioButton.AutoSize = true;
             this.userAuthRadioButton.Checked = true;
-            this.userAuthRadioButton.Location = new System.Drawing.Point(7, 27);
+            this.userAuthRadioButton.Location = new System.Drawing.Point(10, 40);
+            this.userAuthRadioButton.Margin = new System.Windows.Forms.Padding(4);
             this.userAuthRadioButton.Name = "userAuthRadioButton";
-            this.userAuthRadioButton.Size = new System.Drawing.Size(152, 21);
+            this.userAuthRadioButton.Size = new System.Drawing.Size(204, 29);
             this.userAuthRadioButton.TabIndex = 0;
             this.userAuthRadioButton.TabStop = true;
-            this.userAuthRadioButton.Text = Resources.User_authentication;
+            this.userAuthRadioButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.User_authentication;
             this.userAuthRadioButton.UseVisualStyleBackColor = true;
             // 
             // messagesTextBox
             // 
-            this.messagesTextBox.Location = new System.Drawing.Point(7, 237);
+            this.messagesTextBox.Location = new System.Drawing.Point(10, 356);
+            this.messagesTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.messagesTextBox.Multiline = true;
             this.messagesTextBox.Name = "messagesTextBox";
             this.messagesTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.messagesTextBox.Size = new System.Drawing.Size(672, 124);
+            this.messagesTextBox.Size = new System.Drawing.Size(922, 184);
             this.messagesTextBox.TabIndex = 13;
             // 
             // validateButton
             // 
-            this.validateButton.Location = new System.Drawing.Point(549, 199);
+            this.validateButton.Location = new System.Drawing.Point(755, 298);
+            this.validateButton.Margin = new System.Windows.Forms.Padding(4);
             this.validateButton.Name = "validateButton";
-            this.validateButton.Size = new System.Drawing.Size(130, 25);
+            this.validateButton.Size = new System.Drawing.Size(179, 38);
             this.validateButton.TabIndex = 12;
-            this.validateButton.Text = Resources.Validate;
+            this.validateButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.Validate;
             this.validateButton.UseVisualStyleBackColor = true;
             this.validateButton.Click += new System.EventHandler(this.ValidateButton_Click);
             // 
@@ -166,88 +178,97 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.tenantTextBox.BackColor = System.Drawing.SystemColors.Control;
             this.tenantTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tenantTextBox.Location = new System.Drawing.Point(180, 113);
+            this.tenantTextBox.Location = new System.Drawing.Point(248, 170);
+            this.tenantTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.tenantTextBox.Name = "tenantTextBox";
-            this.tenantTextBox.Size = new System.Drawing.Size(499, 15);
+            this.tenantTextBox.Size = new System.Drawing.Size(686, 22);
             this.tenantTextBox.TabIndex = 11;
             // 
             // authEndPointTextBox
             // 
             this.authEndPointTextBox.BackColor = System.Drawing.SystemColors.Control;
             this.authEndPointTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.authEndPointTextBox.Location = new System.Drawing.Point(180, 84);
+            this.authEndPointTextBox.Location = new System.Drawing.Point(248, 126);
+            this.authEndPointTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.authEndPointTextBox.Name = "authEndPointTextBox";
-            this.authEndPointTextBox.Size = new System.Drawing.Size(499, 15);
+            this.authEndPointTextBox.Size = new System.Drawing.Size(686, 22);
             this.authEndPointTextBox.TabIndex = 9;
             // 
             // aosURLTextBox
             // 
             this.aosURLTextBox.BackColor = System.Drawing.SystemColors.Control;
             this.aosURLTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.aosURLTextBox.Location = new System.Drawing.Point(180, 53);
+            this.aosURLTextBox.Location = new System.Drawing.Point(248, 80);
+            this.aosURLTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.aosURLTextBox.Name = "aosURLTextBox";
-            this.aosURLTextBox.Size = new System.Drawing.Size(499, 15);
+            this.aosURLTextBox.Size = new System.Drawing.Size(686, 22);
             this.aosURLTextBox.TabIndex = 8;
             // 
             // axInstanceNameTextBox
             // 
             this.axInstanceNameTextBox.BackColor = System.Drawing.SystemColors.Control;
             this.axInstanceNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.axInstanceNameTextBox.Location = new System.Drawing.Point(180, 22);
+            this.axInstanceNameTextBox.Location = new System.Drawing.Point(248, 33);
+            this.axInstanceNameTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.axInstanceNameTextBox.Name = "axInstanceNameTextBox";
-            this.axInstanceNameTextBox.Size = new System.Drawing.Size(499, 15);
+            this.axInstanceNameTextBox.Size = new System.Drawing.Size(686, 22);
             this.axInstanceNameTextBox.TabIndex = 7;
             // 
             // tenantLabel
             // 
             this.tenantLabel.AutoSize = true;
-            this.tenantLabel.Location = new System.Drawing.Point(98, 113);
+            this.tenantLabel.Location = new System.Drawing.Point(135, 170);
+            this.tenantLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.tenantLabel.Name = "tenantLabel";
-            this.tenantLabel.Size = new System.Drawing.Size(76, 17);
+            this.tenantLabel.Size = new System.Drawing.Size(106, 25);
             this.tenantLabel.TabIndex = 6;
-            this.tenantLabel.Text = Resources.Tenant_Id;
+            this.tenantLabel.Text = "Tenant Id :";
             // 
             // authEndpointLabel
             // 
             this.authEndpointLabel.AutoSize = true;
-            this.authEndpointLabel.Location = new System.Drawing.Point(9, 84);
+            this.authEndpointLabel.Location = new System.Drawing.Point(12, 126);
+            this.authEndpointLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.authEndpointLabel.Name = "authEndpointLabel";
-            this.authEndpointLabel.Size = new System.Drawing.Size(165, 17);
+            this.authEndpointLabel.Size = new System.Drawing.Size(227, 25);
             this.authEndpointLabel.TabIndex = 4;
-            this.authEndpointLabel.Text = Resources.Authentication_endpoint;
+            this.authEndpointLabel.Text = "Authentication endpoint :";
             // 
             // aosURLLabel
             // 
             this.aosURLLabel.AutoSize = true;
-            this.aosURLLabel.Location = new System.Drawing.Point(97, 53);
+            this.aosURLLabel.Location = new System.Drawing.Point(133, 80);
+            this.aosURLLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.aosURLLabel.Name = "aosURLLabel";
-            this.aosURLLabel.Size = new System.Drawing.Size(77, 17);
+            this.aosURLLabel.Size = new System.Drawing.Size(110, 25);
             this.aosURLLabel.TabIndex = 3;
-            this.aosURLLabel.Text = Resources.AOS_URL_;
+            this.aosURLLabel.Text = "AOS URL :";
             // 
             // axInstanceNameLabel
             // 
             this.axInstanceNameLabel.AutoSize = true;
-            this.axInstanceNameLabel.Location = new System.Drawing.Point(66, 22);
+            this.axInstanceNameLabel.Location = new System.Drawing.Point(91, 33);
+            this.axInstanceNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.axInstanceNameLabel.Name = "axInstanceNameLabel";
-            this.axInstanceNameLabel.Size = new System.Drawing.Size(108, 17);
+            this.axInstanceNameLabel.Size = new System.Drawing.Size(151, 25);
             this.axInstanceNameLabel.TabIndex = 2;
-            this.axInstanceNameLabel.Text = Resources.Instance_name_;
+            this.axInstanceNameLabel.Text = "Instance name :";
             // 
             // ValidateConnection
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(710, 392);
+            this.ClientSize = new System.Drawing.Size(976, 588);
             this.Controls.Add(this.validateGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(728, 439);
+            this.MinimumSize = new System.Drawing.Size(992, 626);
             this.Name = "ValidateConnection";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = Resources.Validate_instance_settings;
+            this.Text = "Validate instance settings";
             this.Load += new System.EventHandler(this.ValidateConnection_Load);
             this.validateGroupBox.ResumeLayout(false);
             this.validateGroupBox.PerformLayout();

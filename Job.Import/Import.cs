@@ -15,7 +15,6 @@ using System.Collections.Concurrent;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -62,11 +61,6 @@ namespace RecurringIntegrationsScheduler.Job
         private Policy _retryPolicyForIo;
 
         /// <summary>
-        /// Retry policy for HTTP operations
-        /// </summary>
-        private Polly.Retry.AsyncRetryPolicy _retryPolicyForHttp;
-
-        /// <summary>
         /// Called by the <see cref="T:Quartz.IScheduler" /> when a <see cref="T:Quartz.ITrigger" />
         /// fires that is associated with the <see cref="T:Quartz.IJob" />.
         /// </summary>
@@ -103,54 +97,37 @@ namespace RecurringIntegrationsScheduler.Job
                     {
                         Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_IO_operation_Exception_1, _context.JobDetail.Key, exception.Message));
                     });
-                _retryPolicyForHttp = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(
-                    retryCount: _settings.RetryCount, 
-                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
-                    onRetry: (exception, calculatedWaitDuration) => 
-                    {
-                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_Http_operation_Exception_1, _context.JobDetail.Key, exception.Message));
-                    });
 
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_starting, _context.JobDetail.Key));
-
+                }
                 await Process();
 
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_ended, _context.JobDetail.Key));
+                }
             }
             catch (Exception ex)
             {
                 if (_settings.PauseJobOnException)
                 {
                     await context.Scheduler.PauseJob(context.JobDetail.Key);
-                    Log.WarnFormat(CultureInfo.InvariantCulture,
-                        string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
+                    Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
                 }
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
                 {
                     if (!string.IsNullOrEmpty(ex.Message))
                     {
                         Log.Error(ex.Message, ex);
                     }
-                    else
-                    {
-                        Log.Error("Uknown exception", ex);
-                    }
-
-                    while (ex.InnerException != null)
-                    {
-                        if (!string.IsNullOrEmpty(ex.InnerException.Message))
-                            Log.Error(ex.InnerException.Message, ex.InnerException);
-
-                        ex = ex.InnerException;
-                    }
                 }
                 if (context.Scheduler.SchedulerName != "Private")
+                {
                     throw new JobExecutionException(string.Format(Resources.Import_job_0_failed, _context.JobDetail.Key), ex, false);
-
-                if (!Log.IsDebugEnabled)
-                    Log.Error(string.Format(Resources.Job_0_thrown_an_error_1, _context.JobDetail.Key, ex.Message));
+                }
+                Log.Error(string.Format(Resources.Job_0_thrown_an_error_1, _context.JobDetail.Key, ex.Message));
             }
         }
 
@@ -165,8 +142,10 @@ namespace RecurringIntegrationsScheduler.Job
             foreach (
                 var dataMessage in FileOperationsHelper.GetFiles(MessageStatus.Input, _settings.InputDir, _settings.SearchPattern, SearchOption.AllDirectories, _settings.OrderBy, _settings.ReverseOrder))
             {
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_File_1_found_in_input_location, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}")));
+                }
                 InputQueue.Enqueue(dataMessage);
             }
 
@@ -185,19 +164,19 @@ namespace RecurringIntegrationsScheduler.Job
         /// </returns>
         private async Task ProcessInputQueue()
         {
-            using (_httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp))
+            using (_httpClientHelper = new HttpClientHelper(_settings))
             {
-                var firstFile = true;
-                string fileNameInPackage = "";
+                var fileCount = 0;
+                string fileNameInPackageTemplate = "";
                 FileStream zipToOpen = null;
                 ZipArchive archive = null;
 
-                if (!string.IsNullOrEmpty(_settings.PackageTemplate))
+                if (_settings.InputFilesArePackages == false)
                 {
-                    fileNameInPackage = GetFileNameInPackage();
-                    if (string.IsNullOrEmpty(fileNameInPackage))
+                    fileNameInPackageTemplate = GetFileNameInPackageTemplate();
+                    if (string.IsNullOrEmpty(fileNameInPackageTemplate))
                     {
-                        throw new Exception(string.Format(Resources.Job_0_Please_check_your_package_template_Input_file_name_in_Manifest_cannot_be_identified, _context.JobDetail.Key));
+                        throw new JobExecutionException(string.Format(Resources.Job_0_Please_check_your_package_template_Input_file_name_in_Manifest_cannot_be_identified, _context.JobDetail.Key));
                     }
                 }
 
@@ -205,46 +184,43 @@ namespace RecurringIntegrationsScheduler.Job
                 {
                     try
                     {
-                        string tempFileName = "";
-                        if (!firstFile)
+                        if (fileCount > 0 && _settings.DelayBetweenFiles > 0) //Only delay after first file and never after last.
                         {
-                            System.Threading.Thread.Sleep(_settings.Interval);
+                            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_settings.DelayBetweenFiles));
                         }
-                        else
-                        {
-                            firstFile = false;
-                        }
+                        fileCount++;
+
                         var sourceStream = _retryPolicyForIo.Execute(() => FileOperationsHelper.Read(dataMessage.FullPath));
                         if (sourceStream == null) continue;//Nothing to do here
 
+                        string tempFileName = "";
+
                         //If we need to "wrap" file in package envelope
-                        if (!String.IsNullOrEmpty(_settings.PackageTemplate))
+                        if (_settings.InputFilesArePackages == false)
                         {
                             using (zipToOpen = new FileStream(_settings.PackageTemplate, FileMode.Open))
                             {
-                                tempFileName = Path.GetTempFileName();
+                                tempFileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                                 _retryPolicyForIo.Execute(() => FileOperationsHelper.Create(zipToOpen, tempFileName));
                                 var tempZipStream = _retryPolicyForIo.Execute(() => FileOperationsHelper.Read(tempFileName));
                                 using (archive = new ZipArchive(tempZipStream, ZipArchiveMode.Update))
                                 {
                                     //Check if package template contains input file and remove it first. It should not be there in the first place.
-                                    ZipArchiveEntry entry = archive.GetEntry(fileNameInPackage);
+                                    ZipArchiveEntry entry = archive.GetEntry(fileNameInPackageTemplate);
                                     if (entry != null)
                                     {
                                         entry.Delete();
-                                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Package_template_contains_input_file_1_Please_remove_it_from_the_template, _context.JobDetail.Key, fileNameInPackage));
+                                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Package_template_contains_input_file_1_Please_remove_it_from_the_template, _context.JobDetail.Key, fileNameInPackageTemplate));
                                     }
 
                                     // Update Manifest file with the original file name for end-to-end traceability. Use the new file name in the rest of the method.
-                                    fileNameInPackage = UpdateManifestFile(archive, dataMessage, fileNameInPackage);
+                                    fileNameInPackageTemplate = UpdateManifestFile(archive, dataMessage, fileNameInPackageTemplate);
 
-                                    var importedFile = archive.CreateEntry(fileNameInPackage, CompressionLevel.Fastest);
-                                    using (var entryStream = importedFile.Open())
-                                    {
-                                        sourceStream.CopyTo(entryStream);
-                                        sourceStream.Close();
-                                        sourceStream.Dispose();
-                                    }
+                                    var importedFile = archive.CreateEntry(fileNameInPackageTemplate, CompressionLevel.Fastest);
+                                    using var entryStream = importedFile.Open();
+                                    sourceStream.CopyTo(entryStream);
+                                    sourceStream.Close();
+                                    sourceStream.Dispose();
                                 }
                                 sourceStream = _retryPolicyForIo.Execute(() => FileOperationsHelper.Read(tempFileName));
                             }
@@ -254,23 +230,23 @@ namespace RecurringIntegrationsScheduler.Job
 
                         // Get blob url and id. Returns in json format
                         var response = await _httpClientHelper.GetAzureWriteUrl();
-                        if(String.IsNullOrEmpty(response))
+                        if(!response.IsSuccessStatusCode)
                         {
-                            Log.ErrorFormat(CultureInfo.InvariantCulture, "Method GetAzureWriteUrl returned empty string");
-                            continue;
+                            throw new JobExecutionException($"Job: {_settings.JobKey}. Request GetAzureWriteUrl failed.");
                         }
-                        var blobInfo = (JObject)JsonConvert.DeserializeObject(response);
+                        var blobInfo = (JObject)JsonConvert.DeserializeObject(HttpClientHelper.ReadResponseString(response));
                         var blobUrl = blobInfo["BlobUrl"].ToString();
 
                         var blobUri = new Uri(blobUrl);
 
                         //Upload package to blob storage
                         var uploadResponse = await _httpClientHelper.UploadContentsToBlob(blobUri, sourceStream);
+                        
                         if (sourceStream != null)
                         {
                             sourceStream.Close();
                             sourceStream.Dispose();
-                            if (!String.IsNullOrEmpty(_settings.PackageTemplate))
+                            if (!_settings.InputFilesArePackages)//if we wraped file in package envelop we need to delete temp file
                             {
                                 _retryPolicyForIo.Execute(() => FileOperationsHelper.Delete(tempFileName));
                             }
@@ -278,7 +254,29 @@ namespace RecurringIntegrationsScheduler.Job
                         if (uploadResponse.IsSuccessStatusCode)
                         {
                             //Now send import request
-                            var importResponse = await _httpClientHelper.ImportFromPackage(blobUri.AbsoluteUri, _settings.DataProject, CreateExecutionId(_settings.DataProject), _settings.ExecuteImport, _settings.OverwriteDataProject, _settings.Company);
+                            var targetLegalEntity = _settings.Company;
+                            if (_settings.MultiCompanyImport && _settings.GetLegalEntityFromSubfolder)
+                            {
+                                targetLegalEntity = new FileInfo(dataMessage.FullPath).Directory.Name;
+                            }
+                            if (_settings.MultiCompanyImport && _settings.GetLegalEntityFromFilename)
+                            {
+                                String[] separator = { _settings.FilenameSeparator };
+                                var tokenList = dataMessage.Name.Split(separator, 10, StringSplitOptions.RemoveEmptyEntries);
+
+                                targetLegalEntity = tokenList[_settings.LegalEntityTokenPosition - 1];
+                            }
+                            if(targetLegalEntity.Length > 4)
+                            {
+                                Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Target_legal_entity_is_not_valid_1, _context.JobDetail.Key, targetLegalEntity));
+                            }
+
+                            if(string.IsNullOrEmpty(targetLegalEntity))
+                            {
+                                throw new Exception(string.Format(Resources.Job_0_Unable_to_get_target_legal_entity_name, _context.JobDetail.Key));
+                            }
+                            var executionIdGenerated = CreateExecutionId(_settings.DataProject);
+                            var importResponse = await _httpClientHelper.ImportFromPackage(blobUri.AbsoluteUri, _settings.DataProject, executionIdGenerated, _settings.ExecuteImport, _settings.OverwriteDataProject, targetLegalEntity);
 
                             if (importResponse.IsSuccessStatusCode)
                             {
@@ -304,7 +302,7 @@ namespace RecurringIntegrationsScheduler.Job
                             else
                             {
                                 // import request failed. Move message to error location.
-                                Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Upload_failed_for_file_1_Failure_response_Status_2_Reason_3, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}"), importResponse.StatusCode, importResponse.ReasonPhrase));
+                                Log.ErrorFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Upload_failed_for_file_1_Failure_response_Status_2_Reason_3, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}"), importResponse.StatusCode, importResponse.ReasonPhrase, $"{Environment.NewLine}packageUrl: {blobUri.AbsoluteUri}{Environment.NewLine}definitionGroupId: {_settings.DataProject}{Environment.NewLine}executionId: {executionIdGenerated}{Environment.NewLine}execute: {_settings.ExecuteImport}{Environment.NewLine}overwrite: {_settings.OverwriteDataProject}{Environment.NewLine}legalEntityId: {targetLegalEntity}"));
 
                                 var targetDataMessage = new DataMessage(dataMessage)
                                 {
@@ -349,35 +347,29 @@ namespace RecurringIntegrationsScheduler.Job
                             zipToOpen.Close();
                             zipToOpen.Dispose();
                         }
-
                         archive?.Dispose();
                     }
                 }
             }
         }
 
-        private string GetFileNameInPackage()
+        private string GetFileNameInPackageTemplate()
         {
-            var manifestPath = "";
-            using (var package = ZipFile.OpenRead(_settings.PackageTemplate))
+            using var package = ZipFile.OpenRead(_settings.PackageTemplate);
+            foreach (var entry in package.Entries)
             {
-                foreach (var entry in package.Entries)
+                if (entry.FullName.Equals("Manifest.xml", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (entry.FullName.Equals("Manifest.xml", StringComparison.OrdinalIgnoreCase))
-                    {
-                        manifestPath = Path.Combine(Path.GetTempPath(), $"{_context.JobDetail.Key}-{entry.FullName}");
-                        entry.ExtractToFile(manifestPath, true);
-                    }
+                    var manifestPath = Path.Combine(Path.GetTempPath(), $"{_context.JobDetail.Key}-{entry.FullName}");
+                    entry.ExtractToFile(manifestPath, true);
+
+                    var doc = new XmlDocument();
+                    using var manifestFile = new StreamReader(manifestPath);
+                    doc.Load(new XmlTextReader(manifestFile) { Namespaces = false });
+                    return doc.SelectSingleNode("//InputFilePath[1]")?.InnerText;
                 }
             }
-            var doc = new XmlDocument();
-            string fileName;
-            using (var manifestFile = new StreamReader(manifestPath))
-            {
-                doc.Load(new XmlTextReader(manifestFile) { Namespaces = false });
-                fileName = doc.SelectSingleNode("//InputFilePath[1]")?.InnerText;
-            }
-            return fileName;
+            return null;
         }
 
         /// <summary>
@@ -399,8 +391,8 @@ namespace RecurringIntegrationsScheduler.Job
             ZipArchiveEntry manifestEntry = archive.GetEntry("Manifest.xml");
 
             // Save the Manifest.xml as temporary file
-            string tempManifestFileName = Path.GetTempFileName();
-            string tempManifestFileNameNew = Path.GetTempFileName();
+            string tempManifestFileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            string tempManifestFileNameNew = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
             manifestEntry.ExtractToFile(tempManifestFileName, true);
 
@@ -413,12 +405,12 @@ namespace RecurringIntegrationsScheduler.Job
                 tempXmlDocManifest.SelectSingleNode("//InputFilePath[1]").InnerText = Path.GetFileName(dataMessage.FullPath);
 
                 // Save the document to a file and auto-indent the output.
-                using (XmlTextWriter writer = new XmlTextWriter(tempManifestFileNameNew, null))
+                using XmlTextWriter writer = new XmlTextWriter(tempManifestFileNameNew, null)
                 {
-                    writer.Namespaces = false;
-                    writer.Formatting = System.Xml.Formatting.Indented;
-                    tempXmlDocManifest.Save(writer);
-                }
+                    Namespaces = false,
+                    Formatting = System.Xml.Formatting.Indented
+                };
+                tempXmlDocManifest.Save(writer);
             }
 
             // Delete the Manifest.xml from the archive file
@@ -447,7 +439,7 @@ namespace RecurringIntegrationsScheduler.Job
 
         private static string CreateExecutionId(string dataProject)
         {
-            return $"{dataProject}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}-{Guid.NewGuid().ToString()}";
+            return $"{dataProject}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}-{Guid.NewGuid()}";
         }
     }
 }

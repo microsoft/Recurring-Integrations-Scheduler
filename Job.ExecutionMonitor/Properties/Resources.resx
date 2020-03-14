@@ -177,4 +177,10 @@
   <data name="Job_0_Looking_for_data_entities_in_manifest_file_1" xml:space="preserve">
     <value>Job: {0}. Looking for data entities in manifest file {1}.</value>
   </data>
+  <data name="Job_0_Trying_to_download_execution_errors" xml:space="preserve">
+    <value>Job: {0} Trying to download execution errors.</value>
+  </data>
+  <data name="Job_0_download_of_execution_errors_failed_1" xml:space="preserve">
+    <value>Job: {0} Download of execution errors failed. {1}</value>
+  </data>
 </root>

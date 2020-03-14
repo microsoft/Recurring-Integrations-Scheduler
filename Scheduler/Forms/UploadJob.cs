@@ -116,6 +116,9 @@ namespace RecurringIntegrationsScheduler.Forms
                                                   UploadJobDetail.JobDataMap[SettingsConstants.IsDataPackage].ToString());
                 statusFileExtensionTextBox.Text =
                     UploadJobDetail.JobDataMap[SettingsConstants.StatusFileExtension]?.ToString() ?? ".Status";
+                
+                numericUpDownIntervalUploads.Value = Math.Round(Convert.ToDecimal(UploadJobDetail.JobDataMap[SettingsConstants.DelayBetweenFiles]));
+
                 serviceAuthRadioButton.Checked =
                     (UploadJobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication] != null) &&
                     Convert.ToBoolean(UploadJobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication].ToString());
@@ -269,6 +272,7 @@ namespace RecurringIntegrationsScheduler.Forms
                     ProcessingJobDetail.JobDataMap[SettingsConstants.ProcessingSuccessDir]?.ToString() ?? string.Empty;
                 processingErrorsFolderTextBox.Text =
                     ProcessingJobDetail.JobDataMap[SettingsConstants.ProcessingErrorsDir]?.ToString() ?? string.Empty;
+                numericUpDownStatusCheckInterval.Value = Math.Round(Convert.ToDecimal(ProcessingJobDetail.JobDataMap[SettingsConstants.DelayBetweenStatusCheck]));
 
                 if (ProcessingTrigger.GetType() == typeof(SimpleTriggerImpl))
                 {
@@ -583,7 +587,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
-                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
+                {SettingsConstants.DelayBetweenFiles, numericUpDownIntervalUploads.Value.ToString(CultureInfo.InvariantCulture)}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -619,7 +624,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
                 {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
-                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()}
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
+                {SettingsConstants.DelayBetweenStatusCheck, numericUpDownStatusCheckInterval.Value.ToString(CultureInfo.InvariantCulture)}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -637,7 +643,7 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             cronmakerLinkLabel.LinkVisited = true;
             Process.Start(
-                "http://www.quartz-scheduler.net/documentation/quartz-2.x/tutorial/crontrigger.html");
+                "https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontrigger.html");
         }
 
         private void GetCronScheduleForUploadButton_Click(object sender, EventArgs e)

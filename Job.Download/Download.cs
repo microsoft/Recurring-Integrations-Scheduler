@@ -14,7 +14,6 @@ using System.Collections.Concurrent;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RecurringIntegrationsScheduler.Job
@@ -69,11 +68,6 @@ namespace RecurringIntegrationsScheduler.Job
         private Policy _retryPolicyForIo;
 
         /// <summary>
-        /// Retry policy for HTTP operations
-        /// </summary>
-        private Polly.Retry.AsyncRetryPolicy _retryPolicyForHttp;
-
-        /// <summary>
         /// Called by the <see cref="T:Quartz.IScheduler" /> when a <see cref="T:Quartz.ITrigger" />
         /// fires that is associated with the <see cref="T:Quartz.IJob" />.
         /// </summary>
@@ -110,21 +104,17 @@ namespace RecurringIntegrationsScheduler.Job
                     {
                         Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_IO_operation_Exception_1, _context.JobDetail.Key, exception.Message));
                     });
-                _retryPolicyForHttp = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(
-                    retryCount: _settings.RetryCount, 
-                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(_settings.RetryDelay),
-                    onRetry: (exception, calculatedWaitDuration) => 
-                    {
-                        Log.WarnFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Retrying_Http_operation_Exception_1, _context.JobDetail.Key, exception.Message));
-                    });
 
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_starting, _context.JobDetail.Key));
-
+                }
                 await Process();
 
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_ended, _context.JobDetail.Key));
+                }
             }
             catch (Exception ex)
             {
@@ -134,30 +124,18 @@ namespace RecurringIntegrationsScheduler.Job
                     Log.WarnFormat(CultureInfo.InvariantCulture,
                         string.Format(Resources.Job_0_was_paused_because_of_error, _context.JobDetail.Key));
                 }
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
                 {
                     if (!string.IsNullOrEmpty(ex.Message))
                     {
                         Log.Error(ex.Message, ex);
                     }
-                    else
-                    {
-                        Log.Error("Uknown exception", ex);
-                    }
-
-                    while (ex.InnerException != null)
-                    {
-                        if (!string.IsNullOrEmpty(ex.InnerException.Message))
-                            Log.Error(ex.InnerException.Message, ex.InnerException);
-
-                        ex = ex.InnerException;
-                    }
                 }
                 if (context.Scheduler.SchedulerName != "Private")//only throw error when running as service
+                {
                     throw new JobExecutionException(string.Format(Resources.Download_job_0_failed, _context.JobDetail.Key), ex, false);
-
-                if (!Log.IsDebugEnabled)
-                    Log.Error(string.Format(Resources.Job_0_thrown_an_error_1, _context.JobDetail.Key, ex.Message));
+                }
+                Log.Error(string.Format(Resources.Job_0_thrown_an_error_1, _context.JobDetail.Key, ex.Message));
             }
         }
 
@@ -168,7 +146,7 @@ namespace RecurringIntegrationsScheduler.Job
         private async Task Process()
         {
             DownloadQueue = new ConcurrentQueue<DataMessage>();
-            _httpClientHelper = new HttpClientHelper(_settings, _retryPolicyForHttp);
+            _httpClientHelper = new HttpClientHelper(_settings);
             _dequeueUri = _httpClientHelper.GetDequeueUri();
             _acknowledgeDownloadUri = _httpClientHelper.GetAckUri();
 
@@ -207,7 +185,6 @@ namespace RecurringIntegrationsScheduler.Job
                         throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_Failure_response_Status_1_2_Reason_3, _context.JobDetail.Key, response.StatusCode, response.StatusCode, response.ReasonPhrase)));
                         
                 }
-                System.Threading.Thread.Sleep(_settings.Interval);
             }
             if (!DownloadQueue.IsEmpty)
             {
@@ -226,18 +203,23 @@ namespace RecurringIntegrationsScheduler.Job
         /// <exception cref="System.Exception"></exception>
         private async Task ProcessDownloadQueue()
         {
-            //Stream downloadedStream = null;
             var fileCount = 0;
             while (DownloadQueue.TryDequeue(out DataMessage dataMessage))
             {
                 var response = await _httpClientHelper.GetRequestAsync(new UriBuilder(dataMessage.DownloadLocation).Uri);
 
                 if (!response.IsSuccessStatusCode)
-                    throw new Exception(string.Format(Resources.Job_0_Download_failure_1, _context.JobDetail.Key, response.StatusCode));
-
+                {
+                    throw new JobExecutionException(string.Format(Resources.Job_0_Download_failure_1, _context.JobDetail.Key, response.StatusCode));
+                }
                 using (var downloadedStream = await response.Content.ReadAsStreamAsync())
                 {
+                    if(fileCount > 0 && _settings.DelayBetweenFiles > 0) //Only delay after first file and never after last.
+                    {
+                        System.Threading.Thread.Sleep(TimeSpan.FromSeconds(_settings.DelayBetweenFiles));
+                    }
                     fileCount++;
+
                     //Downloaded file has no file name. We need to create it.
                     //It will be timestamp followed by number in this download batch.
                     var fileName = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss-ffff}-{fileCount:D6}";
@@ -249,15 +231,16 @@ namespace RecurringIntegrationsScheduler.Job
 
                     _retryPolicyForIo.Execute(() => FileOperationsHelper.Create(downloadedStream, dataMessage.FullPath));
                 }
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_File_1_was_downloaded, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}")));
-
+                }
                 await AcknowledgeDownload(dataMessage);
 
                 if (_settings.UnzipPackage)
+                {
                     _retryPolicyForIo.Execute(() => FileOperationsHelper.UnzipPackage(dataMessage.FullPath, _settings.DeletePackage, _settings.AddTimestamp));
-
-                System.Threading.Thread.Sleep(_settings.Interval);
+                }
             }
         }
 
@@ -272,10 +255,12 @@ namespace RecurringIntegrationsScheduler.Job
 
             var response = await _httpClientHelper.PostStringRequestAsync(_acknowledgeDownloadUri, content);
 
-            if (response.StatusCode == HttpStatusCode.OK)
+            if (response.IsSuccessStatusCode)
             {
-                if (Log.IsDebugEnabled)
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
                     Log.DebugFormat(CultureInfo.InvariantCulture, string.Format(Resources.Job_0_File_1_was_acknowledged_successfully, _context.JobDetail.Key, dataMessage.FullPath.Replace(@"{", @"{{").Replace(@"}", @"}}")));
+                }
             }
             else
             {

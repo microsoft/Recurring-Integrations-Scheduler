@@ -79,11 +79,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 UserPassword = EncryptDecrypt.Decrypt(UserPassword);
             }
 
-            Interval = dataMap.GetInt(SettingsConstants.Interval);
-            if (Interval < 100) //Default execution interval is 100 ms.
-            {
-                Interval = 100;
-            }
+            DelayBetweenFiles = dataMap.GetInt(SettingsConstants.DelayBetweenFiles);
 
             RetryCount = dataMap.GetInt(SettingsConstants.RetryCount);
             if (RetryCount == 0) 
@@ -94,7 +90,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             RetryDelay = dataMap.GetInt(SettingsConstants.RetryDelay);
             if (RetryDelay == 0) 
             {
-                RetryDelay = 60; //seconds
+                RetryDelay = 10; //seconds
             }
 
             PauseJobOnException = Convert.ToBoolean(dataMap.GetString(SettingsConstants.PauseJobOnException));
@@ -104,68 +100,80 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             ImportFromPackageActionPath = dataMap.GetString(SettingsConstants.ImportFromPackageActionPath);
             if (string.IsNullOrEmpty(ImportFromPackageActionPath))
             {
-                ImportFromPackageActionPath = OdataActionsConstants.ImportFromPackageActionPath;
+                ImportFromPackageActionPath = PackageApiActions.ImportFromPackageActionPath;
             }
 
             GetAzureWriteUrlActionPath = dataMap.GetString(SettingsConstants.GetAzureWriteUrlActionPath);
             if (string.IsNullOrEmpty(GetAzureWriteUrlActionPath))
             {
-                GetAzureWriteUrlActionPath = OdataActionsConstants.GetAzureWriteUrlActionPath;
+                GetAzureWriteUrlActionPath = PackageApiActions.GetAzureWriteUrlActionPath;
             }
 
             GetExecutionSummaryStatusActionPath = dataMap.GetString(SettingsConstants.GetExecutionSummaryStatusActionPath);
             if (string.IsNullOrEmpty(GetExecutionSummaryStatusActionPath))
             {
-                GetExecutionSummaryStatusActionPath = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
+                GetExecutionSummaryStatusActionPath = PackageApiActions.GetExecutionSummaryStatusActionPath;
             }
 
             GetExportedPackageUrlActionPath = dataMap.GetString(SettingsConstants.GetExportedPackageUrlActionPath);
             if (string.IsNullOrEmpty(GetExportedPackageUrlActionPath))
             {
-                GetExportedPackageUrlActionPath = OdataActionsConstants.GetExportedPackageUrlActionPath;
+                GetExportedPackageUrlActionPath = PackageApiActions.GetExportedPackageUrlActionPath;
             }
 
             GetExecutionSummaryPageUrlActionPath = dataMap.GetString(SettingsConstants.GetExecutionSummaryPageUrlActionPath);
             if (string.IsNullOrEmpty(GetExecutionSummaryPageUrlActionPath))
             {
-                GetExecutionSummaryPageUrlActionPath = OdataActionsConstants.GetExecutionSummaryPageUrlActionPath;
+                GetExecutionSummaryPageUrlActionPath = PackageApiActions.GetExecutionSummaryPageUrlActionPath;
             }
 
             DeleteExecutionHistoryJobActionPath = dataMap.GetString(SettingsConstants.DeleteExecutionHistoryJobActionPath);
             if (string.IsNullOrEmpty(DeleteExecutionHistoryJobActionPath))
             {
-                DeleteExecutionHistoryJobActionPath = OdataActionsConstants.DeleteExecutionHistoryJobActionPath;
+                DeleteExecutionHistoryJobActionPath = PackageApiActions.DeleteExecutionHistoryJobActionPath;
             }
 
             ExportToPackageActionPath = dataMap.GetString(SettingsConstants.ExportToPackageActionPath);
             if (string.IsNullOrEmpty(ExportToPackageActionPath))
             {
-                ExportToPackageActionPath = OdataActionsConstants.ExportToPackageActionPath;
+                ExportToPackageActionPath = PackageApiActions.ExportToPackageActionPath;
             }
 
             ExportFromPackageActionPath = dataMap.GetString(SettingsConstants.ExportFromPackageActionPath);
             if (string.IsNullOrEmpty(ExportFromPackageActionPath))
             {
-                ExportFromPackageActionPath = OdataActionsConstants.ExportFromPackageActionPath;
+                ExportFromPackageActionPath = PackageApiActions.ExportFromPackageActionPath;
             }
 
             GetMessageStatusActionPath = dataMap.GetString(SettingsConstants.GetMessageStatusActionPath);
             if (string.IsNullOrEmpty(GetMessageStatusActionPath))
             {
-                GetMessageStatusActionPath = OdataActionsConstants.GetMessageStatusActionPath;
+                GetMessageStatusActionPath = PackageApiActions.GetMessageStatusActionPath;
             }
 
             GetImportTargetErrorKeysFileUrlPath = dataMap.GetString(SettingsConstants.GetImportTargetErrorKeysFileUrlPath);
             if (string.IsNullOrEmpty(GetImportTargetErrorKeysFileUrlPath))
             {
-                GetImportTargetErrorKeysFileUrlPath = OdataActionsConstants.GetImportTargetErrorKeysFileUrlPath;
+                GetImportTargetErrorKeysFileUrlPath = PackageApiActions.GetImportTargetErrorKeysFileUrlPath;
             }
 
             GenerateImportTargetErrorKeysFilePath = dataMap.GetString(SettingsConstants.GenerateImportTargetErrorKeysFilePath);
             if (string.IsNullOrEmpty(GenerateImportTargetErrorKeysFilePath))
             {
-                GenerateImportTargetErrorKeysFilePath = OdataActionsConstants.GenerateImportTargetErrorKeysFilePath;
+                GenerateImportTargetErrorKeysFilePath = PackageApiActions.GenerateImportTargetErrorKeysFilePath;
             }
+
+            GetExecutionErrorsPath = dataMap.GetString(SettingsConstants.GetExecutionErrorsPath);
+            if (string.IsNullOrEmpty(GetExecutionErrorsPath))
+            {
+                GetExecutionErrorsPath = PackageApiActions.GetExecutionErrorsPath;
+            }
+
+            GetExecutionErrors = Convert.ToBoolean(dataMap.GetString(SettingsConstants.GetExecutionErrors));
+
+            LogVerbose = Convert.ToBoolean(dataMap.GetString(SettingsConstants.LogVerbose));
+
+            JobKey = context.JobDetail.Key.ToString();
         }
 
         #region Members
@@ -240,7 +248,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The execution interval.
         /// </value>
-        public int Interval { get; private set; }
+        public int DelayBetweenFiles { get; private set; }
 
         /// <summary>
         /// Gets or sets retry count.
@@ -248,7 +256,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// Retry count.
         /// </value>
-        public int RetryCount { get; private set; }
+        public int RetryCount { get; set; }
 
         /// <summary>
         /// Gets or sets delay between retries.
@@ -256,7 +264,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// Delay between retries in seconds.
         /// </value>
-        public int RetryDelay { get; private set; }
+        public int RetryDelay { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [pause job when exception occurs].
@@ -264,7 +272,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// <c>true</c> if [pause job when exception occurs]; otherwise, <c>false</c>.
         /// </value>
-        public bool PauseJobOnException { get; set; }
+        public bool PauseJobOnException { get; private set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the job is paused indefinitely or not.
@@ -272,7 +280,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// <c>true</c> if [pause job indefinitely]; otherwise, <c>false</c>.
         /// </value>
-        public bool IndefinitePause { get; set; }
+        public bool IndefinitePause { get; private set; }
 
         /// <summary>
         /// Get the ImportFromPackage Odata action relative path
@@ -280,7 +288,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the ImportFromPackage Odata action
         /// </value>
-        public string ImportFromPackageActionPath { get; private set; } = OdataActionsConstants.ImportFromPackageActionPath;
+        public string ImportFromPackageActionPath { get; private set; } = PackageApiActions.ImportFromPackageActionPath;
 
         /// <summary>
         /// Get the GetAzureWriteUrl Odata action relative path
@@ -288,7 +296,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the GetAzureWriteUrl Odata action
         /// </value>
-        public string GetAzureWriteUrlActionPath { get; private set; } = OdataActionsConstants.GetAzureWriteUrlActionPath;
+        public string GetAzureWriteUrlActionPath { get; private set; } = PackageApiActions.GetAzureWriteUrlActionPath;
 
         /// <summary>
         /// Get the GetExecutionSummaryStatus Odata action relative path
@@ -296,7 +304,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the GetExecutionSummaryStatus Odata action
         /// </value>
-        public string GetExecutionSummaryStatusActionPath { get; private set; } = OdataActionsConstants.GetExecutionSummaryStatusActionPath;
+        public string GetExecutionSummaryStatusActionPath { get; private set; } = PackageApiActions.GetExecutionSummaryStatusActionPath;
 
         /// <summary>
         /// Get the GetExportedPackageUrl Odata action relative path
@@ -304,7 +312,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the GetExportedPackageUrl Odata action
         /// </value>
-        public string GetExportedPackageUrlActionPath { get; private set; } = OdataActionsConstants.GetExportedPackageUrlActionPath;
+        public string GetExportedPackageUrlActionPath { get; private set; } = PackageApiActions.GetExportedPackageUrlActionPath;
 
         /// <summary>
         /// Get the GetExecutionSummaryPageUrl Odata action relative path
@@ -312,7 +320,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the GetExecutionSummaryPageUrl Odata action
         /// </value>
-        public string GetExecutionSummaryPageUrlActionPath { get; private set; } = OdataActionsConstants.GetExecutionSummaryPageUrlActionPath;
+        public string GetExecutionSummaryPageUrlActionPath { get; private set; } = PackageApiActions.GetExecutionSummaryPageUrlActionPath;
 
         /// <summary>
         /// Get the DeleteExecutionHistoryJob Odata action relative path
@@ -320,7 +328,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the DeleteExecutionHistoryJob Odata action
         /// </value>
-        public string DeleteExecutionHistoryJobActionPath { get; private set; } = OdataActionsConstants.DeleteExecutionHistoryJobActionPath;
+        public string DeleteExecutionHistoryJobActionPath { get; private set; } = PackageApiActions.DeleteExecutionHistoryJobActionPath;
 
         /// <summary>
         /// Get the ExportToPackage Odata action relative path
@@ -328,7 +336,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the ExportToPackage Odata action
         /// </value>
-        public string ExportToPackageActionPath { get; private set; } = OdataActionsConstants.ExportToPackageActionPath;
+        public string ExportToPackageActionPath { get; private set; } = PackageApiActions.ExportToPackageActionPath;
 
         /// <summary>
         /// Get the ExportFromPackage Odata action relative path
@@ -336,7 +344,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the ExportFromPackage Odata action
         /// </value>
-        public string ExportFromPackageActionPath { get; private set; } = OdataActionsConstants.ExportFromPackageActionPath;
+        public string ExportFromPackageActionPath { get; private set; } = PackageApiActions.ExportFromPackageActionPath;
 
         /// <summary>
         /// Get the GetMessageStatus Odata action relative path
@@ -344,7 +352,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the GetMessageStatus Odata action
         /// </value>
-        public string GetMessageStatusActionPath { get; private set; } = OdataActionsConstants.GetMessageStatusActionPath;
+        public string GetMessageStatusActionPath { get; private set; } = PackageApiActions.GetMessageStatusActionPath;
 
         /// <summary>
         /// Get the GetImportTargetErrorKeysFileUrl Odata action relative path
@@ -352,7 +360,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the GetImportTargetErrorKeysFileUrl Odata action
         /// </value>
-        public string GetImportTargetErrorKeysFileUrlPath { get; private set; } = OdataActionsConstants.GetImportTargetErrorKeysFileUrlPath;
+        public string GetImportTargetErrorKeysFileUrlPath { get; private set; } = PackageApiActions.GetImportTargetErrorKeysFileUrlPath;
 
         /// <summary>
         /// Get the GenerateImportTargetErrorKeysFile Odata action relative path
@@ -360,8 +368,39 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// <value>
         /// The relative path to the GenerateImportTargetErrorKeysFile Odata action
         /// </value>
-        public string GenerateImportTargetErrorKeysFilePath { get; private set; } = OdataActionsConstants.GenerateImportTargetErrorKeysFilePath;
+        public string GenerateImportTargetErrorKeysFilePath { get; private set; } = PackageApiActions.GenerateImportTargetErrorKeysFilePath;
 
+        /// <summary>
+        /// Get the GetExecutionErrors Odata action relative path
+        /// </summary>
+        /// <value>
+        /// The relative path to the GetExecutionErrors Odata action
+        /// </value>
+        public string GetExecutionErrorsPath { get; private set; } = PackageApiActions.GetExecutionErrorsPath;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to retrieve execution errors.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [get executon errors]; otherwise, <c>false</c>.
+        /// </value>
+        public bool GetExecutionErrors { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to log verbose.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [Log verbose]; otherwise, <c>false</c>.
+        /// </value>
+        public bool LogVerbose { get; private set; }
+
+        /// <summary>
+        /// Get the Job key
+        /// </summary>
+        /// <value>
+        /// Job key identifier
+        /// </value>
+        public string JobKey { get; private set; }
 
         #endregion
     }

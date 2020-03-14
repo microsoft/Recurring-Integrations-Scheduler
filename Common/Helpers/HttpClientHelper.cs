@@ -1,11 +1,12 @@
 ﻿/* Copyright (c) Microsoft Corporation. All rights reserved.
    Licensed under the MIT License. */
 
+using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Polly;
 using RecurringIntegrationsScheduler.Common.JobSettings;
 using RecurringIntegrationsScheduler.Common.Properties;
+using RecurringIntegrationsScheduler.Common.Contracts;
 using System;
 using System.IO;
 using System.Net;
@@ -22,23 +23,23 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         private readonly Settings _settings;
         private readonly HttpClient _httpClient;
         private readonly AuthenticationHelper _authenticationHelper;
-        private Uri _enqueueUri;
-        private Uri _dequeueUri;
-        private Uri _ackUri;
-
         private bool _disposed;
 
-        private readonly Polly.Retry.AsyncRetryPolicy _retryPolicy;
+        /// <summary>
+        /// The log
+        /// </summary>
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpClientHelper"/> class.
         /// </summary>
         /// <param name="jobSettings">Job settings</param>
-        /// <param name="retryPolicy">Retry policy</param>
-        public HttpClientHelper(Settings jobSettings, Polly.Retry.AsyncRetryPolicy retryPolicy)
+        public HttpClientHelper(Settings jobSettings)
         {
+            log4net.Config.XmlConfigurator.Configure();
+
             _settings = jobSettings;
-            _retryPolicy = retryPolicy;
 
             //Use Tls1.2 as default transport layer
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -49,12 +50,19 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
 
-            _httpClient = new HttpClient(httpClientHandler)
+            _httpClient = new HttpClient(new HttpRetryHandler(httpClientHandler, _settings.RetryCount, _settings.RetryDelay))
             {
                 Timeout = TimeSpan.FromMinutes(60) //Timeout for large uploads or downloads
             };
 
-            _authenticationHelper = new AuthenticationHelper(_settings, _retryPolicy);
+            _authenticationHelper = new AuthenticationHelper(_settings);
+            
+            if(_settings.LogVerbose || Log.IsDebugEnabled)
+            {
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper was successfully initialized.
+Request retry count: {_settings.RetryCount}.
+Delay between retries: {_settings.RetryDelay} seconds.");
+            }
         }
 
         /// <summary>
@@ -62,25 +70,35 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </summary>
         /// <param name="uri">Enqueue endpoint URI</param>
         /// <param name="bodyStream">Body stream</param>
-        /// <param name="externalCorrelationHeaderValue">ActivityMessage context</param>
+        /// <param name="externalidentifier">ActivityMessage context</param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> PostStreamRequestAsync(Uri uri, Stream bodyStream, string externalCorrelationHeaderValue = null)
+        public async Task<HttpResponseMessage> PostStreamRequestAsync(Uri uri, Stream bodyStream, string externalidentifier = null)
         {
             _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Authorization = await _authenticationHelper.GetValidAuthenticationHeader();
+            _httpClient.DefaultRequestHeaders.Add("Authorization", await _authenticationHelper.GetValidAuthenticationHeader());
 
-            // Add external correlation id header if specified and valid
-            if (!string.IsNullOrEmpty(externalCorrelationHeaderValue))
+            if (!string.IsNullOrEmpty(externalidentifier))
             {
-                _httpClient.DefaultRequestHeaders.Add("x-ms-dyn-externalidentifier", externalCorrelationHeaderValue);
+                _httpClient.DefaultRequestHeaders.Add("x-ms-dyn-externalidentifier", externalidentifier);
             }
 
             if (bodyStream != null)
             {
-                return await _retryPolicy.ExecuteAsync(() => _httpClient.PostAsync(uri, new StreamContent(bodyStream)));
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
+                    Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.PostStreamRequestAsync is being called.
+Uri: {uri.AbsoluteUri},
+
+Parameters:
+
+bodyStream is not null,
+externalidentifier: {externalidentifier}");
+                }
+                return await _httpClient.PostAsync(uri, new StreamContent(bodyStream));
             }
             else
             {
+                Log.Error($"Job: {_settings.JobKey}. HttpClientHelper.PostStreamRequestAsync method was called with empty 'bodyStream' parameter.");
                 return new HttpResponseMessage
                 {
                     Content = new StringContent(Resources.Request_failed_at_client, Encoding.ASCII),
@@ -94,26 +112,37 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </summary>
         /// <param name="uri">Request Uri</param>
         /// <param name="bodyString">Body string</param>
-        /// <param name="externalCorrelationHeaderValue">Activity Message context</param>
+        /// <param name="externalidentifier">Activity Message context</param>
         /// <returns>HTTP response</returns>
-        public async Task<HttpResponseMessage> PostStringRequestAsync(Uri uri, string bodyString, string externalCorrelationHeaderValue = null)
+        public async Task<HttpResponseMessage> PostStringRequestAsync(Uri uri, string bodyString, string externalidentifier = null)
         {
             _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Authorization = await _authenticationHelper.GetValidAuthenticationHeader();
+            _httpClient.DefaultRequestHeaders.Add("Authorization", await _authenticationHelper.GetValidAuthenticationHeader());
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             // Add external correlation id header if specified and valid
-            if (!string.IsNullOrEmpty(externalCorrelationHeaderValue))
+            if (!string.IsNullOrEmpty(externalidentifier))
             {
-                _httpClient.DefaultRequestHeaders.Add("x-ms-dyn-externalidentifier", externalCorrelationHeaderValue);
+                _httpClient.DefaultRequestHeaders.Add("x-ms-dyn-externalidentifier", externalidentifier);
             }
 
             if (bodyString != null)
             {
-                return await _retryPolicy.ExecuteAsync(() => _httpClient.PostAsync(uri, new StringContent(bodyString, Encoding.UTF8, "application/json")));
+                if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
+                    Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.PostStringRequestAsync is being called.
+Uri: {uri.AbsoluteUri},
+
+Parameters:
+
+bodyString: {bodyString},
+externalidentifier: {externalidentifier}");
+                }
+                return await _httpClient.PostAsync(uri, new StringContent(bodyString, Encoding.UTF8, "application/json"));
             }
             else
             {
+                Log.Error($"Job: {_settings.JobKey}. HttpClientHelper.PostStringRequestAsync method was called with empty 'bodyString' parameter.");
                 return new HttpResponseMessage
                 {
                     Content = new StringContent(Resources.Request_failed_at_client, Encoding.ASCII),
@@ -133,9 +162,18 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             _httpClient.DefaultRequestHeaders.Clear();
             if(addAuthorization)
             {
-                _httpClient.DefaultRequestHeaders.Authorization = await _authenticationHelper.GetValidAuthenticationHeader();
+                _httpClient.DefaultRequestHeaders.Add("Authorization", await _authenticationHelper.GetValidAuthenticationHeader());
             }
-            return await _retryPolicy.ExecuteAsync(() => _httpClient.GetAsync(uri));
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
+            {
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.GetRequestAsync is being called.
+Uri: {uri.AbsoluteUri},
+
+Parameters:
+
+addAuthorization: {addAuthorization}");
+            }
+            return await _httpClient.GetAsync(uri);
         }
 
         /// <summary>
@@ -144,32 +182,41 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>
         /// Data job enqueue request Uri
         /// </returns>
-        public Uri GetEnqueueUri()
+        public Uri GetEnqueueUri(string legalEntity = null)
         {
-            if (_enqueueUri != null)
-                return _enqueueUri;
+            var uploadSettings = _settings as UploadJobSettings;
+            var enqueueUri = new UriBuilder(GetAosRequestUri(ConnectorApiActions.EnqueuePath + uploadSettings.ActivityId));
 
-            if (_settings is UploadJobSettings uploadSettings)
+            if (!string.IsNullOrEmpty(legalEntity))
             {
-                var enqueueUri = new UriBuilder(GetAosRequestUri("api/connector/enqueue/" + uploadSettings.ActivityId));
-
-                if (uploadSettings.IsDataPackage)
-                {
-                    if (!string.IsNullOrEmpty(uploadSettings.Company))
-                        enqueueUri.Query = "company=" + uploadSettings.Company;
-                }
-                else // Individual file
-                {
-                    // entity name is required
-                    var enqueueQuery = "entity=" + uploadSettings.EntityName;
-                    // Append company if it is specified
-                    if (!string.IsNullOrEmpty(uploadSettings.Company))
-                        enqueueQuery += "&company=" + uploadSettings.Company;
-                    enqueueUri.Query = enqueueQuery;
-                }
-                return _enqueueUri = enqueueUri.Uri;
+                enqueueUri.Query = "company=" + legalEntity;
             }
-            return null;
+            else
+            {
+                if (!string.IsNullOrEmpty(uploadSettings.Company))
+                {
+                    enqueueUri.Query = "company=" + uploadSettings.Company;
+                }
+            }
+
+            if (!uploadSettings.IsDataPackage)// Individual file
+            {
+                // entity name is required
+                enqueueUri.Query += "entity=" + uploadSettings.EntityName;
+            }
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
+            {
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.GetEnqueueUri is being called.
+Parameters:
+
+legalEntity: {legalEntity}
+
+Output:
+
+Generated Uri: {enqueueUri.Uri.AbsoluteUri}
+Generated query: {enqueueUri.Query}");
+            }
+            return enqueueUri.Uri;
         }
 
         /// <summary>
@@ -180,15 +227,16 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </returns>
         public Uri GetDequeueUri()
         {
-            if (_dequeueUri != null)
-                return _dequeueUri;
-
-            if (_settings is DownloadJobSettings downloadSettings)
+            var downloadSettings = _settings as DownloadJobSettings;
+            var dequeueUri = new UriBuilder(GetAosRequestUri(ConnectorApiActions.DequeuePath + downloadSettings.ActivityId)).Uri;
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
             {
-                var dequeueUri = new UriBuilder(GetAosRequestUri("api/connector/dequeue/" + downloadSettings.ActivityId));
-                return _dequeueUri = dequeueUri.Uri;
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.GetDequeueUri is being called.
+Output:
+
+Generated Uri: {dequeueUri.AbsoluteUri}");
             }
-            return null;
+            return dequeueUri;
         }
 
         /// <summary>
@@ -199,15 +247,16 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </returns>
         public Uri GetAckUri()
         {
-            if (_ackUri != null)
-                return _ackUri;
-
-            if (_settings is DownloadJobSettings downloadSettings)
+            var downloadSettings = _settings as DownloadJobSettings;
+            var ackUri = new UriBuilder(GetAosRequestUri(ConnectorApiActions.AckPath + downloadSettings.ActivityId)).Uri;
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
             {
-                var acknowledgeUri = new UriBuilder(GetAosRequestUri("api/connector/ack/" + downloadSettings.ActivityId));
-                return _ackUri = acknowledgeUri.Uri;
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.GetAckUri is being called.
+Output:
+
+Generated Uri: {ackUri.AbsoluteUri}");
             }
-            return null;
+            return ackUri;
         }
 
         /// <summary>
@@ -219,110 +268,169 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </returns>
         public Uri GetJobStatusUri(string jobId)
         {
-            if (_settings is ProcessingJobSettings processingJobSettings)
+            var processingJobSettings = _settings as ProcessingJobSettings;
+            var jobStatusUri = new UriBuilder(GetAosRequestUri(ConnectorApiActions.JobStatusPath + processingJobSettings.ActivityId))
             {
-                var jobStatusUri = new UriBuilder(GetAosRequestUri("api/connector/jobstatus/" + processingJobSettings.ActivityId))
-                {
-                    Query = "jobId=" + jobId.Replace(@"""", "")
-                };
-                return jobStatusUri.Uri;
+                Query = "jobId=" + jobId.Replace(@"""", "")
+            };
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
+            {
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.GetJobStatusUri is being called.
+Parameters:
+
+jobId: {jobId}
+
+Output:
+
+Generated uri: {jobStatusUri.Uri.AbsoluteUri}
+Generated query: {jobStatusUri.Query}");
             }
-            return null;
+            return jobStatusUri.Uri;
         }
 
         /// <summary>
         /// Gets temporary writable location
         /// </summary>
         /// <returns>temp writable cloud url</returns>
-        public async Task<string> GetAzureWriteUrl()
+        public async Task<HttpResponseMessage> GetAzureWriteUrl()
         {
             var requestUri = GetAosRequestUri(_settings.GetAzureWriteUrlActionPath);
 
             string uniqueFileName = Guid.NewGuid().ToString();
             var parameters = new { uniqueFileName };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
+            {
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.GetAzureWriteUrl is being called.
+Uri: {requestUri}
+
+Parameters:
+
+uniqueFileName: {uniqueFileName}");
+            }
             var response = await PostStringRequestAsync(requestUri, parametersJson);
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
-                string result = response.Content.ReadAsStringAsync().Result;
-                JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
-                string jvalue = jsonResponse["value"].ToString();
-                return jvalue;
+                Log.Error($@"Job: {_settings.JobKey}. HttpClientHelper.GetAzureWriteUrl request failed.
+Uri: {requestUri}
+
+Response status code: {response.StatusCode}
+Response reason: {response.ReasonPhrase}
+Response message: {response.Content}");
+                return null;
             }
-            else
-            {
-                return "";
-            }
+            return response;
         }
 
         /// <summary>
         /// Checks execution status of a Job
         /// </summary>
         /// <param name="executionId">execution Id</param>
-        /// <returns>job's execution status</returns>
-        public async Task<string> GetExecutionSummaryStatus(string executionId)
+        /// <returns>Http response</returns>
+        public async Task<HttpResponseMessage> GetExecutionSummaryStatus(string executionId)
         {
-            try
-            {
-                var requestUri = GetAosRequestUri(_settings.GetExecutionSummaryStatusActionPath);
+            var requestUri = GetAosRequestUri(_settings.GetExecutionSummaryStatusActionPath);
 
-                var parameters = new { executionId };
-                string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            var parameters = new { executionId };
+            string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
+                {
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.GetExecutionSummaryStatus is being called.
+Uri: {requestUri}
 
-                var response = await PostStringRequestAsync(requestUri, parametersJson);
+Parameters:
 
-                string result = response.Content.ReadAsStringAsync().Result;
-                JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
-                return jsonResponse["value"].ToString();
+executionId: {executionId}");
             }
-            catch
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
+            if (!response.IsSuccessStatusCode)
             {
-                return "Bad request";
+                Log.Error($@"Job: {_settings.JobKey}. HttpClientHelper.GetExecutionSummaryStatus request failed.
+Uri: {requestUri}
+
+Parameters:
+
+executionId: {executionId}
+
+Response status code: {response.StatusCode}
+Response reason: {response.ReasonPhrase}
+Response message: {response.Content}");
             }
+            return response;
         }
 
         /// <summary>
         /// Gets exported package Url location
         /// </summary>
         /// <param name="executionId">execution Id</param>
-        /// <returns>exorted package Url location</returns>
-        public async Task<Uri> GetExportedPackageUrl(string executionId)
+        /// <returns>Http response</returns>
+        public async Task<HttpResponseMessage> GetExportedPackageUrl(string executionId)
         {
-            try
-            {
-                var requestUri = GetAosRequestUri(_settings.GetExportedPackageUrlActionPath);
+            var requestUri = GetAosRequestUri(_settings.GetExportedPackageUrlActionPath);
 
-                var parameters = new { executionId };
-                string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
-
-                var response = await PostStringRequestAsync(requestUri, parametersJson);
-                string result = response.Content.ReadAsStringAsync().Result;
-                JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
-                string jvalue = jsonResponse["value"].ToString();
-                return new Uri(jvalue);
-            }
-            catch
+            var parameters = new { executionId };
+            string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
             {
-                return null;
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.GetExportedPackageUrl is being called.
+Uri: {requestUri}
+
+Parameters:
+
+executionId: {executionId}");
             }
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
+            if (!response.IsSuccessStatusCode)
+            {
+                Log.Error($@"Job: {_settings.JobKey}. HttpClientHelper.GetExportedPackageUrl request failed.
+Uri: {requestUri}
+
+Parameters:
+
+executionId: {executionId}
+
+Response status code: {response.StatusCode}
+Response reason: {response.ReasonPhrase}
+Response message: {response.Content}");
+            }
+            return response;
         }
 
         /// <summary>
         /// Gets execution's summary page Url
         /// </summary>
         /// <param name="executionId">execution Id</param>
-        /// <returns>execution's summary page Url</returns>
-        public async Task<string> GetExecutionSummaryPageUrl(string executionId)
+        /// <returns>Http response</returns>
+        public async Task<HttpResponseMessage> GetExecutionSummaryPageUrl(string executionId)
         {
             var requestUri = GetAosRequestUri(_settings.GetExecutionSummaryPageUrlActionPath);
 
             var parameters = new { executionId };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
+            {
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.GetExecutionSummaryPageUrl is being called.
+Uri: {requestUri}
 
+Parameters:
+
+executionId: {executionId}");
+            }
             var response = await PostStringRequestAsync(requestUri, parametersJson);
-            string result = response.Content.ReadAsStringAsync().Result;
-            JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
-            return jsonResponse["value"].ToString();
+            if (!response.IsSuccessStatusCode)
+            {
+                Log.Error($@"Job: {_settings.JobKey}. HttpClientHelper.GetExecutionSummaryPageUrl request failed.
+Uri: {requestUri}
+
+Parameters:
+
+executionId: {executionId}
+
+Response status code: {response.StatusCode}
+Response reason: {response.ReasonPhrase}
+Response message: {response.Content}");
+            }
+            return response;
         }
 
         /// <summary>
@@ -337,13 +445,27 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             _httpClient.DefaultRequestHeaders.Add("x-ms-date", DateTime.UtcNow.ToString("R", System.Globalization.CultureInfo.InvariantCulture));
             _httpClient.DefaultRequestHeaders.Add("x-ms-blob-type", "BlockBlob");
             _httpClient.DefaultRequestHeaders.Add("Overwrite", "T");
-            return await _retryPolicy.ExecuteAsync(() => _httpClient.PutAsync(blobUrl.AbsoluteUri, new StreamContent(stream)));
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
+            {
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.UploadContentsToBlob is being called.
+Uri: {blobUrl.AbsoluteUri}");
+            }
+            var response = await _httpClient.PutAsync(blobUrl.AbsoluteUri, new StreamContent(stream));
+            if (!response.IsSuccessStatusCode)
+            {
+                Log.Error($@"Job: {_settings.JobKey}. HttpClientHelper.UploadContentsToBlob request failed.
+Uri: {blobUrl.AbsoluteUri}
+
+Response status code: {response.StatusCode}
+Response reason: {response.ReasonPhrase}
+Response message: {response.Content}");
+            }
+            return response;
         }
 
         /// <summary>
         /// Request to import package from specified location
         /// </summary>
-        /// <param name="odataActionPath">Relative path to the Odata action</param>
         /// <param name="packageUrl">Location of uploaded package</param>
         /// <param name="definitionGroupId">Data project name</param>
         /// <param name="executionId">Execution Id</param>
@@ -365,7 +487,40 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 legalEntityId
             };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
-            return await PostStringRequestAsync(requestUri, parametersJson);
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
+            {
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.ImportFromPackage is being called.
+Uri: {requestUri}
+
+Parameters:
+
+packageUrl: {packageUrl}
+definitionGroupId: {definitionGroupId}
+executionId: {executionId}
+execute: {execute}
+overwrite: {overwrite}
+legalEntityId: {legalEntityId}");
+            }
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
+            if (!response.IsSuccessStatusCode)
+            {
+                Log.Error($@"Job: {_settings.JobKey}. HttpClientHelper.ImportFromPackage request failed.
+Uri: {requestUri}
+
+Parameters:
+
+packageUrl: {packageUrl}
+definitionGroupId: {definitionGroupId}
+executionId: {executionId}
+execute: {execute}
+overwrite: {overwrite}
+legalEntityId: {legalEntityId}
+
+Response status code: {response.StatusCode}
+Response reason: {response.ReasonPhrase}
+Response message: {response.Content}");
+            }
+            return response;
         }
 
         /// <summary>
@@ -373,23 +528,41 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </summary>
         /// <param name="executionId">execution Id</param>
         /// <returns></returns>
-        public async Task<string> DeleteExecutionHistoryJob(string executionId)
+        public async Task<HttpResponseMessage> DeleteExecutionHistoryJob(string executionId)
         {
             var requestUri = GetAosRequestUri(_settings.DeleteExecutionHistoryJobActionPath); 
 
             var parameters = new { executionId };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
+            {
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.DeleteExecutionHistoryJob is being called.
+Uri: {requestUri}
 
+Parameters:
+
+executionId: {executionId}");
+            }
             var response = await PostStringRequestAsync(requestUri, parametersJson);
-            string result = response.Content.ReadAsStringAsync().Result;
-            JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
-            return jsonResponse["value"].ToString();
+            if (!response.IsSuccessStatusCode)
+            {
+                Log.Error($@"Job: {_settings.JobKey}. HttpClientHelper.DeleteExecutionHistoryJob request failed.
+Uri: {requestUri}
+
+Parameters:
+
+executionId: {executionId}
+
+Response status code: {response.StatusCode}
+Response reason: {response.ReasonPhrase}
+Response message: {response.Content}");
+            }
+            return response;
         }
 
         /// <summary>
         /// Export a package that has been already uploaded to server
         /// </summary>
-        /// <param name="odataActionPath">Relative path to the Odata action</param>
         /// <param name="definitionGroupId">data project name</param>
         /// <param name="packageName">package name </param>
         /// <param name="executionId">execution id to use for results</param>
@@ -409,7 +582,38 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 legalEntityId
             };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
-            return await PostStringRequestAsync(requestUri, parametersJson);
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
+            {
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.ExportToPackage is being called.
+Uri: {requestUri}
+
+Parameters:
+
+definitionGroupId: {definitionGroupId}
+packageName: {packageName}
+executionId: {executionId}
+reExecute: {reExecute}
+legalEntityId: {legalEntityId}");
+            }
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
+            if (!response.IsSuccessStatusCode)
+            {
+                Log.Error($@"Job: {_settings.JobKey}. HttpClientHelper.ExportToPackage request failed.
+Uri: {requestUri}
+
+Parameters:
+
+definitionGroupId: {definitionGroupId}
+packageName: {packageName}
+executionId: {executionId}
+reExecute: {reExecute}
+legalEntityId: {legalEntityId}
+
+Response status code: {response.StatusCode}
+Response reason: {response.ReasonPhrase}
+Response message: {response.Content}");
+            }
+            return response;
         }
 
         /// <summary>
@@ -436,7 +640,40 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 legalEntityId
             };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
-            return await PostStringRequestAsync(requestUri, parametersJson);
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
+            {
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.ExportFromPackage is being called.
+Uri: {requestUri}
+
+Parameters:
+
+packageUrl: {packageUrl}
+definitionGroupId: {definitionGroupId}
+executionId: {executionId}
+execute: {execute}
+overwrite: {overwrite}
+legalEntityId: {legalEntityId}");
+            }
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
+            if (!response.IsSuccessStatusCode)
+            {
+                Log.Error($@"Job: {_settings.JobKey}. HttpClientHelper.ExportFromPackage request failed.
+Uri: {requestUri}
+
+Parameters:
+
+packageUrl: {packageUrl}
+definitionGroupId: {definitionGroupId}
+executionId: {executionId}
+execute: {execute}
+overwrite: {overwrite}
+legalEntityId: {legalEntityId}
+
+Response status code: {response.StatusCode}
+Response reason: {response.ReasonPhrase}
+Response message: {response.Content}");
+            }
+            return response;
         }
 
         /// <summary>
@@ -444,28 +681,35 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </summary>
         /// <param name="messageId">Message Id</param>
         /// <returns></returns>
-        public async Task<string> GetMessageStatus(string messageId)
+        public async Task<HttpResponseMessage> GetMessageStatus(string messageId)
         {
             var requestUri = GetAosRequestUri(_settings.GetMessageStatusActionPath);
-            var parameters = new
-            {
-                messageId
-            };
+            var parameters = new { messageId };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
+            {
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.GetMessageStatus is being called.
+Uri: {requestUri}
+
+Parameters:
+
+messageId: {messageId}");
+            }
             var response = await PostStringRequestAsync(requestUri, parametersJson);
-            
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
-                string result = response.Content.ReadAsStringAsync().Result;
-                JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
-                string jvalue = jsonResponse["value"].ToString();
-                //var status = (IntegrationActivityMessageStatus)Enum.Parse(typeof(IntegrationActivityMessageStatus), statusString);
-                return jvalue;
+                Log.Error($@"Job: {_settings.JobKey}. HttpClientHelper.GetMessageStatus request failed.
+Uri: {requestUri}
+
+Parameters:
+
+messageId: {messageId}
+
+Response status code: {response.StatusCode}
+Response reason: {response.ReasonPhrase}
+Response message: {response.Content}");
             }
-            else
-            {
-                return "";
-            }
+            return response;
 
         }
 
@@ -475,7 +719,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <param name="executionId">Execution Id</param>
         /// <param name="entityName">Entity name</param>
         /// <returns></returns>
-        public async Task<bool> GenerateImportTargetErrorKeysFile(string executionId, string entityName)
+        public async Task<HttpResponseMessage> GenerateImportTargetErrorKeysFile(string executionId, string entityName)
         {
             var requestUri = GetAosRequestUri(_settings.GenerateImportTargetErrorKeysFilePath);
 
@@ -485,17 +729,32 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 entityName
             };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
+            {
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.GenerateImportTargetErrorKeysFile is being called.
+Uri: {requestUri}
+
+Parameters:
+
+executionId: {executionId}
+entityName: {entityName}");
+            }
             var response = await PostStringRequestAsync(requestUri, parametersJson);
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
-                string result = response.Content.ReadAsStringAsync().Result;
-                JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
-                return Convert.ToBoolean(jsonResponse["value"].ToString());
+                Log.Error($@"Job: {_settings.JobKey}. HttpClientHelper.GenerateImportTargetErrorKeysFile request failed.
+Uri: {requestUri}
+
+Parameters:
+
+executionId: {executionId}
+entityName: {entityName}
+
+Response status code: {response.StatusCode}
+Response reason: {response.ReasonPhrase}
+Response message: {response.Content}");
             }
-            else
-            {
-                return false;
-            }
+            return response;
         }
 
         /// <summary>
@@ -504,7 +763,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <param name="executionId">Execution Id</param>
         /// <param name="entityName">Entity name</param>
         /// <returns></returns>
-        public async Task<string> GetImportTargetErrorKeysFileUrl(string executionId, string entityName)
+        public async Task<HttpResponseMessage> GetImportTargetErrorKeysFileUrl(string executionId, string entityName)
         {
             var requestUri = GetAosRequestUri(_settings.GetImportTargetErrorKeysFileUrlPath);
 
@@ -514,28 +773,87 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 entityName
             };
             string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
+            {
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.GetImportTargetErrorKeysFileUrl is being called.
+Uri: {requestUri}
+
+Parameters:
+
+executionId: {executionId}
+entityName: {entityName}");
+            }
             var response = await PostStringRequestAsync(requestUri, parametersJson);
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
-                string result = response.Content.ReadAsStringAsync().Result;
-                JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
-                return jsonResponse["value"].ToString();
+                Log.Error($@"Job: {_settings.JobKey}. HttpClientHelper.GetImportTargetErrorKeysFileUrl request failed.
+Uri: {requestUri}
+
+Parameters:
+
+executionId: {executionId}
+entityName: {entityName}
+
+Response status code: {response.StatusCode}
+Response reason: {response.ReasonPhrase}
+Response message: {response.Content}");
             }
-            else
+            return response;
+        }
+
+        /// <summary>
+        /// Get execution errors
+        /// </summary>
+        /// <param name="executionId">Execution Id</param>
+        /// <returns></returns>
+        public async Task<HttpResponseMessage> GetExecutionErrors(string executionId)
+        {
+            var requestUri = GetAosRequestUri(_settings.GetExecutionErrorsPath);
+
+            var parameters = new { executionId };
+            string parametersJson = JsonConvert.SerializeObject(parameters, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            if (_settings.LogVerbose || Log.IsDebugEnabled)
             {
-                return "";
+                Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.GetExecutionErrors is being called.
+Uri: {requestUri}
+
+Parameters:
+
+executionId: {executionId}");
             }
+            var response = await PostStringRequestAsync(requestUri, parametersJson);
+            if (!response.IsSuccessStatusCode)
+            {
+                Log.Error($@"Job: {_settings.JobKey}. HttpClientHelper.GetExecutionErrors request failed.
+Uri: {requestUri}
+
+Parameters:
+
+executionId: {executionId}
+
+Response status code: {response.StatusCode}
+Response reason: {response.ReasonPhrase}
+Response message: {response.Content}");
+            }
+            return response;
         }
 
         private Uri GetAosRequestUri(string requestRelativePath) 
-        { 
-            var aosUri = new Uri(_settings.AosUri); 
-            var builder = new UriBuilder(aosUri) 
-            { 
-                Path = string.Concat(aosUri.AbsolutePath.TrimEnd('/'), "/", requestRelativePath.TrimStart('/')) 
-            }; 
-            return builder.Uri; 
-        } 
+             { 
+                    var aosUri = new Uri(_settings.AosUri); 
+                    var builder = new UriBuilder(aosUri) 
+                    { 
+                           Path = string.Concat(aosUri.AbsolutePath.TrimEnd('/'), "/", requestRelativePath.TrimStart('/')) 
+                    }; 
+                    return builder.Uri; 
+             } 
+
+        public static string ReadResponseString(HttpResponseMessage response)
+        {
+            string result = response.Content.ReadAsStringAsync().Result;
+            JObject jsonResponse = (JObject)JsonConvert.DeserializeObject(result);
+            return jsonResponse["value"].ToString();
+        }
 
         /// <summary>
         /// Dispose

@@ -1,11 +1,11 @@
 ﻿/* Copyright (c) Microsoft Corporation. All rights reserved.
    Licensed under the MIT License. */
 
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Polly;
+using Microsoft.Identity.Client;
 using RecurringIntegrationsScheduler.Common.JobSettings;
 using System;
-using System.Net.Http.Headers;
+using System.Linq;
+using System.Security;
 using System.Threading.Tasks;
 
 namespace RecurringIntegrationsScheduler.Common.Helpers
@@ -17,17 +17,15 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
     {
         private readonly Settings _settings;
         private string _authorizationHeader;
-        private readonly Polly.Retry.AsyncRetryPolicy _retryPolicy;
+        private const string AuthEndpoint = "https://login.microsoftonline.com/";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticationHelper"/> class.
         /// </summary>
         /// <param name="jobSettings">Job settings</param>
-        /// <param name="retryPolicy">Retry policy</param>
-        public AuthenticationHelper(Settings jobSettings, Polly.Retry.AsyncRetryPolicy retryPolicy)
+        public AuthenticationHelper(Settings jobSettings)
         {
             _settings = jobSettings;
-            _retryPolicy = retryPolicy;
         }
 
         /// <summary>
@@ -44,32 +42,45 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <returns>Authorization header</returns>
         private async Task<string> AuthorizationHeader()
         {
-            if (!string.IsNullOrEmpty(_authorizationHeader) &&
-                (DateTime.UtcNow.AddSeconds(60) < AuthenticationResult.ExpiresOn)) return _authorizationHeader;
-
-            var uri = new UriBuilder(_settings.AzureAuthEndpoint)
+            if (!string.IsNullOrEmpty(_authorizationHeader) && (DateTime.UtcNow.AddSeconds(60) < AuthenticationResult.ExpiresOn))
             {
-                Path = _settings.AadTenant
-            };
-
-            var aosUriAuthUri = new Uri(_settings.AosUri); 
-            string aosUriAuth = aosUriAuthUri.GetLeftPart(UriPartial.Authority);
-
-            var authenticationContext = new AuthenticationContext(uri.ToString(), validateAuthority: false);
+                return _authorizationHeader;
+            }
+            IConfidentialClientApplication appConfidential;
+            IPublicClientApplication appPublic;
+            var aosUriAuthUri = new Uri(_settings.AosUri);
+            string authority = AuthEndpoint + _settings.AadTenant;
+            string[] scopes = new string[] { aosUriAuthUri.AbsoluteUri +  ".default" };
 
             if (_settings.UseServiceAuthentication)
             {
-                var credentials = new ClientCredential(_settings.AadClientId.ToString(), _settings.AadClientSecret);
-
-                AuthenticationResult = await _retryPolicy.ExecuteAsync(() => authenticationContext.AcquireTokenAsync(aosUriAuth, credentials));
+                appConfidential = ConfidentialClientApplicationBuilder.Create(_settings.AadClientId.ToString())
+                    .WithClientSecret(_settings.AadClientSecret)
+                    .WithAuthority(authority)
+                    .Build();
+                AuthenticationResult = await appConfidential.AcquireTokenForClient(scopes).ExecuteAsync();
             }
             else
             {
-                var credentials = new UserPasswordCredential(_settings.UserName, _settings.UserPassword);
+                appPublic = PublicClientApplicationBuilder.Create(_settings.AadClientId.ToString())
+                    .WithAuthority(authority)
+                    .Build();
+                var accounts = await appPublic.GetAccountsAsync();
 
-                AuthenticationResult = await _retryPolicy.ExecuteAsync(() => authenticationContext.AcquireTokenAsync(aosUriAuth, _settings.AadClientId.ToString(), credentials));
+                if (accounts.Any())
+                {
+                    AuthenticationResult = await appPublic.AcquireTokenSilent(scopes, accounts.FirstOrDefault()).ExecuteAsync();
+                }
+                else
+                {
+                    using var securePassword = new SecureString();
+                    foreach (char c in _settings.UserPassword)
+                    {
+                        securePassword.AppendChar(c);
+                    }
+                    AuthenticationResult = await appPublic.AcquireTokenByUsernamePassword(scopes, _settings.UserName, securePassword).ExecuteAsync();
+                }
             }
-
             return _authorizationHeader = AuthenticationResult.CreateAuthorizationHeader();
         }
 
@@ -77,25 +88,12 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// Gets valid authentication header
         /// </summary>
         /// <returns>
-        /// AuthenticationHeaderValue object
+        /// string
         /// </returns>
-        public async Task<AuthenticationHeaderValue> GetValidAuthenticationHeader()
+        public async Task<string> GetValidAuthenticationHeader()
         {
             _authorizationHeader = await AuthorizationHeader();
-            return ParseAuthenticationHeader(_authorizationHeader);
-        }
-
-        /// <summary>
-        /// Parses authentication header.
-        /// </summary>
-        /// <param name="authorizationHeader">Authorization header.</param>
-        /// <returns>AuthenticationHeaderValue object</returns>
-        private static AuthenticationHeaderValue ParseAuthenticationHeader(string authorizationHeader)
-        {
-            var split = authorizationHeader.Split(' ');
-            var scheme = split[0];
-            var parameter = split[1];
-            return new AuthenticationHeaderValue(scheme, parameter);
+            return _authorizationHeader;
         }
     }
 }

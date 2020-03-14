@@ -105,8 +105,6 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Extension_of_status_files_is_missing_in_job_configuration));
             }
 
-            ProcessingJobPresent = Convert.ToBoolean(dataMap.GetString(SettingsConstants.ProcessingJobPresent));
-
             SearchPattern = dataMap.GetString(SettingsConstants.SearchPattern);
             if (string.IsNullOrEmpty(SearchPattern))
             {

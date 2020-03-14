@@ -51,17 +51,17 @@ namespace RecurringIntegrationsScheduler.Forms
             this.tableLayoutPanel.Controls.Add(this.textBoxDescription, 1, 2);
             this.tableLayoutPanel.Controls.Add(this.okButton, 1, 3);
             this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel.Location = new System.Drawing.Point(14, 14);
-            this.tableLayoutPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tableLayoutPanel.Location = new System.Drawing.Point(17, 17);
+            this.tableLayoutPanel.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.tableLayoutPanel.Name = "tableLayoutPanel";
             this.tableLayoutPanel.RowCount = 4;
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F));
             this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-            this.tableLayoutPanel.Size = new System.Drawing.Size(624, 407);
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
+            this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
+            this.tableLayoutPanel.Size = new System.Drawing.Size(763, 488);
             this.tableLayoutPanel.TabIndex = 0;
             // 
             // logoPictureBox
@@ -69,22 +69,22 @@ namespace RecurringIntegrationsScheduler.Forms
             this.logoPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.logoPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.logoPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("logoPictureBox.Image")));
-            this.logoPictureBox.Location = new System.Drawing.Point(4, 5);
-            this.logoPictureBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.logoPictureBox.Location = new System.Drawing.Point(5, 6);
+            this.logoPictureBox.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.logoPictureBox.Name = "logoPictureBox";
             this.tableLayoutPanel.SetRowSpan(this.logoPictureBox, 4);
-            this.logoPictureBox.Size = new System.Drawing.Size(197, 397);
+            this.logoPictureBox.Size = new System.Drawing.Size(241, 476);
             this.logoPictureBox.TabIndex = 12;
             this.logoPictureBox.TabStop = false;
             // 
             // labelProductName
             // 
             this.labelProductName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelProductName.Location = new System.Drawing.Point(214, 0);
-            this.labelProductName.Margin = new System.Windows.Forms.Padding(9, 0, 4, 0);
-            this.labelProductName.MaximumSize = new System.Drawing.Size(0, 26);
+            this.labelProductName.Location = new System.Drawing.Point(262, 0);
+            this.labelProductName.Margin = new System.Windows.Forms.Padding(11, 0, 5, 0);
+            this.labelProductName.MaximumSize = new System.Drawing.Size(0, 31);
             this.labelProductName.Name = "labelProductName";
-            this.labelProductName.Size = new System.Drawing.Size(406, 26);
+            this.labelProductName.Size = new System.Drawing.Size(496, 31);
             this.labelProductName.TabIndex = 19;
             this.labelProductName.Text = "Recurring Integrations Scheduler";
             this.labelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -92,11 +92,11 @@ namespace RecurringIntegrationsScheduler.Forms
             // labelVersion
             // 
             this.labelVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelVersion.Location = new System.Drawing.Point(214, 40);
-            this.labelVersion.Margin = new System.Windows.Forms.Padding(9, 0, 4, 0);
-            this.labelVersion.MaximumSize = new System.Drawing.Size(0, 26);
+            this.labelVersion.Location = new System.Drawing.Point(262, 48);
+            this.labelVersion.Margin = new System.Windows.Forms.Padding(11, 0, 5, 0);
+            this.labelVersion.MaximumSize = new System.Drawing.Size(0, 31);
             this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(406, 26);
+            this.labelVersion.Size = new System.Drawing.Size(496, 31);
             this.labelVersion.TabIndex = 0;
             this.labelVersion.Text = "Version 1.0.0.0";
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -104,13 +104,13 @@ namespace RecurringIntegrationsScheduler.Forms
             // textBoxDescription
             // 
             this.textBoxDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxDescription.Location = new System.Drawing.Point(214, 85);
-            this.textBoxDescription.Margin = new System.Windows.Forms.Padding(9, 5, 4, 5);
+            this.textBoxDescription.Location = new System.Drawing.Point(262, 102);
+            this.textBoxDescription.Margin = new System.Windows.Forms.Padding(11, 6, 5, 6);
             this.textBoxDescription.Multiline = true;
             this.textBoxDescription.Name = "textBoxDescription";
             this.textBoxDescription.ReadOnly = true;
             this.textBoxDescription.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxDescription.Size = new System.Drawing.Size(406, 274);
+            this.textBoxDescription.Size = new System.Drawing.Size(496, 329);
             this.textBoxDescription.TabIndex = 23;
             this.textBoxDescription.TabStop = false;
             this.textBoxDescription.Text = resources.GetString("textBoxDescription.Text");
@@ -119,26 +119,26 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.okButton.Location = new System.Drawing.Point(508, 370);
-            this.okButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.okButton.Location = new System.Drawing.Point(621, 444);
+            this.okButton.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(112, 32);
+            this.okButton.Size = new System.Drawing.Size(137, 38);
             this.okButton.TabIndex = 24;
             this.okButton.Text = global::RecurringIntegrationsScheduler.Properties.Resources.OK;
             // 
             // AboutBox
             // 
             this.AcceptButton = this.okButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(652, 435);
+            this.ClientSize = new System.Drawing.Size(797, 522);
             this.Controls.Add(this.tableLayoutPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AboutBox";
-            this.Padding = new System.Windows.Forms.Padding(14);
+            this.Padding = new System.Windows.Forms.Padding(17, 17, 17, 17);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

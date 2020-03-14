@@ -92,6 +92,8 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
             {
                 throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Extension_of_status_files_is_missing_in_job_configuration));
             }
+
+            StatusCheckInterval = dataMap.GetInt(SettingsConstants.DelayBetweenStatusCheck);
         }
 
         #region Members
@@ -135,6 +137,14 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// The status file extension.
         /// </value>
         public string StatusFileExtension { get; private set; }
+
+        /// <summary>
+        /// Gets or sets delay between status check.
+        /// </summary>
+        /// <value>
+        /// Delay between status checks.
+        /// </value>
+        public int StatusCheckInterval { get; private set; }
 
         #endregion
     }
