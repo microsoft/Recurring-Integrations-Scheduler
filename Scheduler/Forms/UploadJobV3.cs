@@ -826,5 +826,11 @@ namespace RecurringIntegrationsScheduler.Forms
                 searchPatternTextBox.Enabled = true;
             }
         }
+
+        private void upJobCronExpressionTextBox_Leave(object sender, EventArgs e)
+        {
+            var upJobCronExpressionText = this.upJobCronExpressionTextBox.Text;
+            this.upJobCronExpressionTextBox.Text = upJobCronExpressionText.Trim();
+        }
     }
 }

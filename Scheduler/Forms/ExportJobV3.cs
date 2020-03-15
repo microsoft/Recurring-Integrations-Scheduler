@@ -518,5 +518,11 @@ namespace RecurringIntegrationsScheduler.Forms
             Cancelled = true;
             Close();
         }
+
+        private void cronExpressionTextBox_Leave(object sender, EventArgs e)
+        {
+            var cronExpressionText = this.cronExpressionTextBox.Text;
+            this.cronExpressionTextBox.Text = cronExpressionText.Trim();
+        }
     }
 }

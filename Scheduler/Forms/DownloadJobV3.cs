@@ -508,5 +508,11 @@ namespace RecurringIntegrationsScheduler.Forms
             Trigger = GetTrigger(JobDetail);
             Close();
         }
+
+        private void cronExpressionTextBox_Leave(object sender, EventArgs e)
+        {
+            var cronExpressionText = this.cronExpressionTextBox.Text;
+            this.cronExpressionTextBox.Text = cronExpressionText.Trim();
+        }
     }
 }

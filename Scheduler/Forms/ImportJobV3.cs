@@ -981,5 +981,11 @@ namespace RecurringIntegrationsScheduler.Forms
                 statusFileExtensionTextBox.Text = @".Status";
             }
         }
+
+        private void importJobCronExpressionTextBox_Leave(object sender, EventArgs e)
+        {
+            var importJobCronExpressionText = this.importJobCronExpressionTextBox.Text;
+            this.importJobCronExpressionTextBox.Text = importJobCronExpressionText.Trim();
+        }
     }
 }
