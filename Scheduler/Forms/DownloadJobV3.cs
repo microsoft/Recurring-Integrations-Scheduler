@@ -32,7 +32,7 @@ namespace RecurringIntegrationsScheduler.Forms
             get
             {
                 var myCp = base.CreateParams;
-                myCp.ClassStyle = myCp.ClassStyle | CpNocloseButton;
+                myCp.ClassStyle |= CpNocloseButton;
                 return myCp;
             }
         }
@@ -350,7 +350,7 @@ namespace RecurringIntegrationsScheduler.Forms
             if (simpleTriggerRadioButton.Checked)
             {
                 var minutes = hoursDateTimePicker.Value.Hour*60;
-                minutes = minutes + minutesDateTimePicker.Value.Minute;
+                minutes += minutesDateTimePicker.Value.Minute;
 
                 return builder.WithSimpleSchedule(x => x
                         .WithIntervalInMinutes(minutes)
