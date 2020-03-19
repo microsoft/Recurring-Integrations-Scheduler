@@ -976,7 +976,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.statusFileExtensionTextBox.Size = new System.Drawing.Size(101, 29);
             this.statusFileExtensionTextBox.TabIndex = 7;
             this.statusFileExtensionTextBox.Text = ".Status";
-            this.statusFileExtensionTextBox.Leave += new System.EventHandler(this.StatusFileExtensionTextBox_Leave_1);
+            this.statusFileExtensionTextBox.Leave += new System.EventHandler(this.StatusFileExtensionTextBox_Leave);
             // 
             // getExecutionErrorsCheckBox
             // 

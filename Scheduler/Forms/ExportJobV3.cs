@@ -496,6 +496,8 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void AddToolStripButton_Click(object sender, EventArgs e)
         {
+            TrimTextBoxes(this);
+
             if (JobDetail == null)
             {
                 var jobKey = new JobKey(jobName.Text, jobGroupComboBox.Text);
@@ -517,6 +519,19 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             Cancelled = true;
             Close();
+        }
+
+        private void TrimTextBoxes(Control parentCtrl)
+        {
+            parentCtrl.Controls //Trim all textboxes
+                .OfType<TextBox>()
+                .ToList()
+                .ForEach(t => t.Text = t.Text.Trim());
+
+            foreach (Control c in parentCtrl.Controls)
+            {
+                TrimTextBoxes(c);
+            }
         }
     }
 }

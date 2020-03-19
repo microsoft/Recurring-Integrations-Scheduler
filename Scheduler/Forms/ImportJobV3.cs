@@ -856,6 +856,8 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void AddToolStripButton_Click(object sender, EventArgs e)
         {
+            TrimTextBoxes(this);
+
             if (ImportJobDetail == null)
             {
                 var jobKey = new JobKey(jobName.Text, jobGroupComboBox.Text);
@@ -969,16 +971,16 @@ namespace RecurringIntegrationsScheduler.Forms
             separatorExampleLegalEntityTextBox.Text = tokenList[(int)legalEntityTokenPositionNumericUpDown.Value - 1];
         }
 
-        private void StatusFileExtensionTextBox_Leave_1(object sender, EventArgs e)
+        private void TrimTextBoxes(Control parentCtrl)
         {
-            if (!string.IsNullOrEmpty(statusFileExtensionTextBox.Text))
+            parentCtrl.Controls //Trim all textboxes
+                .OfType<TextBox>()
+                .ToList()
+                .ForEach(t => t.Text = t.Text.Trim());
+
+            foreach (Control c in parentCtrl.Controls)
             {
-                if (statusFileExtensionTextBox.Text.Substring(0, 1) != ".")
-                    statusFileExtensionTextBox.Text = $@".{statusFileExtensionTextBox.Text}";
-            }
-            else
-            {
-                statusFileExtensionTextBox.Text = @".Status";
+                TrimTextBoxes(c);
             }
         }
     }
