@@ -14,6 +14,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace RecurringIntegrationsScheduler.Common.Helpers
 {
@@ -186,23 +187,24 @@ addAuthorization: {addAuthorization}");
         {
             var uploadSettings = _settings as UploadJobSettings;
             var enqueueUri = new UriBuilder(GetAosRequestUri(ConnectorApiActions.EnqueuePath + uploadSettings.ActivityId));
+            var query = HttpUtility.ParseQueryString(enqueueUri.Query);
 
             if (!string.IsNullOrEmpty(legalEntity))
             {
-                enqueueUri.Query = "company=" + legalEntity;
+                query["company"] = legalEntity;
             }
             else
             {
                 if (!string.IsNullOrEmpty(uploadSettings.Company))
                 {
-                    enqueueUri.Query = "company=" + uploadSettings.Company;
+                    query["company"] = uploadSettings.Company;
                 }
             }
 
             if (!uploadSettings.IsDataPackage)// Individual file
             {
                 // entity name is required
-                enqueueUri.Query += "entity=" + uploadSettings.EntityName;
+                query["entity"] = uploadSettings.EntityName;
             }
             if (_settings.LogVerbose || Log.IsDebugEnabled)
             {
@@ -216,6 +218,7 @@ Output:
 Generated Uri: {enqueueUri.Uri.AbsoluteUri}
 Generated query: {enqueueUri.Query}");
             }
+            enqueueUri.Query = query.ToString();
             return enqueueUri.Uri;
         }
 
