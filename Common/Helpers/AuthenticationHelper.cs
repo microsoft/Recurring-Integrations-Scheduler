@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
+using UrlCombineLib;
 
 namespace RecurringIntegrationsScheduler.Common.Helpers
 {
@@ -17,7 +18,6 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
     {
         private readonly Settings _settings;
         private string _authorizationHeader;
-        private const string AuthEndpoint = "https://login.microsoftonline.com/";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticationHelper"/> class.
@@ -49,7 +49,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             IConfidentialClientApplication appConfidential;
             IPublicClientApplication appPublic;
             var aosUriAuthUri = new Uri(_settings.AosUri);
-            string authority = AuthEndpoint + _settings.AadTenant;
+            string authority = UrlCombine.Combine(_settings.AzureAuthEndpoint, _settings.AadTenant);
             string[] scopes = new string[] { aosUriAuthUri.AbsoluteUri +  ".default" };
 
             if (_settings.UseServiceAuthentication)

@@ -15,6 +15,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using UrlCombineLib;
 
 namespace RecurringIntegrationsScheduler.Common.Helpers
 {
@@ -186,7 +187,7 @@ addAuthorization: {addAuthorization}");
         public Uri GetEnqueueUri(string legalEntity = null)
         {
             var uploadSettings = _settings as UploadJobSettings;
-            var enqueueUri = new UriBuilder(GetAosRequestUri(ConnectorApiActions.EnqueuePath + uploadSettings.ActivityId));
+            var enqueueUri = new UriBuilder(GetAosRequestUri(UrlCombine.Combine(ConnectorApiActions.EnqueuePath, uploadSettings.ActivityId.ToString())));
             var query = HttpUtility.ParseQueryString(enqueueUri.Query);
 
             if (!string.IsNullOrEmpty(legalEntity))
@@ -231,7 +232,7 @@ Generated query: {enqueueUri.Query}");
         public Uri GetDequeueUri()
         {
             var downloadSettings = _settings as DownloadJobSettings;
-            var dequeueUri = new UriBuilder(GetAosRequestUri(ConnectorApiActions.DequeuePath + downloadSettings.ActivityId)).Uri;
+            var dequeueUri = new UriBuilder(GetAosRequestUri(UrlCombine.Combine(ConnectorApiActions.DequeuePath, downloadSettings.ActivityId.ToString()))).Uri;
             if (_settings.LogVerbose || Log.IsDebugEnabled)
             {
                 Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.GetDequeueUri is being called.
@@ -251,7 +252,7 @@ Generated Uri: {dequeueUri.AbsoluteUri}");
         public Uri GetAckUri()
         {
             var downloadSettings = _settings as DownloadJobSettings;
-            var ackUri = new UriBuilder(GetAosRequestUri(ConnectorApiActions.AckPath + downloadSettings.ActivityId)).Uri;
+            var ackUri = new UriBuilder(GetAosRequestUri(UrlCombine.Combine(ConnectorApiActions.AckPath, downloadSettings.ActivityId.ToString()))).Uri;
             if (_settings.LogVerbose || Log.IsDebugEnabled)
             {
                 Log.Debug($@"Job: {_settings.JobKey}. HttpClientHelper.GetAckUri is being called.
@@ -272,7 +273,7 @@ Generated Uri: {ackUri.AbsoluteUri}");
         public Uri GetJobStatusUri(string jobId)
         {
             var processingJobSettings = _settings as ProcessingJobSettings;
-            var jobStatusUri = new UriBuilder(GetAosRequestUri(ConnectorApiActions.JobStatusPath + processingJobSettings.ActivityId))
+            var jobStatusUri = new UriBuilder(GetAosRequestUri(UrlCombine.Combine(ConnectorApiActions.JobStatusPath, processingJobSettings.ActivityId.ToString())))
             {
                 Query = "jobId=" + jobId.Replace(@"""", "")
             };
@@ -842,13 +843,10 @@ Response message: {response.Content}");
         }
 
         private Uri GetAosRequestUri(string requestRelativePath) 
-             { 
-                    var aosUri = new Uri(_settings.AosUri); 
-                    var builder = new UriBuilder(aosUri) 
-                    { 
-                           Path = string.Concat(aosUri.AbsolutePath.TrimEnd('/'), "/", requestRelativePath.TrimStart('/')) 
-                    }; 
-                    return builder.Uri; 
+             {
+            var aosUrl = UrlCombine.Combine(_settings.AosUri, requestRelativePath);
+            var aosUri = new Uri(aosUrl); 
+                    return aosUri; 
              } 
 
         public static string ReadResponseString(HttpResponseMessage response)
