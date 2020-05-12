@@ -3,6 +3,7 @@
 
 using Quartz;
 using Quartz.Impl.Triggers;
+using Quartz.Util;
 using RecurringIntegrationsScheduler.Common.Contracts;
 using RecurringIntegrationsScheduler.Properties;
 using RecurringIntegrationsScheduler.Settings;
@@ -10,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -61,21 +61,17 @@ namespace RecurringIntegrationsScheduler.Forms
             instanceComboBox.ValueMember = null;
             instanceComboBox.DisplayMember = "Name";
 
-            var dataJobs = Properties.Settings.Default.DataJobs.Where(x => x.Type == DataJobType.Download);
-            var dataJobsBindingList = new BindingList<DataJob>(dataJobs.ToList());
-            dataJobComboBox.DataSource = dataJobsBindingList;
-            dataJobComboBox.ValueMember = null;
-            dataJobComboBox.DisplayMember = "Name";
-
-            var applications = Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.User);
-            var applicationsBindingList = new BindingList<AadApplication>(applications.ToList());
-            aadApplicationComboBox.DataSource = applicationsBindingList;
-            aadApplicationComboBox.ValueMember = null;
-            aadApplicationComboBox.DisplayMember = "Name";
+            appRegistrationComboBox.DataSource = Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.User).ToList();
+            appRegistrationComboBox.ValueMember = null;
+            appRegistrationComboBox.DisplayMember = "Name";
 
             userComboBox.DataSource = Properties.Settings.Default.Users;
             userComboBox.ValueMember = null;
             userComboBox.DisplayMember = "Login";
+
+            dataJobComboBox.DataSource = Properties.Settings.Default.DataJobs.Where(x => x.Type == DataJobType.Download).ToList();
+            dataJobComboBox.ValueMember = null;
+            dataJobComboBox.DisplayMember = "Name";
 
             startAtDateTimePicker.Value = DateTime.Now;
 
@@ -85,133 +81,101 @@ namespace RecurringIntegrationsScheduler.Forms
             {
                 jobName.Text = JobDetail.Key.Name;
 
-                var jobGroup =
-                    ((IEnumerable<JobGroup>) jobGroupComboBox.DataSource).FirstOrDefault(
-                        x => x.Name == JobDetail.Key.Group);
+                var jobGroup = ((IEnumerable<JobGroup>) jobGroupComboBox.DataSource).FirstOrDefault(x => x.Name == JobDetail.Key.Group);
                 jobGroupComboBox.SelectedItem = jobGroup;
 
                 jobDescription.Text = JobDetail.Description;
 
-                downloadFolder.Text = JobDetail.JobDataMap[SettingsConstants.DownloadSuccessDir]?.ToString() ??
-                                      string.Empty;
-                errorsFolder.Text = JobDetail.JobDataMap[SettingsConstants.DownloadErrorsDir]?.ToString() ??
-                                    string.Empty;
+                downloadFolder.Text = JobDetail.JobDataMap.GetString(SettingsConstants.DownloadSuccessDir);
+                errorsFolder.Text = JobDetail.JobDataMap.GetString(SettingsConstants.DownloadErrorsDir);
                 useStandardSubfolder.Checked = false;
 
-                unzipCheckBox.Checked = (JobDetail.JobDataMap[SettingsConstants.UnzipPackage] != null) &&
-                                        Convert.ToBoolean(
-                                            JobDetail.JobDataMap[SettingsConstants.UnzipPackage].ToString());
-                addTimestampCheckBox.Checked = (JobDetail.JobDataMap[SettingsConstants.AddTimestamp] != null) &&
-                                               Convert.ToBoolean(
-                                                   JobDetail.JobDataMap[SettingsConstants.AddTimestamp].ToString());
-                deletePackageCheckBox.Checked = (JobDetail.JobDataMap[SettingsConstants.DeletePackage] != null) &&
-                                                Convert.ToBoolean(
-                                                    JobDetail.JobDataMap[SettingsConstants.DeletePackage].ToString());
-                serviceAuthRadioButton.Checked = (JobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication] !=
-                                                  null) &&
-                                                 Convert.ToBoolean(
-                                                     JobDetail.JobDataMap[SettingsConstants.UseServiceAuthentication]
-                                                         .ToString());
-                delayBetweenFilesNumericUpDown.Value = Math.Round(Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.DelayBetweenFiles]));
+                unzipCheckBox.Checked = JobDetail.JobDataMap.GetBooleanValue(SettingsConstants.UnzipPackage);
+                addTimestampCheckBox.Checked = JobDetail.JobDataMap.GetBooleanValue(SettingsConstants.AddTimestamp);
+                deletePackageCheckBox.Checked = JobDetail.JobDataMap.GetBooleanValue(SettingsConstants.DeletePackage);
+                serviceAuthRadioButton.Checked = JobDetail.JobDataMap.GetBooleanValue(SettingsConstants.UseServiceAuthentication);
+                delayBetweenFilesNumericUpDown.Value = JobDetail.JobDataMap.GetInt(SettingsConstants.DelayBetweenFiles);
 
                 if (!serviceAuthRadioButton.Checked)
                 {
                     User axUser = null;
-                    if (JobDetail.JobDataMap[SettingsConstants.UserName] != null)
-                        axUser =
-                            ((IEnumerable<User>) userComboBox.DataSource).FirstOrDefault(
-                                x => x.Login == JobDetail.JobDataMap[SettingsConstants.UserName].ToString());
+                    if (!JobDetail.JobDataMap.GetString(SettingsConstants.UserName).IsNullOrWhiteSpace())
+                    {
+                        axUser = ((IEnumerable<User>)userComboBox.DataSource).FirstOrDefault(x => x.Login == JobDetail.JobDataMap.GetString(SettingsConstants.UserName));
+                    }
                     if (axUser == null)
                     {
-                        var userName = JobDetail.JobDataMap[SettingsConstants.UserName];
-                        if (userName != null)
-                            axUser = new User
-                            {
-                                Login = userName.ToString(),
-                                Password = JobDetail.JobDataMap[SettingsConstants.UserPassword].ToString()
-                            };
-                        var disabledUser = new Users {axUser};
-                        userComboBox.DataSource = disabledUser;
-                        userComboBox.Enabled = false;
+                        axUser = new User
+                        {
+                            Login = JobDetail.JobDataMap.GetString(SettingsConstants.UserName),
+                            Password = JobDetail.JobDataMap.GetString(SettingsConstants.UserPassword)
+                        };
+                        Properties.Settings.Default.Users.Add(axUser);
+                        userComboBox.DataSource = Properties.Settings.Default.Users;
                     }
                     userComboBox.SelectedItem = axUser;
                 }
-                var application =
-                    ((IEnumerable<AadApplication>) aadApplicationComboBox.DataSource).FirstOrDefault(app =>
-                            app.ClientId == JobDetail.JobDataMap[SettingsConstants.AadClientId].ToString());
+                var application = ((IEnumerable<AadApplication>)appRegistrationComboBox.DataSource).FirstOrDefault(app => app.ClientId == JobDetail.JobDataMap.GetString(SettingsConstants.AadClientId));
                 if (application == null)
-                    if (JobDetail.JobDataMap[SettingsConstants.AadClientSecret] == null)
+                {
+                    if (!serviceAuthRadioButton.Checked)
                     {
                         application = new AadApplication
                         {
-                            ClientId = JobDetail.JobDataMap[SettingsConstants.AadClientId].ToString(),
-                            Name = Resources.IMPORTED_CHANGE_THIS,
+                            ClientId = JobDetail.JobDataMap.GetString(SettingsConstants.AadClientId) ?? Guid.Empty.ToString(),
+                            Name = $"{Resources.IMPORTED_CHANGE_THIS} {DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}",
                             AuthenticationType = AuthenticationType.User
                         };
-                        Properties.Settings.Default.AadApplications.Add(application);
-                        applications =
-                            Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.User);
-                        applicationsBindingList = new BindingList<AadApplication>(applications.ToList());
-                        aadApplicationComboBox.DataSource = applicationsBindingList;
-                        aadApplicationComboBox.ValueMember = null;
-                        aadApplicationComboBox.DisplayMember = "Name";
                     }
                     else
                     {
                         application = new AadApplication
                         {
-                            ClientId = JobDetail.JobDataMap[SettingsConstants.AadClientId].ToString(),
-                            Secret = JobDetail.JobDataMap[SettingsConstants.AadClientSecret].ToString(),
-                            Name = Resources.IMPORTED,
+                            ClientId = JobDetail.JobDataMap.GetString(SettingsConstants.AadClientId) ?? Guid.Empty.ToString(),
+                            Secret = JobDetail.JobDataMap.GetString(SettingsConstants.AadClientSecret) ?? String.Empty,
+                            Name = $"{Resources.IMPORTED_CHANGE_THIS} {DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}",
                             AuthenticationType = AuthenticationType.Service
                         };
-                        var disabledApplication = new AadApplications {application};
-                        aadApplicationComboBox.DataSource = disabledApplication;
-                        aadApplicationComboBox.Enabled = false;
-                        authMethodPanel.Enabled = false;
                     }
-                aadApplicationComboBox.SelectedItem = application;
+                    Properties.Settings.Default.AadApplications.Add(application);
+                    appRegistrationComboBox.DataSource = Properties.Settings.Default.AadApplications;
+                }
+                appRegistrationComboBox.SelectedItem = application;
 
-                var dataJob =
-                    ((IEnumerable<DataJob>) dataJobComboBox.DataSource).FirstOrDefault(
-                        dj => dj.ActivityId == JobDetail.JobDataMap[SettingsConstants.ActivityId].ToString());
+                var dataJob = ((IEnumerable<DataJob>) dataJobComboBox.DataSource).FirstOrDefault(dj => dj.ActivityId == JobDetail.JobDataMap.GetString(SettingsConstants.ActivityId));
                 if (dataJob == null)
                 {
                     dataJob = new DataJob
                     {
-                        ActivityId = JobDetail.JobDataMap[SettingsConstants.ActivityId].ToString(),
+                        ActivityId = JobDetail.JobDataMap.GetString(SettingsConstants.ActivityId),
                         Type = DataJobType.Download,
-                        Name = Resources.IMPORTED_CHANGE_THIS
+                        Name = $"{Resources.IMPORTED_CHANGE_THIS} {DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}"
                     };
                     Properties.Settings.Default.DataJobs.Add(dataJob);
-                    dataJobs = Properties.Settings.Default.DataJobs.Where(x => x.Type == DataJobType.Download);
-                    dataJobsBindingList = new BindingList<DataJob>(dataJobs.ToList());
-                    dataJobComboBox.DataSource = dataJobsBindingList;
-                    dataJobComboBox.ValueMember = null;
-                    dataJobComboBox.DisplayMember = "Name";
+                    dataJobComboBox.DataSource = Properties.Settings.Default.DataJobs.Where(x => x.Type == DataJobType.Download).ToList();
                 }
                 dataJobComboBox.SelectedItem = dataJob;
 
                 var axInstance = ((IEnumerable<Instance>) instanceComboBox.DataSource).FirstOrDefault(x =>
-                    (x.AosUri == JobDetail.JobDataMap[SettingsConstants.AosUri].ToString()) &&
-                    (x.AadTenant == JobDetail.JobDataMap[SettingsConstants.AadTenant].ToString()) &&
-                    (x.AzureAuthEndpoint == JobDetail.JobDataMap[SettingsConstants.AzureAuthEndpoint].ToString()));
+                    (x.AosUri == JobDetail.JobDataMap.GetString(SettingsConstants.AosUri)) &&
+                    (x.AadTenant == JobDetail.JobDataMap.GetString(SettingsConstants.AadTenant)) &&
+                    (x.AzureAuthEndpoint == JobDetail.JobDataMap.GetString(SettingsConstants.AzureAuthEndpoint)));
                 if (axInstance == null)
                 {
                     axInstance = new Instance
                     {
-                        AosUri = JobDetail.JobDataMap[SettingsConstants.AosUri].ToString(),
-                        AadTenant = JobDetail.JobDataMap[SettingsConstants.AadTenant].ToString(),
-                        AzureAuthEndpoint = JobDetail.JobDataMap[SettingsConstants.AzureAuthEndpoint].ToString(),
-                        Name = Resources.IMPORTED_CHANGE_THIS
+                        AosUri = JobDetail.JobDataMap.GetString(SettingsConstants.AosUri),
+                        AadTenant = JobDetail.JobDataMap.GetString(SettingsConstants.AadTenant),
+                        AzureAuthEndpoint = JobDetail.JobDataMap.GetString(SettingsConstants.AzureAuthEndpoint),
+                        UseADAL = JobDetail.JobDataMap.GetBooleanValue(SettingsConstants.UseADAL),
+                        Name = $"{Resources.IMPORTED_CHANGE_THIS} {DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}"
                     };
                     Properties.Settings.Default.Instances.Add(axInstance);
+                    instanceComboBox.DataSource = Properties.Settings.Default.Instances;
                 }
                 instanceComboBox.SelectedItem = axInstance;
 
-                pauseIndefinitelyCheckBox.Checked =
-                    (JobDetail.JobDataMap[SettingsConstants.IndefinitePause] != null) &&
-                    Convert.ToBoolean(JobDetail.JobDataMap[SettingsConstants.IndefinitePause].ToString());
+                pauseIndefinitelyCheckBox.Checked = JobDetail.JobDataMap.GetBooleanValue(SettingsConstants.IndefinitePause);
 
                 if (Trigger.GetType() == typeof(SimpleTriggerImpl))
                 {
@@ -226,24 +190,17 @@ namespace RecurringIntegrationsScheduler.Forms
                     cronTriggerRadioButton.Checked = true;
                     cronExpressionTextBox.Text = localTrigger.CronExpressionString;
                 }
-                if(JobDetail.JobDataMap[SettingsConstants.RetryCount] != null)
-                {
-                    retriesCountUpDown.Value = Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.RetryCount]);
-                }
-                if(JobDetail.JobDataMap[SettingsConstants.RetryDelay] != null)
-                {
-                    retriesDelayUpDown.Value = Convert.ToDecimal(JobDetail.JobDataMap[SettingsConstants.RetryDelay]);
-                }
-                pauseOnExceptionsCheckBox.Checked =
-                    (JobDetail.JobDataMap[SettingsConstants.PauseJobOnException] != null) &&
-                    Convert.ToBoolean(JobDetail.JobDataMap[SettingsConstants.PauseJobOnException].ToString());
 
-                verboseLoggingCheckBox.Checked =
-                    (JobDetail.JobDataMap[SettingsConstants.LogVerbose] != null) &&
-                    Convert.ToBoolean(JobDetail.JobDataMap[SettingsConstants.LogVerbose].ToString());
+                retriesCountUpDown.Value = JobDetail.JobDataMap.GetInt(SettingsConstants.RetryCount);
+                retriesDelayUpDown.Value = JobDetail.JobDataMap.GetInt(SettingsConstants.RetryDelay);
+
+                pauseOnExceptionsCheckBox.Checked = JobDetail.JobDataMap.GetBooleanValue(SettingsConstants.PauseJobOnException);
+
+                verboseLoggingCheckBox.Checked = JobDetail.JobDataMap.GetBooleanValue(SettingsConstants.LogVerbose);
 
                 Properties.Settings.Default.Save();
             }
+            SetDropDownsWidth(this);
         }
 
         private void DownloadFolderBrowserButton_Click(object sender, EventArgs e)
@@ -309,7 +266,7 @@ namespace RecurringIntegrationsScheduler.Forms
                 ((userComboBox.SelectedItem == null) || string.IsNullOrEmpty(userComboBox.Text)))
                 message.AppendLine(Resources.User_is_not_selected);
 
-            if ((aadApplicationComboBox.SelectedItem == null) || string.IsNullOrEmpty(aadApplicationComboBox.Text))
+            if ((appRegistrationComboBox.SelectedItem == null) || string.IsNullOrEmpty(appRegistrationComboBox.Text))
                 message.AppendLine(Resources.AAD_client_application_is_not_selected);
 
             if ((dataJobComboBox.SelectedItem == null) || string.IsNullOrEmpty(dataJobComboBox.Text))
@@ -369,7 +326,7 @@ namespace RecurringIntegrationsScheduler.Forms
             var dataJob = (DataJob) dataJobComboBox.SelectedItem;
             var instance = (Instance) instanceComboBox.SelectedItem;
             var user = (User) userComboBox.SelectedItem;
-            var application = (AadApplication) aadApplicationComboBox.SelectedItem;
+            var application = (AadApplication) appRegistrationComboBox.SelectedItem;
 
             var map = new JobDataMap
             {
@@ -378,18 +335,19 @@ namespace RecurringIntegrationsScheduler.Forms
                 {SettingsConstants.AadTenant, instance.AadTenant},
                 {SettingsConstants.AzureAuthEndpoint, instance.AzureAuthEndpoint},
                 {SettingsConstants.AosUri, instance.AosUri},
+                {SettingsConstants.UseADAL, instance.UseADAL},
                 {SettingsConstants.ActivityId, dataJob.ActivityId},
-                {SettingsConstants.UseServiceAuthentication, serviceAuthRadioButton.Checked.ToString()},
+                {SettingsConstants.UseServiceAuthentication, serviceAuthRadioButton.Checked},
                 {SettingsConstants.AadClientId, application.ClientId},
-                {SettingsConstants.UnzipPackage, unzipCheckBox.Checked.ToString()},
-                {SettingsConstants.AddTimestamp, addTimestampCheckBox.Checked.ToString()},
-                {SettingsConstants.DeletePackage, deletePackageCheckBox.Checked.ToString()},
-                {SettingsConstants.RetryCount, retriesCountUpDown.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked.ToString()},
-                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked.ToString()},
-                {SettingsConstants.DelayBetweenFiles, delayBetweenFilesNumericUpDown.Value.ToString(CultureInfo.InvariantCulture)},
-                {SettingsConstants.LogVerbose, verboseLoggingCheckBox.Checked.ToString()}
+                {SettingsConstants.UnzipPackage, unzipCheckBox.Checked},
+                {SettingsConstants.AddTimestamp, addTimestampCheckBox.Checked},
+                {SettingsConstants.DeletePackage, deletePackageCheckBox.Checked},
+                {SettingsConstants.RetryCount, retriesCountUpDown.Value},
+                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value},
+                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked},
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked},
+                {SettingsConstants.DelayBetweenFiles, delayBetweenFilesNumericUpDown.Value},
+                {SettingsConstants.LogVerbose, verboseLoggingCheckBox.Checked}
             };
             if (serviceAuthRadioButton.Checked)
             {
@@ -473,13 +431,14 @@ namespace RecurringIntegrationsScheduler.Forms
 
         private void ServiceAuthRadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            var applications = serviceAuthRadioButton.Checked
-                ? Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.Service)
-                : Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.User);
-            var applicationsBindingList = new BindingList<AadApplication>(applications.ToList());
-            aadApplicationComboBox.DataSource = applicationsBindingList;
-            aadApplicationComboBox.ValueMember = null;
-            aadApplicationComboBox.DisplayMember = "Name";
+            if (serviceAuthRadioButton.Checked)
+            {
+                appRegistrationComboBox.DataSource = Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.Service).ToList();
+            }
+            else
+            {
+                appRegistrationComboBox.DataSource = Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.User).ToList();
+            }
 
             userComboBox.Enabled = !serviceAuthRadioButton.Checked;
         }
@@ -522,6 +481,33 @@ namespace RecurringIntegrationsScheduler.Forms
             {
                 TrimTextBoxes(c);
             }
+        }
+
+        private void SetDropDownsWidth(Control parentCtrl)
+        {
+            parentCtrl.Controls
+                .OfType<ComboBox>()
+                .ToList()
+                .ForEach(t => t.DropDownWidth = DropDownWidth(t));
+
+            foreach (Control c in parentCtrl.Controls)
+            {
+                SetDropDownsWidth(c);
+            }
+        }
+
+        private int DropDownWidth(ComboBox myCombo)
+        {
+            int maxWidth = 0;
+            foreach (var obj in myCombo.Items)
+            {
+                int temp = TextRenderer.MeasureText(obj.ToString(), myCombo.Font).Width;
+                if (temp > maxWidth)
+                {
+                    maxWidth = temp;
+                }
+            }
+            return maxWidth;
         }
     }
 }

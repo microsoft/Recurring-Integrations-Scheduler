@@ -346,25 +346,8 @@ namespace RecurringIntegrationsScheduler.Forms
                 switch (jobDetail.JobType.FullName)
                 {
                     case SettingsConstants.DownloadJob:
-                        if (Properties.Settings.Default.V3Forms)
                         {
                             using DownloadJobV3 downloadForm = new DownloadJobV3
-                            {
-                                JobDetail = jobDetail,
-                                Trigger = jobTrigger
-                            };
-
-                            downloadForm.ShowDialog();
-
-                            if (downloadForm.Cancelled && downloadForm.JobDetail == null && downloadForm.Trigger == null) return;
-
-                            scheduler.ScheduleJob(downloadForm.JobDetail, new HashSet<ITrigger> { downloadForm.Trigger }, true);
-
-                            RefreshGrid();
-                        }
-                        else
-                        {
-                            using DownloadJob downloadForm = new DownloadJob
                             {
                                 JobDetail = jobDetail,
                                 Trigger = jobTrigger
@@ -381,25 +364,8 @@ namespace RecurringIntegrationsScheduler.Forms
                         break;
 
                     case SettingsConstants.ExportJob:
-                        if (Properties.Settings.Default.V3Forms)
                         {
                             using ExportJobV3 exportForm = new ExportJobV3
-                            {
-                                JobDetail = jobDetail,
-                                Trigger = jobTrigger
-                            };
-
-                            exportForm.ShowDialog();
-
-                            if (exportForm.Cancelled && exportForm.JobDetail == null && exportForm.Trigger == null) return;
-
-                            scheduler.ScheduleJob(exportForm.JobDetail, new HashSet<ITrigger> { exportForm.Trigger }, true);
-
-                            RefreshGrid();
-                        }
-                        else
-                        {
-                            using ExportJob exportForm = new ExportJob
                             {
                                 JobDetail = jobDetail,
                                 Trigger = jobTrigger
@@ -426,35 +392,8 @@ namespace RecurringIntegrationsScheduler.Forms
                         {
                             processingJobTrigger = scheduler.GetTriggersOfJob(processingJobKey).Result.First();
                         }
-                        if (Properties.Settings.Default.V3Forms)
                         {
                             using UploadJobV3 uploadForm = new UploadJobV3
-                            {
-                                UploadJobDetail = jobDetail,
-                                UploadTrigger = jobTrigger
-                            };
-                            if ((processingJobDetail != null) && (processingJobTrigger != null))
-                            {
-                                uploadForm.ProcessingJobDetail = processingJobDetail;
-                                uploadForm.ProcessingTrigger = processingJobTrigger;
-                            }
-
-                            uploadForm.ShowDialog();
-
-                            if (uploadForm.Cancelled && uploadForm.UploadJobDetail == null && uploadForm.UploadTrigger == null) return;
-
-                            scheduler.ScheduleJob(uploadForm.UploadJobDetail, new HashSet<ITrigger> { uploadForm.UploadTrigger }, true);
-
-                            if ((uploadForm.ProcessingJobDetail != null) && (uploadForm.ProcessingTrigger != null))
-                            {
-                                scheduler.ScheduleJob(uploadForm.ProcessingJobDetail, new HashSet<ITrigger> { uploadForm.ProcessingTrigger }, true);
-                            }
-
-                            RefreshGrid();
-                        }
-                        else
-                        {
-                            using UploadJob uploadForm = new UploadJob
                             {
                                 UploadJobDetail = jobDetail,
                                 UploadTrigger = jobTrigger
@@ -491,7 +430,6 @@ namespace RecurringIntegrationsScheduler.Forms
                         {
                             executionJobTrigger = scheduler.GetTriggersOfJob(executionJobKey).Result.First();
                         }
-                        if (Properties.Settings.Default.V3Forms)
                         {
                             using ImportJobV3 importForm = new ImportJobV3
                             {
@@ -508,30 +446,6 @@ namespace RecurringIntegrationsScheduler.Forms
 
                             if (importForm.Cancelled && importForm.ImportJobDetail == null && importForm.ImportTrigger == null) return;
                             
-                            scheduler.ScheduleJob(importForm.ImportJobDetail, new HashSet<ITrigger> { importForm.ImportTrigger }, true);
-
-                            if (importForm.ExecutionJobDetail != null && importForm.ExecutionTrigger != null)
-                            {
-                                scheduler.ScheduleJob(importForm.ExecutionJobDetail, new HashSet<ITrigger> { importForm.ExecutionTrigger }, true);
-                            }
-                            RefreshGrid();
-                        }
-                        else
-                        {
-                            using ImportJob importForm = new ImportJob
-                            {
-                                ImportJobDetail = jobDetail,
-                                ImportTrigger = jobTrigger
-                            };
-                            if ((executionJobDetail != null) && (executionJobTrigger != null))
-                            {
-                                importForm.ExecutionJobDetail = executionJobDetail;
-                                importForm.ExecutionTrigger = executionJobTrigger;
-                            }
-                            importForm.ShowDialog();
-
-                            if (importForm.Cancelled && (importForm.ImportJobDetail == null) && (importForm.ImportTrigger == null))
-
                             scheduler.ScheduleJob(importForm.ImportJobDetail, new HashSet<ITrigger> { importForm.ImportTrigger }, true);
 
                             if (importForm.ExecutionJobDetail != null && importForm.ExecutionTrigger != null)
@@ -864,26 +778,14 @@ namespace RecurringIntegrationsScheduler.Forms
                 IJobDetail monitorJob;
                 ITrigger monitorTrigger;
 
-                if (Properties.Settings.Default.V3Forms)
-                {
-                    using UploadJobV3 form = new UploadJobV3();
-                    form.ShowDialog();
-                    if (form.Cancelled || (form.UploadJobDetail == null) || (form.UploadTrigger == null)) return;
-                    uploadJob = form.UploadJobDetail;
-                    uploadTrigger = form.UploadTrigger;
-                    monitorJob = form.ProcessingJobDetail;
-                    monitorTrigger = form.ProcessingTrigger;
-                }
-                else
-                {
-                    using UploadJob form = new UploadJob();
-                    form.ShowDialog();
-                    if (form.Cancelled || (form.UploadJobDetail == null) || (form.UploadTrigger == null)) return;
-                    uploadJob = form.UploadJobDetail;
-                    uploadTrigger = form.UploadTrigger;
-                    monitorJob = form.ProcessingJobDetail;
-                    monitorTrigger = form.ProcessingTrigger;
-                }
+                using UploadJobV3 form = new UploadJobV3();
+                form.ShowDialog();
+                if (form.Cancelled || (form.UploadJobDetail == null) || (form.UploadTrigger == null)) return;
+                uploadJob = form.UploadJobDetail;
+                uploadTrigger = form.UploadTrigger;
+                monitorJob = form.ProcessingJobDetail;
+                monitorTrigger = form.ProcessingTrigger;
+
                 var scheduler = Scheduler.Instance.GetScheduler();
                 if (scheduler == null)
                 {
@@ -914,22 +816,12 @@ namespace RecurringIntegrationsScheduler.Forms
                 IJobDetail exportJob;
                 ITrigger exportTrigger;
 
-                if (Properties.Settings.Default.V3Forms)
-                {
-                    using ExportJobV3 form = new ExportJobV3();
-                    form.ShowDialog();
-                    if (form.Cancelled && (form.JobDetail == null) && (form.Trigger == null)) return;
-                    exportJob = form.JobDetail;
-                    exportTrigger = form.Trigger;
-                }
-                else
-                {
-                    using ExportJob form = new ExportJob();
-                    form.ShowDialog();
-                    if (form.Cancelled && (form.JobDetail == null) && (form.Trigger == null)) return;
-                    exportJob = form.JobDetail;
-                    exportTrigger = form.Trigger;
-                }
+                using ExportJobV3 form = new ExportJobV3();
+                form.ShowDialog();
+                if (form.Cancelled && (form.JobDetail == null) && (form.Trigger == null)) return;
+                exportJob = form.JobDetail;
+                exportTrigger = form.Trigger;
+
                 var scheduler = Scheduler.Instance.GetScheduler();
                 if (scheduler == null)
                 {
@@ -957,26 +849,13 @@ namespace RecurringIntegrationsScheduler.Forms
                 IJobDetail monitorJob;
                 ITrigger monitorTrigger;
                 
-                if(Properties.Settings.Default.V3Forms)
-                {
-                    using ImportJobV3 form = new ImportJobV3();
-                    form.ShowDialog();
-                    if (form.Cancelled || (form.ImportJobDetail == null) || (form.ImportTrigger == null)) return;
-                    importJob = form.ImportJobDetail;
-                    importTrigger = form.ImportTrigger;
-                    monitorJob = form.ExecutionJobDetail;
-                    monitorTrigger = form.ExecutionTrigger;
-                }
-                else
-                {
-                    using ImportJob form = new ImportJob();
-                    form.ShowDialog();
-                    if (form.Cancelled || (form.ImportJobDetail == null) || (form.ImportTrigger == null)) return;
-                    importJob = form.ImportJobDetail;
-                    importTrigger = form.ImportTrigger;
-                    monitorJob = form.ExecutionJobDetail;
-                    monitorTrigger = form.ExecutionTrigger;
-                }
+                using ImportJobV3 form = new ImportJobV3();
+                form.ShowDialog();
+                if (form.Cancelled || (form.ImportJobDetail == null) || (form.ImportTrigger == null)) return;
+                importJob = form.ImportJobDetail;
+                importTrigger = form.ImportTrigger;
+                monitorJob = form.ExecutionJobDetail;
+                monitorTrigger = form.ExecutionTrigger;
 
                 var scheduler = Scheduler.Instance.GetScheduler();
                 if (scheduler == null)
@@ -1008,22 +887,12 @@ namespace RecurringIntegrationsScheduler.Forms
                 IJobDetail downloadJob;
                 ITrigger downloadTrigger;
 
-                if (Properties.Settings.Default.V3Forms)
-                {
-                    using DownloadJobV3 form = new DownloadJobV3();
-                    form.ShowDialog();
-                    if (form.Cancelled && (form.JobDetail == null) && (form.Trigger == null)) return;
-                    downloadJob = form.JobDetail;
-                    downloadTrigger = form.Trigger;
-                }
-                else
-                {
-                    using DownloadJob form = new DownloadJob();
-                    form.ShowDialog();
-                    if (form.Cancelled && (form.JobDetail == null) && (form.Trigger == null)) return;
-                    downloadJob = form.JobDetail;
-                    downloadTrigger = form.Trigger;
-                }
+                using DownloadJobV3 form = new DownloadJobV3();
+                form.ShowDialog();
+                if (form.Cancelled && (form.JobDetail == null) && (form.Trigger == null)) return;
+                downloadJob = form.JobDetail;
+                downloadTrigger = form.Trigger;
+
                 var scheduler = Scheduler.Instance.GetScheduler();
                 if (scheduler == null)
                 {

@@ -45,7 +45,9 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.AAD_tenant_id_is_missing_in_job_configuration));
             }
 
-            UseServiceAuthentication = Convert.ToBoolean(dataMap.GetString(SettingsConstants.UseServiceAuthentication));
+            UseADAL = dataMap.GetBooleanValue(SettingsConstants.UseADAL);
+
+            UseServiceAuthentication = dataMap.GetBooleanValue(SettingsConstants.UseServiceAuthentication);
 
             var aadClientIdStr = dataMap.GetString(SettingsConstants.AadClientId);
             if (!Guid.TryParse(aadClientIdStr, out Guid aadClientGuid) || (Guid.Empty == aadClientGuid))
@@ -93,9 +95,9 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 RetryDelay = 10; //seconds
             }
 
-            PauseJobOnException = Convert.ToBoolean(dataMap.GetString(SettingsConstants.PauseJobOnException));
+            PauseJobOnException = dataMap.GetBooleanValue(SettingsConstants.PauseJobOnException);
 
-            IndefinitePause = Convert.ToBoolean(dataMap.GetString(SettingsConstants.IndefinitePause));
+            IndefinitePause = dataMap.GetBooleanValue(SettingsConstants.IndefinitePause);
 
             ImportFromPackageActionPath = dataMap.GetString(SettingsConstants.ImportFromPackageActionPath);
             if (string.IsNullOrEmpty(ImportFromPackageActionPath))
@@ -169,9 +171,9 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 GetExecutionErrorsPath = PackageApiActions.GetExecutionErrorsPath;
             }
 
-            GetExecutionErrors = Convert.ToBoolean(dataMap.GetString(SettingsConstants.GetExecutionErrors));
+            GetExecutionErrors = dataMap.GetBooleanValue(SettingsConstants.GetExecutionErrors);
 
-            LogVerbose = Convert.ToBoolean(dataMap.GetString(SettingsConstants.LogVerbose));
+            LogVerbose = dataMap.GetBooleanValue(SettingsConstants.LogVerbose);
 
             JobKey = context.JobDetail.Key.ToString();
         }
@@ -201,6 +203,14 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
         /// The aad tenant.
         /// </value>
         public string AadTenant { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [use ADAL for authentication].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [use ADAL for authentication]; otherwise, <c>false</c>.
+        /// </value>
+        public bool UseADAL { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [use service authentication].

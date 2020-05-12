@@ -88,8 +88,5 @@
   &lt;/AadApplication&gt;
 &lt;/ArrayOfAadApplication&gt;</Value>
     </Setting>
-    <Setting Name="V3Forms" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
   </Settings>
 </SettingsFile>

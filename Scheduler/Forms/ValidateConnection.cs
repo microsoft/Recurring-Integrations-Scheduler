@@ -79,6 +79,7 @@ namespace RecurringIntegrationsScheduler.Forms
                 settings.AadTenant = Instance.AadTenant;
                 settings.AosUri = Instance.AosUri.TrimEnd('/');
                 settings.AzureAuthEndpoint = Instance.AzureAuthEndpoint;
+                settings.UseADAL = Instance.UseADAL;
             }
             if (user != null)
             {

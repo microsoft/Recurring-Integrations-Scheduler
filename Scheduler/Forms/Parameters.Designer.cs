@@ -49,10 +49,6 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobGroupsEditButton = new System.Windows.Forms.ToolStripButton();
             this.instancesGroupBox = new System.Windows.Forms.GroupBox();
             this.instancesGrid = new System.Windows.Forms.DataGridView();
-            this.instanceName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.instanceAosUri = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.instanceAadTenant = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.instanceAzureAuthEndpoint = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.usersGroupBox = new System.Windows.Forms.GroupBox();
             this.usersDataGrid = new System.Windows.Forms.DataGridView();
             this.userLogin = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -94,7 +90,11 @@ namespace RecurringIntegrationsScheduler.Forms
             this.applicationsEditButton = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.miscSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.v3formsCheckbox = new System.Windows.Forms.CheckBox();
+            this.instanceName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.instanceAosUri = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.instanceAadTenant = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.instanceAzureAuthEndpoint = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.instanceUseADAL = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.instancesToolStrip.SuspendLayout();
             this.usersToolStrip.SuspendLayout();
             this.dataJobsToolStrip.SuspendLayout();
@@ -115,7 +115,6 @@ namespace RecurringIntegrationsScheduler.Forms
             ((System.ComponentModel.ISupportInitialize)(this.applicationsGrid)).BeginInit();
             this.applicationsToolStrip.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.miscSettingsGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // instancesToolStrip
@@ -334,7 +333,8 @@ namespace RecurringIntegrationsScheduler.Forms
             this.instanceName,
             this.instanceAosUri,
             this.instanceAadTenant,
-            this.instanceAzureAuthEndpoint});
+            this.instanceAzureAuthEndpoint,
+            this.instanceUseADAL});
             this.instancesGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.instancesGrid.Location = new System.Drawing.Point(7, 36);
             this.instancesGrid.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
@@ -350,44 +350,6 @@ namespace RecurringIntegrationsScheduler.Forms
             this.instancesGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.InstancesDataGridView_RowsRemoved);
             this.instancesGrid.RowStateChanged += new System.Windows.Forms.DataGridViewRowStateChangedEventHandler(this.InstancesDataGridView_RowStateChanged);
             this.instancesGrid.SelectionChanged += new System.EventHandler(this.InstancesDataGridView_SelectionChanged);
-            // 
-            // instanceName
-            // 
-            this.instanceName.DataPropertyName = "Name";
-            this.instanceName.FillWeight = 40F;
-            this.instanceName.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.NameLabel;
-            this.instanceName.MinimumWidth = 9;
-            this.instanceName.Name = "instanceName";
-            this.instanceName.ReadOnly = true;
-            this.instanceName.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Friendly_name_used_only_in_Recurring_Integrations_App;
-            // 
-            // instanceAosUri
-            // 
-            this.instanceAosUri.DataPropertyName = "AosUri";
-            this.instanceAosUri.FillWeight = 40F;
-            this.instanceAosUri.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.AOS_URL;
-            this.instanceAosUri.MinimumWidth = 9;
-            this.instanceAosUri.Name = "instanceAosUri";
-            this.instanceAosUri.ReadOnly = true;
-            // 
-            // instanceAadTenant
-            // 
-            this.instanceAadTenant.DataPropertyName = "AadTenant";
-            this.instanceAadTenant.FillWeight = 20F;
-            this.instanceAadTenant.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.Tenant;
-            this.instanceAadTenant.MinimumWidth = 9;
-            this.instanceAadTenant.Name = "instanceAadTenant";
-            this.instanceAadTenant.ReadOnly = true;
-            this.instanceAadTenant.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Uri_or_Guid;
-            // 
-            // instanceAzureAuthEndpoint
-            // 
-            this.instanceAzureAuthEndpoint.DataPropertyName = "AzureAuthEndpoint";
-            this.instanceAzureAuthEndpoint.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.Authentication_endpoint;
-            this.instanceAzureAuthEndpoint.MinimumWidth = 9;
-            this.instanceAzureAuthEndpoint.Name = "instanceAzureAuthEndpoint";
-            this.instanceAzureAuthEndpoint.ReadOnly = true;
-            this.instanceAzureAuthEndpoint.Visible = false;
             // 
             // usersGroupBox
             // 
@@ -912,7 +874,6 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             // miscSettingsGroupBox
             // 
-            this.miscSettingsGroupBox.Controls.Add(this.v3formsCheckbox);
             this.miscSettingsGroupBox.Location = new System.Drawing.Point(1214, 498);
             this.miscSettingsGroupBox.Name = "miscSettingsGroupBox";
             this.miscSettingsGroupBox.Size = new System.Drawing.Size(338, 487);
@@ -920,15 +881,52 @@ namespace RecurringIntegrationsScheduler.Forms
             this.miscSettingsGroupBox.TabStop = false;
             this.miscSettingsGroupBox.Text = "Miscellaneous";
             // 
-            // v3formsCheckbox
+            // instanceName
             // 
-            this.v3formsCheckbox.AutoSize = true;
-            this.v3formsCheckbox.Location = new System.Drawing.Point(14, 39);
-            this.v3formsCheckbox.Name = "v3formsCheckbox";
-            this.v3formsCheckbox.Size = new System.Drawing.Size(439, 51);
-            this.v3formsCheckbox.TabIndex = 0;
-            this.v3formsCheckbox.Text = "Use alternative job forms";
-            this.v3formsCheckbox.UseVisualStyleBackColor = true;
+            this.instanceName.DataPropertyName = "Name";
+            this.instanceName.FillWeight = 40F;
+            this.instanceName.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.NameLabel;
+            this.instanceName.MinimumWidth = 9;
+            this.instanceName.Name = "instanceName";
+            this.instanceName.ReadOnly = true;
+            this.instanceName.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Friendly_name_used_only_in_Recurring_Integrations_App;
+            // 
+            // instanceAosUri
+            // 
+            this.instanceAosUri.DataPropertyName = "AosUri";
+            this.instanceAosUri.FillWeight = 40F;
+            this.instanceAosUri.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.AOS_URL;
+            this.instanceAosUri.MinimumWidth = 9;
+            this.instanceAosUri.Name = "instanceAosUri";
+            this.instanceAosUri.ReadOnly = true;
+            // 
+            // instanceAadTenant
+            // 
+            this.instanceAadTenant.DataPropertyName = "AadTenant";
+            this.instanceAadTenant.FillWeight = 20F;
+            this.instanceAadTenant.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.Tenant;
+            this.instanceAadTenant.MinimumWidth = 9;
+            this.instanceAadTenant.Name = "instanceAadTenant";
+            this.instanceAadTenant.ReadOnly = true;
+            this.instanceAadTenant.ToolTipText = global::RecurringIntegrationsScheduler.Properties.Resources.Uri_or_Guid;
+            // 
+            // instanceAzureAuthEndpoint
+            // 
+            this.instanceAzureAuthEndpoint.DataPropertyName = "AzureAuthEndpoint";
+            this.instanceAzureAuthEndpoint.HeaderText = global::RecurringIntegrationsScheduler.Properties.Resources.Authentication_endpoint;
+            this.instanceAzureAuthEndpoint.MinimumWidth = 9;
+            this.instanceAzureAuthEndpoint.Name = "instanceAzureAuthEndpoint";
+            this.instanceAzureAuthEndpoint.ReadOnly = true;
+            this.instanceAzureAuthEndpoint.Visible = false;
+            // 
+            // instanceUseADAL
+            // 
+            this.instanceUseADAL.DataPropertyName = "UseADAL";
+            this.instanceUseADAL.HeaderText = "ADAL";
+            this.instanceUseADAL.MinimumWidth = 9;
+            this.instanceUseADAL.Name = "instanceUseADAL";
+            this.instanceUseADAL.ReadOnly = true;
+            this.instanceUseADAL.Visible = false;
             // 
             // Parameters
             // 
@@ -980,8 +978,6 @@ namespace RecurringIntegrationsScheduler.Forms
             this.applicationsToolStrip.ResumeLayout(false);
             this.applicationsToolStrip.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
-            this.miscSettingsGroupBox.ResumeLayout(false);
-            this.miscSettingsGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1037,10 +1033,6 @@ namespace RecurringIntegrationsScheduler.Forms
         private System.Windows.Forms.ToolStripButton applicationsAddButton;
         private System.Windows.Forms.ToolStripButton applicationsDeleteButton;
         private System.Windows.Forms.ToolStripButton applicationsEditButton;
-        private System.Windows.Forms.DataGridViewTextBoxColumn instanceName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn instanceAosUri;
-        private System.Windows.Forms.DataGridViewTextBoxColumn instanceAadTenant;
-        private System.Windows.Forms.DataGridViewTextBoxColumn instanceAzureAuthEndpoint;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataJobName;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataJobType;
@@ -1051,6 +1043,10 @@ namespace RecurringIntegrationsScheduler.Forms
         private System.Windows.Forms.DataGridViewTextBoxColumn applicationClientId;
         private System.Windows.Forms.DataGridViewTextBoxColumn applicationSecret;
         private System.Windows.Forms.GroupBox miscSettingsGroupBox;
-        private System.Windows.Forms.CheckBox v3formsCheckbox;
+        private System.Windows.Forms.DataGridViewTextBoxColumn instanceName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn instanceAosUri;
+        private System.Windows.Forms.DataGridViewTextBoxColumn instanceAadTenant;
+        private System.Windows.Forms.DataGridViewTextBoxColumn instanceAzureAuthEndpoint;
+        private System.Windows.Forms.DataGridViewTextBoxColumn instanceUseADAL;
     }
 }

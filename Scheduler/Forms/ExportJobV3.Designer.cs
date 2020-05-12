@@ -103,7 +103,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.userAuthRadioButton = new System.Windows.Forms.RadioButton();
             this.serviceAuthRadioButton = new System.Windows.Forms.RadioButton();
             this.aadApplicationLabel = new System.Windows.Forms.Label();
-            this.aadApplicationComboBox = new System.Windows.Forms.ComboBox();
+            this.appRegistrationComboBox = new System.Windows.Forms.ComboBox();
             this.userLabel = new System.Windows.Forms.Label();
             this.userComboBox = new System.Windows.Forms.ComboBox();
             this.customOdataTabPage = new System.Windows.Forms.TabPage();
@@ -945,7 +945,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.axDetailsGroupBox.Controls.Add(this.instanceComboBox);
             this.axDetailsGroupBox.Controls.Add(this.authMethodPanel);
             this.axDetailsGroupBox.Controls.Add(this.aadApplicationLabel);
-            this.axDetailsGroupBox.Controls.Add(this.aadApplicationComboBox);
+            this.axDetailsGroupBox.Controls.Add(this.appRegistrationComboBox);
             this.axDetailsGroupBox.Controls.Add(this.userLabel);
             this.axDetailsGroupBox.Controls.Add(this.userComboBox);
             this.axDetailsGroupBox.Location = new System.Drawing.Point(7, 7);
@@ -1024,13 +1024,13 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             // aadApplicationComboBox
             // 
-            this.aadApplicationComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.aadApplicationComboBox.FormattingEnabled = true;
-            this.aadApplicationComboBox.Location = new System.Drawing.Point(226, 140);
-            this.aadApplicationComboBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.aadApplicationComboBox.Name = "aadApplicationComboBox";
-            this.aadApplicationComboBox.Size = new System.Drawing.Size(248, 32);
-            this.aadApplicationComboBox.TabIndex = 17;
+            this.appRegistrationComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.appRegistrationComboBox.FormattingEnabled = true;
+            this.appRegistrationComboBox.Location = new System.Drawing.Point(226, 140);
+            this.appRegistrationComboBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.appRegistrationComboBox.Name = "aadApplicationComboBox";
+            this.appRegistrationComboBox.Size = new System.Drawing.Size(248, 32);
+            this.appRegistrationComboBox.TabIndex = 17;
             // 
             // userLabel
             // 
@@ -1325,7 +1325,7 @@ namespace RecurringIntegrationsScheduler.Forms
         private System.Windows.Forms.DateTimePicker hoursDateTimePicker;
         private System.Windows.Forms.GroupBox axDetailsGroupBox;
         private System.Windows.Forms.Label aadApplicationLabel;
-        private System.Windows.Forms.ComboBox aadApplicationComboBox;
+        private System.Windows.Forms.ComboBox appRegistrationComboBox;
         private System.Windows.Forms.Panel authMethodPanel;
         private System.Windows.Forms.RadioButton serviceAuthRadioButton;
         private System.Windows.Forms.RadioButton userAuthRadioButton;

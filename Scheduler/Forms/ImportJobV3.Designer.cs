@@ -2171,7 +2171,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.cancelToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("cancelToolStripButton.Image")));
             this.cancelToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.cancelToolStripButton.Name = "cancelToolStripButton";
-            this.cancelToolStripButton.Size = new System.Drawing.Size(79, 34);
+            this.cancelToolStripButton.Size = new System.Drawing.Size(79, 38);
             this.cancelToolStripButton.Text = "Cancel";
             this.cancelToolStripButton.Click += new System.EventHandler(this.CancelToolStripButton_Click);
             // 
@@ -2182,7 +2182,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.addToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("addToolStripButton.Image")));
             this.addToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addToolStripButton.Name = "addToolStripButton";
-            this.addToolStripButton.Size = new System.Drawing.Size(90, 34);
+            this.addToolStripButton.Size = new System.Drawing.Size(90, 38);
             this.addToolStripButton.Text = "Add job";
             this.addToolStripButton.Click += new System.EventHandler(this.AddToolStripButton_Click);
             // 

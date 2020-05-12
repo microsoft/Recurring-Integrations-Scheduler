@@ -79,13 +79,13 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Upload_errors_directory_is_missing_in_job_configuration));
             }
 
-            ExecutionJobPresent = Convert.ToBoolean(dataMap.GetString(SettingsConstants.ExecutionJobPresent));
+            ExecutionJobPresent = dataMap.GetBooleanValue(SettingsConstants.ExecutionJobPresent);
 
-            MultiCompanyImport = Convert.ToBoolean(dataMap.GetString(SettingsConstants.MultiCompanyImport));
+            MultiCompanyImport = dataMap.GetBooleanValue(SettingsConstants.MultiCompanyImport);
 
-            GetLegalEntityFromSubfolder = Convert.ToBoolean(dataMap.GetString(SettingsConstants.GetLegalEntityFromSubfolder));
+            GetLegalEntityFromSubfolder = dataMap.GetBooleanValue(SettingsConstants.GetLegalEntityFromSubfolder);
 
-            GetLegalEntityFromFilename = Convert.ToBoolean(dataMap.GetString(SettingsConstants.GetLegalEntityFromFilename));
+            GetLegalEntityFromFilename = dataMap.GetBooleanValue(SettingsConstants.GetLegalEntityFromFilename);
 
             Company = dataMap.GetString(SettingsConstants.Company);
             if (!MultiCompanyImport && string.IsNullOrEmpty(Company))
@@ -114,7 +114,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 OrderBy = OrderByOptions.Created;
             }
 
-            ReverseOrder = Convert.ToBoolean(dataMap.GetString(SettingsConstants.ReverseOrder));
+            ReverseOrder = dataMap.GetBooleanValue(SettingsConstants.ReverseOrder);
 
             DataProject = dataMap.GetString(SettingsConstants.DataProject);
             if (string.IsNullOrEmpty(DataProject))
@@ -122,9 +122,9 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Data_project_is_missing_in_job_configuration));
             }
 
-            OverwriteDataProject = Convert.ToBoolean(dataMap.GetString(SettingsConstants.OverwriteDataProject));
+            OverwriteDataProject = dataMap.GetBooleanValue(SettingsConstants.OverwriteDataProject);
 
-            ExecuteImport = Convert.ToBoolean(dataMap.GetString(SettingsConstants.ExecuteImport));
+            ExecuteImport = dataMap.GetBooleanValue(SettingsConstants.ExecuteImport);
 
             PackageTemplate = dataMap.GetString(SettingsConstants.PackageTemplate);
             if (!string.IsNullOrEmpty(PackageTemplate))
@@ -150,7 +150,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
 
             LegalEntityTokenPosition = dataMap.GetInt(SettingsConstants.LegalEntityTokenPosition);
 
-            InputFilesArePackages = Convert.ToBoolean(dataMap.GetString(SettingsConstants.InputFilesArePackages));
+            InputFilesArePackages = dataMap.GetBooleanValue(SettingsConstants.InputFilesArePackages);
         }
 
         #region Members

@@ -136,23 +136,11 @@
     <Compile Include="Forms\ExportJobV3.Designer.cs">
       <DependentUpon>ExportJobV3.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ExportJobOptions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ExportJobOptions.Designer.cs">
-      <DependentUpon>ExportJobOptions.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\ImportJobV3.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\ImportJobV3.Designer.cs">
       <DependentUpon>ImportJobV3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ImportJobOptions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ImportJobOptions.Designer.cs">
-      <DependentUpon>ImportJobOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\DataJobForm.cs">
       <SubType>Form</SubType>
@@ -160,23 +148,11 @@
     <Compile Include="Forms\DataJobForm.Designer.cs">
       <DependentUpon>DataJobForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ExportJob.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ExportJob.Designer.cs">
-      <DependentUpon>ExportJob.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\JobGroupForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\JobGroupForm.Designer.cs">
       <DependentUpon>JobGroupForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ImportJob.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ImportJob.Designer.cs">
-      <DependentUpon>ImportJob.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\UploadJobV3.cs">
       <SubType>Form</SubType>
@@ -195,18 +171,6 @@
     </Compile>
     <Compile Include="Forms\InstanceForm.Designer.cs">
       <DependentUpon>InstanceForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\UploadJob.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\UploadJob.Designer.cs">
-      <DependentUpon>UploadJob.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\DownloadJob.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\DownloadJob.Designer.cs">
-      <DependentUpon>DownloadJob.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ValidateConnection.cs">
       <SubType>Form</SubType>
@@ -259,29 +223,15 @@
     <EmbeddedResource Include="Forms\ExportJobV3.resx">
       <DependentUpon>ExportJobV3.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ExportJobOptions.resx">
-      <DependentUpon>ExportJobOptions.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ImportJobV3.resx">
       <DependentUpon>ImportJobV3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ImportJobOptions.resx">
-      <DependentUpon>ImportJobOptions.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DataJobForm.resx">
       <DependentUpon>DataJobForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ExportJob.resx">
-      <DependentUpon>ExportJob.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\JobGroupForm.resx">
       <DependentUpon>JobGroupForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ImportJob.resx">
-      <DependentUpon>ImportJob.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\UploadJobV3.resx">
       <DependentUpon>UploadJobV3.cs</DependentUpon>
@@ -291,12 +241,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\InstanceForm.resx">
       <DependentUpon>InstanceForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\UploadJob.resx">
-      <DependentUpon>UploadJob.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\DownloadJob.resx">
-      <DependentUpon>DownloadJob.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

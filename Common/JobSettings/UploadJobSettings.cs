@@ -86,7 +86,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Upload_errors_directory_is_missing_in_job_configuration));
             }
 
-            IsDataPackage = Convert.ToBoolean(dataMap.GetString(SettingsConstants.IsDataPackage));
+            IsDataPackage = dataMap.GetBooleanValue(SettingsConstants.IsDataPackage);
 
             EntityName = dataMap.GetString(SettingsConstants.EntityName);
             if (!IsDataPackage && string.IsNullOrEmpty(EntityName))
@@ -94,7 +94,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Entity_name_is_missing_in_job_configuration));
             }
 
-            ProcessingJobPresent = Convert.ToBoolean(dataMap.GetString(SettingsConstants.ProcessingJobPresent));
+            ProcessingJobPresent = dataMap.GetBooleanValue(SettingsConstants.ProcessingJobPresent);
 
             //Company is not mandatory
             Company = dataMap.GetString(SettingsConstants.Company);
@@ -120,9 +120,9 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 OrderBy = OrderByOptions.Created;
             }
 
-            ReverseOrder = Convert.ToBoolean(dataMap.GetString(SettingsConstants.ReverseOrder));
+            ReverseOrder = dataMap.GetBooleanValue(SettingsConstants.ReverseOrder);
 
-            UploadInOrder = Convert.ToBoolean(dataMap.GetString(SettingsConstants.UploadInOrder));
+            UploadInOrder = dataMap.GetBooleanValue(SettingsConstants.UploadInOrder);
         }
 
         #region Members

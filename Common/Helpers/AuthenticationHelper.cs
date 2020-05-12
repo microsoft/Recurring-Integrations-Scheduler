@@ -2,6 +2,7 @@
    Licensed under the MIT License. */
 
 using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using RecurringIntegrationsScheduler.Common.JobSettings;
 using System;
 using System.Linq;
@@ -34,7 +35,8 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <value>
         /// Authentication result.
         /// </value>
-        private AuthenticationResult AuthenticationResult { get; set; }
+        private Microsoft.Identity.Client.AuthenticationResult AuthenticationResult { get; set; }
+        private Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationResult AuthenticationResultADAL { get; set; }
 
         /// <summary>
         /// Sets authorization header.
@@ -50,7 +52,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             IPublicClientApplication appPublic;
             var aosUriAuthUri = new Uri(_settings.AosUri);
             string authority = UrlCombine.Combine(_settings.AzureAuthEndpoint, _settings.AadTenant);
-            string[] scopes = new string[] { aosUriAuthUri.AbsoluteUri +  ".default" };
+            string[] scopes = new string[] { UrlCombine.Combine(aosUriAuthUri.AbsoluteUri,  ".default") };
 
             if (_settings.UseServiceAuthentication)
             {
@@ -84,6 +86,37 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
             return _authorizationHeader = AuthenticationResult.CreateAuthorizationHeader();
         }
 
+        private async Task<string> AuthorizationHeaderADAL()
+        {
+            if (!string.IsNullOrEmpty(_authorizationHeader) &&
+                (DateTime.UtcNow.AddSeconds(60) < AuthenticationResultADAL.ExpiresOn)) return _authorizationHeader;
+
+            var uri = new UriBuilder(_settings.AzureAuthEndpoint)
+            {
+                Path = _settings.AadTenant
+            };
+
+            var aosUriAuthUri = new Uri(_settings.AosUri);
+            string aosUriAuth = aosUriAuthUri.GetLeftPart(UriPartial.Authority);
+
+            var authenticationContext = new AuthenticationContext(uri.ToString(), validateAuthority: false);
+
+            if (_settings.UseServiceAuthentication)
+            {
+                var credentials = new Microsoft.IdentityModel.Clients.ActiveDirectory.ClientCredential(_settings.AadClientId.ToString(), _settings.AadClientSecret);
+
+                AuthenticationResultADAL = await authenticationContext.AcquireTokenAsync(aosUriAuth, credentials);
+            }
+            else
+            {
+                var credentials = new UserPasswordCredential(_settings.UserName, _settings.UserPassword);
+
+                AuthenticationResultADAL = await authenticationContext.AcquireTokenAsync(aosUriAuth, _settings.AadClientId.ToString(), credentials);
+            }
+
+            return _authorizationHeader = AuthenticationResultADAL.CreateAuthorizationHeader();
+        }
+
         /// <summary>
         /// Gets valid authentication header
         /// </summary>
@@ -92,7 +125,14 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// </returns>
         public async Task<string> GetValidAuthenticationHeader()
         {
-            _authorizationHeader = await AuthorizationHeader();
+            if (_settings.UseADAL)
+            {
+                _authorizationHeader = await AuthorizationHeaderADAL();
+            }
+            else
+            {
+                _authorizationHeader = await AuthorizationHeader();
+            }
             return _authorizationHeader;
         }
     }

@@ -62,11 +62,11 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Download_errors_directory_is_missing_in_job_configuration));
             }
 
-            UnzipPackage = Convert.ToBoolean(dataMap.GetString(SettingsConstants.UnzipPackage));
+            UnzipPackage = dataMap.GetBooleanValue(SettingsConstants.UnzipPackage);
 
-            AddTimestamp = Convert.ToBoolean(dataMap.GetString(SettingsConstants.AddTimestamp));
+            AddTimestamp = dataMap.GetBooleanValue(SettingsConstants.AddTimestamp);
 
-            DeletePackage = Convert.ToBoolean(dataMap.GetString(SettingsConstants.DeletePackage));
+            DeletePackage = dataMap.GetBooleanValue(SettingsConstants.DeletePackage);
 
             DataProject = dataMap.GetString(SettingsConstants.DataProject);
 

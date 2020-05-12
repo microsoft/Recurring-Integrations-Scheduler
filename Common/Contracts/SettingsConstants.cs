@@ -24,6 +24,11 @@ namespace RecurringIntegrationsScheduler.Common.Contracts
         public const string AadTenant = "AadTenant";
 
         /// <summary>
+        /// Is ADAL used for authentication
+        /// </summary>
+        public const string UseADAL = "UseADAL";
+
+        /// <summary>
         /// Is service authentication used
         /// </summary>
         public const string UseServiceAuthentication = "UseServiceAuthentication";

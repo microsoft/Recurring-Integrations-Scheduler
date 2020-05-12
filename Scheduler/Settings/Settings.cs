@@ -152,6 +152,14 @@ namespace RecurringIntegrationsScheduler.Settings
         /// The aad tenant.
         /// </value>
         public string AadTenant { get; set; }
+
+        /// <summary>
+        /// Gets or sets the use ADAL.
+        /// </summary>
+        /// <value>
+        /// The aad tenant.
+        /// </value>
+        public bool UseADAL { get; set; }
     }
 
     /// <summary>

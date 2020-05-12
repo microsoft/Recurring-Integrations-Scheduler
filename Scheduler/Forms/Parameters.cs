@@ -29,7 +29,6 @@ namespace RecurringIntegrationsScheduler.Forms
             Properties.Settings.Default.UploadErrorsFolder = uploadErrorsFolder.Text;
             Properties.Settings.Default.UploadInputFolder = uploadInputFolder.Text;
             Properties.Settings.Default.UploadSuccessFolder = uploadSuccessFolder.Text;
-            Properties.Settings.Default.V3Forms = v3formsCheckbox.Checked;
             Properties.Settings.Default.Save();
         }
 
@@ -52,7 +51,6 @@ namespace RecurringIntegrationsScheduler.Forms
             uploadErrorsFolder.Text = Properties.Settings.Default.UploadErrorsFolder;
             uploadInputFolder.Text = Properties.Settings.Default.UploadInputFolder;
             uploadSuccessFolder.Text = Properties.Settings.Default.UploadSuccessFolder;
-            v3formsCheckbox.Checked = Properties.Settings.Default.V3Forms;
         }
 
         private void InstancesDataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)

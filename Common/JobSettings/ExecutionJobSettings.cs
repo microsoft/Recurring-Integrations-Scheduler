@@ -85,7 +85,7 @@ namespace RecurringIntegrationsScheduler.Common.JobSettings
                 throw new JobExecutionException(string.Format(CultureInfo.InvariantCulture, Resources.Extension_of_status_files_is_missing_in_job_configuration));
             }
 
-            GetImportTargetErrorKeysFile = Convert.ToBoolean(dataMap.GetString(SettingsConstants.GetImportTargetErrorKeysFile));
+            GetImportTargetErrorKeysFile = dataMap.GetBooleanValue(SettingsConstants.GetImportTargetErrorKeysFile);
 
             PackageTemplate = dataMap.GetString(SettingsConstants.PackageTemplate);
 

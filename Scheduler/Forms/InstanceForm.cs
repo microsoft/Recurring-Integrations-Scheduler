@@ -27,6 +27,7 @@ namespace RecurringIntegrationsScheduler.Forms
                 textBox2.Text = Instance.AosUri;
                 textBox3.Text = Instance.AzureAuthEndpoint;
                 textBox4.Text = Instance.AadTenant;
+                checkBox1.Checked = Instance.UseADAL;
             }
             else
             {
@@ -73,7 +74,8 @@ namespace RecurringIntegrationsScheduler.Forms
                     Name = textBox1.Text,
                     AosUri = textBox2.Text.TrimEnd('/'),
                     AzureAuthEndpoint = textBox3.Text.TrimEnd('/'),
-                    AadTenant = textBox4.Text
+                    AadTenant = textBox4.Text,
+                    UseADAL = checkBox1.Checked
                 };
             else
                 DialogResult = DialogResult.None;
