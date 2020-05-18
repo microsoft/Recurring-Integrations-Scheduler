@@ -9,7 +9,6 @@ using RecurringIntegrationsScheduler.Properties;
 using RecurringIntegrationsScheduler.Settings;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -27,6 +26,12 @@ namespace RecurringIntegrationsScheduler.Forms
             InitializeComponent();
         }
 
+        public bool Cancelled { get; private set; }
+
+        public IJobDetail JobDetail { get; set; }
+
+        public ITrigger Trigger { get; set; }
+
         protected override CreateParams CreateParams
         {
             get
@@ -36,10 +41,6 @@ namespace RecurringIntegrationsScheduler.Forms
                 return myCp;
             }
         }
-
-        public bool Cancelled { get; private set; }
-        public IJobDetail JobDetail { get; set; }
-        public ITrigger Trigger { get; set; }
 
         private void ExportJobForm_Load(object sender, EventArgs e)
         {
@@ -81,7 +82,7 @@ namespace RecurringIntegrationsScheduler.Forms
             {
                 jobName.Text = JobDetail.Key.Name;
 
-                var jobGroup = ((IEnumerable<JobGroup>) jobGroupComboBox.DataSource).FirstOrDefault(x => x.Name == JobDetail.Key.Group);
+                var jobGroup = ((IEnumerable<JobGroup>)jobGroupComboBox.DataSource).FirstOrDefault(x => x.Name == JobDetail.Key.Group);
                 jobGroupComboBox.SelectedItem = jobGroup;
 
                 jobDescription.Text = JobDetail.Description;
@@ -169,18 +170,18 @@ namespace RecurringIntegrationsScheduler.Forms
 
                 if (Trigger.GetType() == typeof(SimpleTriggerImpl))
                 {
-                    var localTrigger = (SimpleTriggerImpl) Trigger;
+                    var localTrigger = (SimpleTriggerImpl)Trigger;
                     simpleTriggerRadioButton.Checked = true;
                     hoursDateTimePicker.Value = DateTime.Now.Date + localTrigger.RepeatInterval;
                     minutesDateTimePicker.Value = DateTime.Now.Date + localTrigger.RepeatInterval;
                 }
                 else if (Trigger.GetType() == typeof(CronTriggerImpl))
                 {
-                    var localTrigger = (CronTriggerImpl) Trigger;
+                    var localTrigger = (CronTriggerImpl)Trigger;
                     cronTriggerRadioButton.Checked = true;
                     cronExpressionTextBox.Text = localTrigger.CronExpressionString;
                 }
-                
+
                 retriesCountUpDown.Value = JobDetail.JobDataMap.GetInt(SettingsConstants.RetryCount);
                 retriesDelayUpDown.Value = JobDetail.JobDataMap.GetInt(SettingsConstants.RetryDelay);
 
@@ -194,53 +195,101 @@ namespace RecurringIntegrationsScheduler.Forms
 
                 Properties.Settings.Default.Save();
             }
-            SetDropDownsWidth(this);
+            FormsHelper.SetDropDownsWidth(this);
         }
 
-        private void DownloadFolderBrowserButton_Click(object sender, EventArgs e)
+        private IJobDetail GetJobDetail()
         {
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-                downloadFolder.Text = folderBrowserDialog.SelectedPath;
+            var detail = JobBuilder
+                .Create()
+                .OfType(Type.GetType("RecurringIntegrationsScheduler.Job.Export,RecurringIntegrationsScheduler.Job.Export", true))
+                .WithDescription(jobDescription.Text)
+                .WithIdentity(new JobKey(jobName.Text, jobGroupComboBox.Text))
+                .UsingJobData(GetJobDataMap())
+                .Build();
+
+            return detail;
         }
 
-        private void ErrorsFolderBrowserButton_Click(object sender, EventArgs e)
+        private JobDataMap GetJobDataMap()
         {
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-                errorsFolder.Text = folderBrowserDialog.SelectedPath;
-        }
+            var instance = (Instance)instanceComboBox.SelectedItem;
+            var user = (User)userComboBox.SelectedItem;
+            var application = (AadApplication)appRegistrationComboBox.SelectedItem;
 
-        private void UseStandardSubfolder_CheckedChanged(object sender, EventArgs e)
-        {
-            if (useStandardSubfolder.Checked)
+            var map = new JobDataMap
             {
-                errorsFolder.Enabled = false;
-                errorsFolder.Text = Path.Combine(downloadFolder.Text, Properties.Settings.Default.DownloadErrorsFolder);
-                errorsFolderBrowserButton.Enabled = false;
+                {SettingsConstants.DownloadSuccessDir, downloadFolder.Text},
+                {SettingsConstants.DownloadErrorsDir, errorsFolder.Text},
+                {SettingsConstants.AadTenant, instance.AadTenant},
+                {SettingsConstants.AzureAuthEndpoint, instance.AzureAuthEndpoint},
+                {SettingsConstants.AosUri, instance.AosUri},
+                {SettingsConstants.UseADAL, instance.UseADAL},
+                {SettingsConstants.UseServiceAuthentication, serviceAuthRadioButton.Checked},
+                {SettingsConstants.AadClientId, application.ClientId},
+                {SettingsConstants.UnzipPackage, unzipCheckBox.Checked},
+                {SettingsConstants.AddTimestamp, addTimestampCheckBox.Checked},
+                {SettingsConstants.DeletePackage, deletePackageCheckBox.Checked},
+                {SettingsConstants.DataProject, dataProject.Text},
+                {SettingsConstants.Company, legalEntity.Text},
+                {SettingsConstants.DelayBetweenFiles, delayBetweenAttemptsNumericUpDown.Value},
+                {SettingsConstants.DelayBetweenStatusCheck, delayBetweenStatusCheckNumericUpDown.Value},
+                {SettingsConstants.RetryCount, retriesCountUpDown.Value},
+                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value},
+                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked},
+                {SettingsConstants.ExportToPackageActionPath, exportToPackageTextBox.Text},
+                {SettingsConstants.GetExecutionSummaryStatusActionPath, getExecutionSummaryStatusTextBox.Text},
+                {SettingsConstants.GetExportedPackageUrlActionPath, getExportedPackageUrlTextBox.Text},
+                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked},
+                {SettingsConstants.LogVerbose, verboseLoggingCheckBox.Checked}
+            };
+            if (serviceAuthRadioButton.Checked)
+            {
+                map.Add(SettingsConstants.AadClientSecret, application.Secret);
             }
             else
             {
-                errorsFolder.Enabled = true;
-                errorsFolderBrowserButton.Enabled = true;
+                map.Add(SettingsConstants.UserName, user.Login);
+                map.Add(SettingsConstants.UserPassword, user.Password);
             }
+            return map;
         }
 
-        private void CronmakerLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private ITrigger GetTrigger(IJobDetail jobDetail)
         {
-            cronmakerLinkLabel.LinkVisited = true;
-            Process.Start("http://www.cronmaker.com");
-        }
+            var builder =
+                TriggerBuilder
+                    .Create()
+                    .ForJob(jobDetail)
+                    .WithDescription(string.Format(Resources.Trigger_for_job_0_1, jobDetail.Key.Name,
+                        jobDetail.Key.Group))
+                    .WithIdentity(
+                        new TriggerKey(
+                            string.Format(Resources.Trigger_for_job_0_1, jobDetail.Key.Name, jobDetail.Key.Group),
+                            jobDetail.Key.Group));
 
-        private void CronTriggerRadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-            simpleTriggerJobGroupBox.Enabled = !cronTriggerRadioButton.Checked;
-            cronTriggerGroupBox.Enabled = cronTriggerRadioButton.Checked;
+            if (simpleTriggerRadioButton.Checked)
+            {
+                var minutes = hoursDateTimePicker.Value.Hour * 60;
+                minutes += minutesDateTimePicker.Value.Minute;
+
+                return builder.WithSimpleSchedule(x => x
+                        .WithIntervalInMinutes(minutes)
+                        .RepeatForever())
+                    .StartNow()
+                    .Build();
+            }
+            return
+                builder.WithSchedule(CronScheduleBuilder.CronSchedule(cronExpressionTextBox.Text))
+                    .StartAt(startAtDateTimePicker.Value.ToUniversalTime())
+                    .Build();
         }
 
         private bool ValidateJobSettings()
         {
             if (cronTriggerRadioButton.Checked)
             {
-                var date = GetScheduleForCron(cronExpressionTextBox.Text, DateTimeOffset.Now);
+                var date = FormsHelper.GetScheduleForCron(cronExpressionTextBox.Text, DateTimeOffset.Now);
                 if (date == DateTimeOffset.MinValue)
                     return false;
             }
@@ -289,181 +338,11 @@ namespace RecurringIntegrationsScheduler.Forms
             return message.Length == 0;
         }
 
-        private IJobDetail GetJobDetail()
-        {
-            var detail = JobBuilder
-                .Create()
-                .OfType(Type.GetType("RecurringIntegrationsScheduler.Job.Export,RecurringIntegrationsScheduler.Job.Export", true))
-                .WithDescription(jobDescription.Text)
-                .WithIdentity(new JobKey(jobName.Text, jobGroupComboBox.Text))
-                .UsingJobData(GetJobDataMap())
-                .Build();
-
-            return detail;
-        }
-
-        private ITrigger GetTrigger(IJobDetail jobDetail)
-        {
-            var builder =
-                TriggerBuilder
-                    .Create()
-                    .ForJob(jobDetail)
-                    .WithDescription(string.Format(Resources.Trigger_for_job_0_1, jobDetail.Key.Name,
-                        jobDetail.Key.Group))
-                    .WithIdentity(
-                        new TriggerKey(
-                            string.Format(Resources.Trigger_for_job_0_1, jobDetail.Key.Name, jobDetail.Key.Group),
-                            jobDetail.Key.Group));
-
-            if (simpleTriggerRadioButton.Checked)
-            {
-                var minutes = hoursDateTimePicker.Value.Hour*60;
-                minutes += minutesDateTimePicker.Value.Minute;
-
-                return builder.WithSimpleSchedule(x => x
-                        .WithIntervalInMinutes(minutes)
-                        .RepeatForever())
-                    .StartNow()
-                    .Build();
-            }
-            return
-                builder.WithSchedule(CronScheduleBuilder.CronSchedule(cronExpressionTextBox.Text))
-                    .StartAt(startAtDateTimePicker.Value.ToUniversalTime())
-                    .Build();
-        }
-
-        private JobDataMap GetJobDataMap()
-        {
-            var instance = (Instance) instanceComboBox.SelectedItem;
-            var user = (User) userComboBox.SelectedItem;
-            var application = (AadApplication) appRegistrationComboBox.SelectedItem;
-
-            var map = new JobDataMap
-            {
-                {SettingsConstants.DownloadSuccessDir, downloadFolder.Text},
-                {SettingsConstants.DownloadErrorsDir, errorsFolder.Text},
-                {SettingsConstants.AadTenant, instance.AadTenant},
-                {SettingsConstants.AzureAuthEndpoint, instance.AzureAuthEndpoint},
-                {SettingsConstants.AosUri, instance.AosUri},
-                {SettingsConstants.UseADAL, instance.UseADAL},
-                {SettingsConstants.UseServiceAuthentication, serviceAuthRadioButton.Checked},
-                {SettingsConstants.AadClientId, application.ClientId},
-                {SettingsConstants.UnzipPackage, unzipCheckBox.Checked},
-                {SettingsConstants.AddTimestamp, addTimestampCheckBox.Checked},
-                {SettingsConstants.DeletePackage, deletePackageCheckBox.Checked},
-                {SettingsConstants.DataProject, dataProject.Text},
-                {SettingsConstants.Company, legalEntity.Text},
-                {SettingsConstants.DelayBetweenFiles, delayBetweenAttemptsNumericUpDown.Value},
-                {SettingsConstants.DelayBetweenStatusCheck, delayBetweenStatusCheckNumericUpDown.Value},
-                {SettingsConstants.RetryCount, retriesCountUpDown.Value},
-                {SettingsConstants.RetryDelay, retriesDelayUpDown.Value},
-                {SettingsConstants.PauseJobOnException, pauseOnExceptionsCheckBox.Checked},
-                {SettingsConstants.ExportToPackageActionPath, exportToPackageTextBox.Text},
-                {SettingsConstants.GetExecutionSummaryStatusActionPath, getExecutionSummaryStatusTextBox.Text},
-                {SettingsConstants.GetExportedPackageUrlActionPath, getExportedPackageUrlTextBox.Text},
-                {SettingsConstants.IndefinitePause, pauseIndefinitelyCheckBox.Checked},
-                {SettingsConstants.LogVerbose, verboseLoggingCheckBox.Checked}
-            };
-            if (serviceAuthRadioButton.Checked)
-            {
-                map.Add(SettingsConstants.AadClientSecret, application.Secret);
-            }
-            else
-            {
-                map.Add(SettingsConstants.UserName, user.Login);
-                map.Add(SettingsConstants.UserPassword, user.Password);
-            }
-            return map;
-        }
-
-        private void CronDocsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            cronmakerLinkLabel.LinkVisited = true;
-            Process.Start("https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontrigger.html");
-        }
-
-        private void CalculateNextRunsButton_Click(object sender, EventArgs e)
-        {
-            var scheduleTimes = new List<DateTimeOffset>();
-            var time = DateTimeOffset.Now;
-
-            if (!string.IsNullOrEmpty(cronExpressionTextBox.Text))
-                for (var i = 0; i <= 99; i++)
-                {
-                    var date = GetScheduleForCron(cronExpressionTextBox.Text, time);
-                    if (date == DateTimeOffset.MinValue)
-                        return;
-                    if (date == null) continue;
-                    scheduleTimes.Add(date.Value);
-                    time = date.Value;
-                }
-            calculatedRunsTextBox.Text = string.Empty;
-            foreach (var date in scheduleTimes)
-                calculatedRunsTextBox.Text = calculatedRunsTextBox.Text + $@"{date.ToLocalTime():yyyy-MM-dd HH:mm:ss}" +
-                                             Environment.NewLine;
-        }
-
-        private static DateTimeOffset? GetScheduleForCron(string cronexpression, DateTimeOffset date)
-        {
-            try
-            {
-                var cron = new CronExpression(cronexpression);
-                return cron.GetNextValidTimeAfter(date);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, Resources.Cron_expression_is_invalid);
-                return DateTimeOffset.MinValue;
-            }
-        }
-
-        private void DownloadFolder_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (useStandardSubfolder.Checked)
-                    errorsFolder.Text = Path.Combine(downloadFolder.Text, Properties.Settings.Default.DownloadErrorsFolder);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(Resources.Check_if_path + Environment.NewLine + ex.Message, Resources.Warning);
-            }
-        }
-
-        private void MoreExamplesButton_Click(object sender, EventArgs e)
-        {
-            var form = new CronExamples();
-            form.ShowDialog();
-        }
-
-        private void UnzipCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            addTimestampCheckBox.Enabled = unzipCheckBox.Checked;
-            deletePackageCheckBox.Enabled = unzipCheckBox.Checked;
-            if (!unzipCheckBox.Checked)
-            {
-                addTimestampCheckBox.Checked = unzipCheckBox.Checked;
-                deletePackageCheckBox.Checked = unzipCheckBox.Checked;
-            }
-        }
-
-        private void ServiceAuthRadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-            if (serviceAuthRadioButton.Checked)
-            {
-                appRegistrationComboBox.DataSource = Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.Service).ToList();
-            }
-            else
-            {
-                appRegistrationComboBox.DataSource = Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.User).ToList();
-            }
-
-            userComboBox.Enabled = !serviceAuthRadioButton.Checked;
-        }
+        #region FormEvents
 
         private void AddToolStripButton_Click(object sender, EventArgs e)
         {
-            TrimTextBoxes(this);
+            FormsHelper.TrimTextBoxes(this);
 
             if (JobDetail == null)
             {
@@ -482,50 +361,122 @@ namespace RecurringIntegrationsScheduler.Forms
             Close();
         }
 
+        private void CalculateNextRunsButton_Click(object sender, EventArgs e)
+        {
+            var scheduleTimes = new List<DateTimeOffset>();
+            var time = DateTimeOffset.Now;
+
+            if (!string.IsNullOrEmpty(cronExpressionTextBox.Text))
+                for (var i = 0; i <= 99; i++)
+                {
+                    var date = FormsHelper.GetScheduleForCron(cronExpressionTextBox.Text, time);
+                    if (date == DateTimeOffset.MinValue)
+                        return;
+                    if (date == null) continue;
+                    scheduleTimes.Add(date.Value);
+                    time = date.Value;
+                }
+            calculatedRunsTextBox.Text = string.Empty;
+            foreach (var date in scheduleTimes)
+                calculatedRunsTextBox.Text = calculatedRunsTextBox.Text + $@"{date.ToLocalTime():yyyy-MM-dd HH:mm:ss}" +
+                                             Environment.NewLine;
+        }
+
         private void CancelToolStripButton_Click(object sender, EventArgs e)
         {
             Cancelled = true;
             Close();
         }
 
-        private void TrimTextBoxes(Control parentCtrl)
+        private void CronDocsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            parentCtrl.Controls //Trim all textboxes
-                .OfType<TextBox>()
-                .ToList()
-                .ForEach(t => t.Text = t.Text.Trim());
+            cronmakerLinkLabel.LinkVisited = true;
+            Process.Start("https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontrigger.html");
+        }
 
-            foreach (Control c in parentCtrl.Controls)
+        private void CronmakerLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            cronmakerLinkLabel.LinkVisited = true;
+            Process.Start("http://www.cronmaker.com");
+        }
+
+        private void CronTriggerRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            simpleTriggerJobGroupBox.Enabled = !cronTriggerRadioButton.Checked;
+            cronTriggerGroupBox.Enabled = cronTriggerRadioButton.Checked;
+        }
+
+        private void DownloadFolder_TextChanged(object sender, EventArgs e)
+        {
+            try
             {
-                TrimTextBoxes(c);
+                if (useStandardSubfolder.Checked)
+                    errorsFolder.Text = Path.Combine(downloadFolder.Text, Properties.Settings.Default.DownloadErrorsFolder);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(Resources.Check_if_path + Environment.NewLine + ex.Message, Resources.Warning);
             }
         }
 
-        private void SetDropDownsWidth(Control parentCtrl)
+        private void DownloadFolderBrowserButton_Click(object sender, EventArgs e)
         {
-            parentCtrl.Controls
-                .OfType<ComboBox>()
-                .ToList()
-                .ForEach(t => t.DropDownWidth = DropDownWidth(t));
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                downloadFolder.Text = folderBrowserDialog.SelectedPath;
+        }
 
-            foreach (Control c in parentCtrl.Controls)
+        private void ErrorsFolderBrowserButton_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                errorsFolder.Text = folderBrowserDialog.SelectedPath;
+        }
+
+        private void MoreExamplesButton_Click(object sender, EventArgs e)
+        {
+            var form = new CronExamples();
+            form.ShowDialog();
+        }
+
+        private void ServiceAuthRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (serviceAuthRadioButton.Checked)
             {
-                SetDropDownsWidth(c);
+                appRegistrationComboBox.DataSource = Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.Service).ToList();
+            }
+            else
+            {
+                appRegistrationComboBox.DataSource = Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.User).ToList();
+            }
+
+            userComboBox.Enabled = !serviceAuthRadioButton.Checked;
+        }
+
+        private void UnzipCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            addTimestampCheckBox.Enabled = unzipCheckBox.Checked;
+            deletePackageCheckBox.Enabled = unzipCheckBox.Checked;
+            if (!unzipCheckBox.Checked)
+            {
+                addTimestampCheckBox.Checked = unzipCheckBox.Checked;
+                deletePackageCheckBox.Checked = unzipCheckBox.Checked;
             }
         }
 
-        private int DropDownWidth(ComboBox myCombo)
+        private void UseStandardSubfolder_CheckedChanged(object sender, EventArgs e)
         {
-            int maxWidth = 0;
-            foreach (var obj in myCombo.Items)
+            if (useStandardSubfolder.Checked)
             {
-                int temp = TextRenderer.MeasureText(obj.ToString(), myCombo.Font).Width;
-                if (temp > maxWidth)
-                {
-                    maxWidth = temp;
-                }
+                errorsFolder.Enabled = false;
+                errorsFolder.Text = Path.Combine(downloadFolder.Text, Properties.Settings.Default.DownloadErrorsFolder);
+                errorsFolderBrowserButton.Enabled = false;
             }
-            return maxWidth;
+            else
+            {
+                errorsFolder.Enabled = true;
+                errorsFolderBrowserButton.Enabled = true;
+            }
         }
+
+        #endregion
     }
 }

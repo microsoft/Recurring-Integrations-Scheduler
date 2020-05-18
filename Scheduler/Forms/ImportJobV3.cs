@@ -9,7 +9,6 @@ using RecurringIntegrationsScheduler.Properties;
 using RecurringIntegrationsScheduler.Settings;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -28,6 +27,16 @@ namespace RecurringIntegrationsScheduler.Forms
             InitializeComponent();
         }
 
+        public bool Cancelled { get; private set; }
+
+        public IJobDetail ExecutionJobDetail { get; set; }
+
+        public ITrigger ExecutionTrigger { get; set; }
+
+        public IJobDetail ImportJobDetail { get; set; }
+
+        public ITrigger ImportTrigger { get; set; }
+
         protected override CreateParams CreateParams
         {
             get
@@ -37,12 +46,6 @@ namespace RecurringIntegrationsScheduler.Forms
                 return myCp;
             }
         }
-
-        public bool Cancelled { get; private set; }
-        public IJobDetail ImportJobDetail { get; set; }
-        public ITrigger ImportTrigger { get; set; }
-        public IJobDetail ExecutionJobDetail { get; set; }
-        public ITrigger ExecutionTrigger { get; set; }
 
         private void ImportJobForm_Load(object sender, EventArgs e)
         {
@@ -60,7 +63,7 @@ namespace RecurringIntegrationsScheduler.Forms
 
             jobGroupComboBox.Enabled = ImportJobDetail == null;
 
-             instanceComboBox.DataSource = Properties.Settings.Default.Instances;
+            instanceComboBox.DataSource = Properties.Settings.Default.Instances;
             instanceComboBox.ValueMember = null;
             instanceComboBox.DisplayMember = "Name";
 
@@ -95,7 +98,7 @@ namespace RecurringIntegrationsScheduler.Forms
             {
                 jobName.Text = ImportJobDetail.Key.Name;
 
-                var jobGroup = ((IEnumerable<JobGroup>) jobGroupComboBox.DataSource).FirstOrDefault(x => x.Name == ImportJobDetail.Key.Group);
+                var jobGroup = ((IEnumerable<JobGroup>)jobGroupComboBox.DataSource).FirstOrDefault(x => x.Name == ImportJobDetail.Key.Group);
                 jobGroupComboBox.SelectedItem = jobGroup;
 
                 jobDescription.Text = ImportJobDetail.Description;
@@ -131,7 +134,7 @@ namespace RecurringIntegrationsScheduler.Forms
                     }
                     userComboBox.SelectedItem = axUser;
                 }
-                var application = ((IEnumerable<AadApplication>) appRegistrationComboBox.DataSource).FirstOrDefault(app => app.ClientId == ImportJobDetail.JobDataMap.GetString(SettingsConstants.AadClientId));
+                var application = ((IEnumerable<AadApplication>)appRegistrationComboBox.DataSource).FirstOrDefault(app => app.ClientId == ImportJobDetail.JobDataMap.GetString(SettingsConstants.AadClientId));
                 if (application == null)
                 {
                     if (!serviceAuthRadioButton.Checked)
@@ -158,10 +161,10 @@ namespace RecurringIntegrationsScheduler.Forms
                 }
                 appRegistrationComboBox.SelectedItem = application;
 
-                var axInstance = ((IEnumerable<Instance>) instanceComboBox.DataSource).FirstOrDefault(x =>
-                    (x.AosUri == ImportJobDetail.JobDataMap.GetString(SettingsConstants.AosUri)) &&
-                    (x.AadTenant == ImportJobDetail.JobDataMap.GetString(SettingsConstants.AadTenant)) &&
-                    (x.AzureAuthEndpoint == ImportJobDetail.JobDataMap.GetString(SettingsConstants.AzureAuthEndpoint)));
+                var axInstance = ((IEnumerable<Instance>)instanceComboBox.DataSource).FirstOrDefault(x =>
+                   (x.AosUri == ImportJobDetail.JobDataMap.GetString(SettingsConstants.AosUri)) &&
+                   (x.AadTenant == ImportJobDetail.JobDataMap.GetString(SettingsConstants.AadTenant)) &&
+                   (x.AzureAuthEndpoint == ImportJobDetail.JobDataMap.GetString(SettingsConstants.AzureAuthEndpoint)));
                 if (axInstance == null)
                 {
                     axInstance = new Instance
@@ -181,7 +184,7 @@ namespace RecurringIntegrationsScheduler.Forms
                 orderByComboBox.DataSource = Enum.GetValues(typeof(OrderByOptions));
                 var selectedOrderBy = OrderByOptions.FileName;
                 if (!ImportJobDetail.JobDataMap.GetString(SettingsConstants.OrderBy).IsNullOrWhiteSpace())
-                { 
+                {
                     selectedOrderBy = (OrderByOptions)Enum.Parse(typeof(OrderByOptions), ImportJobDetail.JobDataMap.GetString(SettingsConstants.OrderBy));
                 }
                 orderByComboBox.SelectedItem = selectedOrderBy;
@@ -192,14 +195,14 @@ namespace RecurringIntegrationsScheduler.Forms
 
                 if (ImportTrigger.GetType() == typeof(SimpleTriggerImpl))
                 {
-                    var localTrigger = (SimpleTriggerImpl) ImportTrigger;
+                    var localTrigger = (SimpleTriggerImpl)ImportTrigger;
                     importJobSimpleTriggerRadioButton.Checked = true;
                     importJobHoursDateTimePicker.Value = DateTime.Now.Date + localTrigger.RepeatInterval;
                     importJobMinutesDateTimePicker.Value = DateTime.Now.Date + localTrigger.RepeatInterval;
                 }
                 else if (ImportTrigger.GetType() == typeof(CronTriggerImpl))
                 {
-                    var localTrigger = (CronTriggerImpl) ImportTrigger;
+                    var localTrigger = (CronTriggerImpl)ImportTrigger;
                     importJobCronTriggerRadioButton.Checked = true;
                     importJobCronExpressionTextBox.Text = localTrigger.CronExpressionString;
                 }
@@ -252,106 +255,7 @@ namespace RecurringIntegrationsScheduler.Forms
                 getExecutionErrorsCheckBox.Checked = ExecutionJobDetail.JobDataMap.GetBooleanValue(SettingsConstants.GetExecutionErrors);
                 statusCheckDelayNumericUpDown.Value = ExecutionJobDetail.JobDataMap.GetInt(SettingsConstants.DelayBetweenStatusCheck);
             }
-            SetDropDownsWidth(this);
-        }
-
-        private bool ValidateJobSettings()
-        {
-            if (importJobCronTriggerRadioButton.Checked)
-            {
-                var date = GetScheduleForCron(importJobCronExpressionTextBox.Text, DateTimeOffset.Now);
-                if (date == DateTimeOffset.MinValue)
-                    return false;
-            }
-
-            if (useMonitoringJobCheckBox.Checked && monitoringJobCronTriggerRadioButton.Checked)
-            {
-                var date = GetScheduleForCron(monitoringJobCronExpressionTextBox.Text, DateTimeOffset.Now);
-                if (date == DateTimeOffset.MinValue)
-                    return false;
-            }
-
-            var message = new StringBuilder();
-
-            if (string.IsNullOrEmpty(jobName.Text))
-                message.AppendLine(Resources.Job_name_is_missing);
-
-            if ((jobGroupComboBox.SelectedItem == null) || string.IsNullOrEmpty(jobGroupComboBox.Text))
-                message.AppendLine(Resources.Job_group_is_not_selected);
-
-            if (string.IsNullOrEmpty(topFolderTextBox.Text) && useStandardSubfolder.Checked)
-                message.AppendLine(Resources.Top_uploads_folder_is_not_selected);
-
-            if (string.IsNullOrEmpty(inputFolderTextBox.Text))
-                message.AppendLine(Resources.Input_folder_is_not_selected);
-
-            if (string.IsNullOrEmpty(uploadSuccessFolderTextBox.Text))
-                message.AppendLine(Resources.Upload_success_folder_is_not_selected);
-
-            if (string.IsNullOrEmpty(uploadErrorsFolderTextBox.Text))
-                message.AppendLine(Resources.Upload_errors_folder_is_not_selected);
-
-            if (string.IsNullOrEmpty(processingSuccessFolderTextBox.Text) && useMonitoringJobCheckBox.Checked)
-                message.AppendLine(Resources.Processing_success_folder_is_not_selected);
-
-            if (string.IsNullOrEmpty(processingErrorsFolderTextBox.Text) && useMonitoringJobCheckBox.Checked)
-                message.AppendLine(Resources.Processing_errors_folder_is_not_selected);
-
-            if (!multicompanyCheckBox.Checked && string.IsNullOrEmpty(legalEntityTextBox.Text))
-                message.AppendLine(Resources.Legal_entity_is_missing);
-
-            if (string.IsNullOrEmpty(dataProject.Text))
-                message.AppendLine(Resources.Data_project_is_missing);
-
-            if ((instanceComboBox.SelectedItem == null) || string.IsNullOrEmpty(instanceComboBox.Text))
-                message.AppendLine(Resources.Dynamics_instance_is_not_selected);
-
-            if (userAuthRadioButton.Checked &&
-                ((userComboBox.SelectedItem == null) || string.IsNullOrEmpty(userComboBox.Text)))
-                message.AppendLine(Resources.User_is_not_selected);
-
-            if ((appRegistrationComboBox.SelectedItem == null) || string.IsNullOrEmpty(appRegistrationComboBox.Text))
-                message.AppendLine(Resources.AAD_client_application_is_not_selected);
-
-            if (string.IsNullOrEmpty(statusFileExtensionTextBox.Text) && useMonitoringJobCheckBox.Checked)
-                message.AppendLine(Resources.Status_file_extension_is_not_specified);
-
-            if (!inputFilesArePackagesCheckBox.Checked && string.IsNullOrEmpty(packageTemplateTextBox.Text))
-                message.AppendLine(Resources.Package_template_is_missing);
-
-            if (multicompanyCheckBox.Checked && getLegalEntityFromFilenameRadioButton.Checked)
-            {
-                if (string.IsNullOrEmpty(filenameSeparatorTextBox.Text))
-                {
-                    message.AppendLine(Resources.Filename_separator_is_missing);
-                }
-            }
-
-            if (string.IsNullOrEmpty(getAzureWriteUrlTextBox.Text))
-                message.AppendLine(Resources.URL_for_GetAzureWriteUrl_action_is_missing);
-
-            if (string.IsNullOrEmpty(importFromPackageTextBox.Text))
-                message.AppendLine(Resources.URL_for_ImportFromPackage_action_is_missing);
-
-            if (string.IsNullOrEmpty(getExecutionSummaryStatusTextBox.Text))
-                message.AppendLine(Resources.URL_for_GetExecutionSummaryStatus_action_is_missing);
-
-            if (string.IsNullOrEmpty(getExecutionSummaryPageUrlTextBox.Text))
-                message.AppendLine(Resources.URL_for_GetExecutionSummaryPageUrl_action_is_missing);
-
-            if (string.IsNullOrEmpty(getImportTargetErrorKeysFileUrlTextBox.Text))
-                message.AppendLine(Resources.URL_for_GetImportTargetErrorKeysFileUrl_action_is_missing);
-
-            if (string.IsNullOrEmpty(generateImportTargetErrorKeysFileTextBox.Text))
-                message.AppendLine(Resources.URL_for_GenerateImportTargetErrorKeysFile_action_is_missing);
-
-            if (string.IsNullOrEmpty(getExecutionErrorsTextBox.Text))
-                message.AppendLine(Resources.URL_for_GetExecutionErrors_action_is_missing);
-
-            if (message.Length > 0)
-                MessageBox.Show(message.ToString(), Resources.Job_configuration_is_not_valid);
-
-            return message.Length == 0;
+            FormsHelper.SetDropDownsWidth(this);
         }
 
         private IJobDetail GetImportJobDetail()
@@ -367,7 +271,7 @@ namespace RecurringIntegrationsScheduler.Forms
             return detail;
         }
 
-        private IJobDetail GetMonitorJobDetail()
+        private IJobDetail GetExecutionJobDetail()
         {
             var detail = JobBuilder
                 .Create()
@@ -382,66 +286,6 @@ namespace RecurringIntegrationsScheduler.Forms
                 .Build();
 
             return detail;
-        }
-
-        private ITrigger GetExecutionTrigger(IJobDetail jobDetail)
-        {
-            var builder =
-                TriggerBuilder
-                    .Create()
-                    .ForJob(jobDetail)
-                    .WithDescription(string.Format(Resources.Trigger_for_job_0_1, jobDetail.Key.Name,
-                        jobDetail.Key.Group))
-                    .WithIdentity(
-                        new TriggerKey(
-                            string.Format(Resources.Trigger_for_job_0_1, jobDetail.Key.Name, jobDetail.Key.Group),
-                            jobDetail.Key.Group));
-
-            if (monitoringJobSimpleTriggerRadioButton.Checked)
-            {
-                var minutes = monitoringJobHoursDateTimePicker.Value.Hour * 60;
-                minutes += monitoringJobMinutesDateTimePicker.Value.Minute;
-
-                return builder.WithSimpleSchedule(x => x
-                        .WithIntervalInMinutes(minutes)
-                        .RepeatForever())
-                    .StartNow()
-                    .Build();
-            }
-            return
-                builder.WithSchedule(CronScheduleBuilder.CronSchedule(monitoringJobCronExpressionTextBox.Text))
-                    .StartAt(monitoringJobStartAtDateTimePicker.Value.ToUniversalTime())
-                    .Build();
-        }
-
-        private ITrigger GetImportTrigger(IJobDetail jobDetail)
-        {
-            var builder =
-                TriggerBuilder
-                    .Create()
-                    .ForJob(jobDetail)
-                    .WithDescription(string.Format(Resources.Trigger_for_job_0_1, jobDetail.Key.Name,
-                        jobDetail.Key.Group))
-                    .WithIdentity(
-                        new TriggerKey(
-                            string.Format(Resources.Trigger_for_job_0_1, jobDetail.Key.Name, jobDetail.Key.Group),
-                            jobDetail.Key.Group));
-
-            if (importJobSimpleTriggerRadioButton.Checked)
-            {
-                var minutes = importJobHoursDateTimePicker.Value.Hour * 60;
-                minutes += importJobMinutesDateTimePicker.Value.Minute;
-
-                return builder.WithSimpleSchedule(x => x
-                        .WithIntervalInMinutes(minutes)
-                        .RepeatForever())
-                    .StartNow()
-                    .Build();
-            }
-            return
-                builder.WithSchedule(CronScheduleBuilder.CronSchedule(importJobCronExpressionTextBox.Text))
-                    .StartAt(importJobStartAtDateTimePicker.Value.ToUniversalTime())
-                    .Build();
         }
 
         private JobDataMap GetImportJobDataMap()
@@ -543,17 +387,426 @@ namespace RecurringIntegrationsScheduler.Forms
             return map;
         }
 
-        private static DateTimeOffset? GetScheduleForCron(string cronexpression, DateTimeOffset date)
+        private ITrigger GetImportTrigger(IJobDetail jobDetail)
+        {
+            var builder =
+                TriggerBuilder
+                    .Create()
+                    .ForJob(jobDetail)
+                    .WithDescription(string.Format(Resources.Trigger_for_job_0_1, jobDetail.Key.Name,
+                        jobDetail.Key.Group))
+                    .WithIdentity(
+                        new TriggerKey(
+                            string.Format(Resources.Trigger_for_job_0_1, jobDetail.Key.Name, jobDetail.Key.Group),
+                            jobDetail.Key.Group));
+
+            if (importJobSimpleTriggerRadioButton.Checked)
+            {
+                var minutes = importJobHoursDateTimePicker.Value.Hour * 60;
+                minutes += importJobMinutesDateTimePicker.Value.Minute;
+
+                return builder.WithSimpleSchedule(x => x
+                        .WithIntervalInMinutes(minutes)
+                        .RepeatForever())
+                    .StartNow()
+                    .Build();
+            }
+            return
+                builder.WithSchedule(CronScheduleBuilder.CronSchedule(importJobCronExpressionTextBox.Text))
+                    .StartAt(importJobStartAtDateTimePicker.Value.ToUniversalTime())
+                    .Build();
+        }
+
+        private ITrigger GetExecutionTrigger(IJobDetail jobDetail)
+        {
+            var builder =
+                TriggerBuilder
+                    .Create()
+                    .ForJob(jobDetail)
+                    .WithDescription(string.Format(Resources.Trigger_for_job_0_1, jobDetail.Key.Name,
+                        jobDetail.Key.Group))
+                    .WithIdentity(
+                        new TriggerKey(
+                            string.Format(Resources.Trigger_for_job_0_1, jobDetail.Key.Name, jobDetail.Key.Group),
+                            jobDetail.Key.Group));
+
+            if (monitoringJobSimpleTriggerRadioButton.Checked)
+            {
+                var minutes = monitoringJobHoursDateTimePicker.Value.Hour * 60;
+                minutes += monitoringJobMinutesDateTimePicker.Value.Minute;
+
+                return builder.WithSimpleSchedule(x => x
+                        .WithIntervalInMinutes(minutes)
+                        .RepeatForever())
+                    .StartNow()
+                    .Build();
+            }
+            return
+                builder.WithSchedule(CronScheduleBuilder.CronSchedule(monitoringJobCronExpressionTextBox.Text))
+                    .StartAt(monitoringJobStartAtDateTimePicker.Value.ToUniversalTime())
+                    .Build();
+        }
+
+        private bool ValidateJobSettings()
+        {
+            if (importJobCronTriggerRadioButton.Checked)
+            {
+                var date = FormsHelper.GetScheduleForCron(importJobCronExpressionTextBox.Text, DateTimeOffset.Now);
+                if (date == DateTimeOffset.MinValue)
+                    return false;
+            }
+
+            if (useMonitoringJobCheckBox.Checked && monitoringJobCronTriggerRadioButton.Checked)
+            {
+                var date = FormsHelper.GetScheduleForCron(monitoringJobCronExpressionTextBox.Text, DateTimeOffset.Now);
+                if (date == DateTimeOffset.MinValue)
+                    return false;
+            }
+
+            var message = new StringBuilder();
+
+            if (string.IsNullOrEmpty(jobName.Text))
+                message.AppendLine(Resources.Job_name_is_missing);
+
+            if ((jobGroupComboBox.SelectedItem == null) || string.IsNullOrEmpty(jobGroupComboBox.Text))
+                message.AppendLine(Resources.Job_group_is_not_selected);
+
+            if (string.IsNullOrEmpty(topFolderTextBox.Text) && useStandardSubfolder.Checked)
+                message.AppendLine(Resources.Top_uploads_folder_is_not_selected);
+
+            if (string.IsNullOrEmpty(inputFolderTextBox.Text))
+                message.AppendLine(Resources.Input_folder_is_not_selected);
+
+            if (string.IsNullOrEmpty(uploadSuccessFolderTextBox.Text))
+                message.AppendLine(Resources.Upload_success_folder_is_not_selected);
+
+            if (string.IsNullOrEmpty(uploadErrorsFolderTextBox.Text))
+                message.AppendLine(Resources.Upload_errors_folder_is_not_selected);
+
+            if (string.IsNullOrEmpty(processingSuccessFolderTextBox.Text) && useMonitoringJobCheckBox.Checked)
+                message.AppendLine(Resources.Processing_success_folder_is_not_selected);
+
+            if (string.IsNullOrEmpty(processingErrorsFolderTextBox.Text) && useMonitoringJobCheckBox.Checked)
+                message.AppendLine(Resources.Processing_errors_folder_is_not_selected);
+
+            if (!multicompanyCheckBox.Checked && string.IsNullOrEmpty(legalEntityTextBox.Text))
+                message.AppendLine(Resources.Legal_entity_is_missing);
+
+            if (string.IsNullOrEmpty(dataProject.Text))
+                message.AppendLine(Resources.Data_project_is_missing);
+
+            if ((instanceComboBox.SelectedItem == null) || string.IsNullOrEmpty(instanceComboBox.Text))
+                message.AppendLine(Resources.Dynamics_instance_is_not_selected);
+
+            if (userAuthRadioButton.Checked &&
+                ((userComboBox.SelectedItem == null) || string.IsNullOrEmpty(userComboBox.Text)))
+                message.AppendLine(Resources.User_is_not_selected);
+
+            if ((appRegistrationComboBox.SelectedItem == null) || string.IsNullOrEmpty(appRegistrationComboBox.Text))
+                message.AppendLine(Resources.AAD_client_application_is_not_selected);
+
+            if (string.IsNullOrEmpty(statusFileExtensionTextBox.Text) && useMonitoringJobCheckBox.Checked)
+                message.AppendLine(Resources.Status_file_extension_is_not_specified);
+
+            if (!inputFilesArePackagesCheckBox.Checked && string.IsNullOrEmpty(packageTemplateTextBox.Text))
+                message.AppendLine(Resources.Package_template_is_missing);
+
+            if (multicompanyCheckBox.Checked && getLegalEntityFromFilenameRadioButton.Checked)
+            {
+                if (string.IsNullOrEmpty(filenameSeparatorTextBox.Text))
+                {
+                    message.AppendLine(Resources.Filename_separator_is_missing);
+                }
+            }
+
+            if (string.IsNullOrEmpty(getAzureWriteUrlTextBox.Text))
+                message.AppendLine(Resources.URL_for_GetAzureWriteUrl_action_is_missing);
+
+            if (string.IsNullOrEmpty(importFromPackageTextBox.Text))
+                message.AppendLine(Resources.URL_for_ImportFromPackage_action_is_missing);
+
+            if (string.IsNullOrEmpty(getExecutionSummaryStatusTextBox.Text))
+                message.AppendLine(Resources.URL_for_GetExecutionSummaryStatus_action_is_missing);
+
+            if (string.IsNullOrEmpty(getExecutionSummaryPageUrlTextBox.Text))
+                message.AppendLine(Resources.URL_for_GetExecutionSummaryPageUrl_action_is_missing);
+
+            if (string.IsNullOrEmpty(getImportTargetErrorKeysFileUrlTextBox.Text))
+                message.AppendLine(Resources.URL_for_GetImportTargetErrorKeysFileUrl_action_is_missing);
+
+            if (string.IsNullOrEmpty(generateImportTargetErrorKeysFileTextBox.Text))
+                message.AppendLine(Resources.URL_for_GenerateImportTargetErrorKeysFile_action_is_missing);
+
+            if (string.IsNullOrEmpty(getExecutionErrorsTextBox.Text))
+                message.AppendLine(Resources.URL_for_GetExecutionErrors_action_is_missing);
+
+            if (message.Length > 0)
+                MessageBox.Show(message.ToString(), Resources.Job_configuration_is_not_valid);
+
+            return message.Length == 0;
+        }
+
+        #region FormsEvents
+
+        private void AddToolStripButton_Click(object sender, EventArgs e)
+        {
+            FormsHelper.TrimTextBoxes(this);
+
+            if (ImportJobDetail == null)
+            {
+                var jobKey = new JobKey(jobName.Text, jobGroupComboBox.Text);
+                if (Scheduler.Instance.GetScheduler().CheckExists(jobKey).Result)
+                    if (
+                        MessageBox.Show(
+                            string.Format(Resources.Job_0_in_group_1_already_exists, jobKey.Name, jobKey.Group),
+                            Resources.Job_already_exists, MessageBoxButtons.YesNo) == DialogResult.No)
+                        return;
+            }
+
+            if (!ValidateJobSettings()) return;
+            ImportJobDetail = GetImportJobDetail();
+            ImportTrigger = GetImportTrigger(ImportJobDetail);
+            if (useMonitoringJobCheckBox.Checked)
+            {
+                ExecutionJobDetail = GetExecutionJobDetail();
+                ExecutionTrigger = GetExecutionTrigger(ExecutionJobDetail);
+            }
+            Close();
+        }
+
+        private void CancelToolStripButton_Click(object sender, EventArgs e)
+        {
+            Cancelled = true;
+            Close();
+        }
+
+        private void CronDocsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            cronmakerLinkLabel.LinkVisited = true;
+            Process.Start(
+                "https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontrigger.html");
+        }
+
+        private void CronmakerLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            cronmakerLinkLabel.LinkVisited = true;
+            Process.Start("http://www.cronmaker.com");
+        }
+
+        private void FilenameSeparatorTextBox_TextChanged(object sender, EventArgs e)
+        {
+            separatorExampleButton.Enabled = !string.IsNullOrEmpty(filenameSeparatorTextBox.Text);
+
+            if (!string.IsNullOrEmpty(filenameSeparatorTextBox.Text))
+            {
+                var invalidCharacter = new Regex("[" + Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars())) + "]");
+                if (invalidCharacter.IsMatch(filenameSeparatorTextBox.Text))
+                {
+                    MessageBox.Show($"{filenameSeparatorTextBox.Text} is invalid character in filename", "Invalid separator");
+                    filenameSeparatorTextBox.Text = string.Empty;
+                };
+            }
+        }
+
+        private void GetCronScheduleForMonitoringButton_Click(object sender, EventArgs e)
+        {
+            var scheduleTimes = new List<DateTimeOffset>();
+
+            var time = DateTimeOffset.Now;
+
+            if (!string.IsNullOrEmpty(monitoringJobCronExpressionTextBox.Text))
+                for (var i = 0; i <= 99; i++)
+                {
+                    var date = FormsHelper.GetScheduleForCron(monitoringJobCronExpressionTextBox.Text, time);
+                    if (date == DateTimeOffset.MinValue)
+                        return;
+                    if (date == null) continue;
+                    scheduleTimes.Add(date.Value);
+                    time = date.Value;
+                }
+            calculatedRunsMonitoringTextBox.Text = string.Empty;
+            foreach (var date in scheduleTimes)
+                calculatedRunsMonitoringTextBox.Text = calculatedRunsMonitoringTextBox.Text + $@"{date.ToLocalTime():yyyy-MM-dd HH:mm:ss}" + Environment.NewLine;
+        }
+
+        private void GetCronScheduleForProcButton_Click(object sender, EventArgs e)
+        {
+            var scheduleTimes = new List<DateTimeOffset>();
+
+            var time = DateTimeOffset.Now;
+
+            if (!string.IsNullOrEmpty(monitoringJobCronExpressionTextBox.Text))
+                for (var i = 0; i <= 99; i++)
+                {
+                    var date = FormsHelper.GetScheduleForCron(monitoringJobCronExpressionTextBox.Text, time);
+                    if (date == DateTimeOffset.MinValue)
+                        return;
+                    if (date == null) continue;
+                    scheduleTimes.Add(date.Value);
+                    time = date.Value;
+                }
+            calculatedRunsImportTextBox.Text = string.Empty;
+            foreach (var date in scheduleTimes)
+                calculatedRunsImportTextBox.Text = calculatedRunsImportTextBox.Text + $@"{date.ToLocalTime():yyyy-MM-dd HH:mm:ss}" +
+                                             Environment.NewLine;
+        }
+
+        private void GetCronScheduleForUploadButton_Click(object sender, EventArgs e)
+        {
+            var scheduleTimes = new List<DateTimeOffset>();
+
+            var time = DateTimeOffset.Now;
+
+            if (!string.IsNullOrEmpty(importJobCronExpressionTextBox.Text))
+                for (var i = 0; i <= 99; i++)
+                {
+                    var date = FormsHelper.GetScheduleForCron(importJobCronExpressionTextBox.Text, time);
+                    if (date == DateTimeOffset.MinValue)
+                        return;
+                    if (date == null) continue;
+                    scheduleTimes.Add(date.Value);
+                    time = date.Value;
+                }
+            calculatedRunsImportTextBox.Text = string.Empty;
+            foreach (var date in scheduleTimes)
+                calculatedRunsImportTextBox.Text = calculatedRunsImportTextBox.Text + $@"{date.ToLocalTime():yyyy-MM-dd HH:mm:ss}" + Environment.NewLine;
+        }
+
+        private void GetLegalEntityFromFilenameRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            getLegalEntityFromFilenameDetailsGroupBox.Enabled = getLegalEntityFromFilenameRadioButton.Checked;
+        }
+
+        private void ImportJobCronTriggerRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            simpleTriggerImportJobGroupBox.Enabled = !importJobCronTriggerRadioButton.Checked;
+            cronTriggerImportJobGroupBox.Enabled = importJobCronTriggerRadioButton.Checked;
+        }
+
+        private void InputFilesArePackagesCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            packageTemplateFileBrowserButton.Enabled = !inputFilesArePackagesCheckBox.Checked;
+            packageTemplateTextBox.Enabled = !inputFilesArePackagesCheckBox.Checked;
+            searchPatternTextBox.Enabled = !inputFilesArePackagesCheckBox.Checked;
+            if (inputFilesArePackagesCheckBox.Checked)
+            {
+                searchPatternTextBox.Text = "*.zip";
+            }
+        }
+
+        private void InputFolderButton_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                inputFolderTextBox.Text = folderBrowserDialog.SelectedPath;
+        }
+
+        private void LegalEntityTextBox_TextChanged(object sender, EventArgs e)
+        {
+            multicompanyCheckBox.Checked = legalEntityTextBox.Text.Length == 0;
+        }
+
+        private void MonitoringJobCronTriggerRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            simpleTriggerMonitoringJobGroupBox.Enabled = !monitoringJobCronTriggerRadioButton.Checked;
+            cronTriggerMonitoringJobGroupBox.Enabled = monitoringJobCronTriggerRadioButton.Checked;
+        }
+
+        private void MoreExamplesButton_Click(object sender, EventArgs e)
+        {
+            var form = new CronExamples();
+            form.ShowDialog();
+        }
+
+        private void MoreExamplesMonitoringButton_Click(object sender, EventArgs e)
+        {
+            var form = new CronExamples();
+            form.ShowDialog();
+        }
+
+        private void MulticompanyCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            multiCompanyGetMethodPanel.Enabled = multicompanyCheckBox.Checked;
+            legalEntityTextBox.Enabled = !multicompanyCheckBox.Checked;
+            if (multicompanyCheckBox.Checked)
+            {
+                legalEntityTextBox.Text = string.Empty;
+            }
+        }
+
+        private void PackageTemplateFileBrowserButton_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+                packageTemplateTextBox.Text = openFileDialog.FileName;
+        }
+
+        private void ProcessingErrorsFolderBrowserButton_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                processingErrorsFolderTextBox.Text = folderBrowserDialog.SelectedPath;
+        }
+
+        private void ProcessingSuccessFolderButton_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                processingSuccessFolderTextBox.Text = folderBrowserDialog.SelectedPath;
+        }
+
+        private void SeparatorExampleButton_Click(object sender, EventArgs e)
+        {
+            String[] separator = { filenameSeparatorTextBox.Text };
+            var tokenList = separatorExampleTextBox.Text.Split(separator, 10, StringSplitOptions.RemoveEmptyEntries);
+            separatorExampleLegalEntityTextBox.Text = tokenList[(int)legalEntityTokenPositionNumericUpDown.Value - 1];
+        }
+
+        private void SeparatorExampleTextBox_TextChanged(object sender, EventArgs e)
+        {
+            separatorExampleLegalEntityTextBox.Text = string.Empty;
+        }
+
+        private void ServiceAuthRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (serviceAuthRadioButton.Checked)
+            {
+                appRegistrationComboBox.DataSource = Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.Service).ToList();
+            }
+            else
+            {
+                appRegistrationComboBox.DataSource = Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.User).ToList();
+            }
+
+            userComboBox.Enabled = !serviceAuthRadioButton.Checked;
+        }
+
+        private void StatusFileExtensionTextBox_Leave(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(statusFileExtensionTextBox.Text))
+            {
+                if (statusFileExtensionTextBox.Text.Substring(0, 1) != ".")
+                    statusFileExtensionTextBox.Text = $@".{statusFileExtensionTextBox.Text}";
+            }
+            else
+            {
+                statusFileExtensionTextBox.Text = @".Status";
+            }
+        }
+
+        private void TopUploadFolder_TextChanged(object sender, EventArgs e)
         {
             try
             {
-                var cron = new CronExpression(cronexpression);
-                return cron.GetNextValidTimeAfter(date);
+                if (useStandardSubfolder.Checked)
+                {
+                    inputFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.UploadInputFolder);
+                    uploadSuccessFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.UploadSuccessFolder);
+                    uploadErrorsFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.UploadErrorsFolder);
+                    processingSuccessFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.ProcessingSuccessFolder);
+                    processingErrorsFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.ProcessingErrorsFolder);
+                    openFileDialog.InitialDirectory = topFolderTextBox.Text;
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, Resources.Cron_expression_is_invalid);
-                return DateTimeOffset.MinValue;
+                MessageBox.Show(Resources.Check_if_path + Environment.NewLine + ex.Message, Resources.Warning);
             }
         }
 
@@ -567,6 +820,22 @@ namespace RecurringIntegrationsScheduler.Forms
         {
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                 uploadErrorsFolderTextBox.Text = folderBrowserDialog.SelectedPath;
+        }
+
+        private void UploadSuccessFolderButton_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                uploadSuccessFolderTextBox.Text = folderBrowserDialog.SelectedPath;
+        }
+
+        private void UseMonitoringJobCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            monitoringJobGroupBox.Enabled = useMonitoringJobCheckBox.Checked;
+
+            processingSuccessFolderTextBox.Enabled = useMonitoringJobCheckBox.Checked && !useStandardSubfolder.Checked;
+            processingSuccessFolderBrowserButton.Enabled = useMonitoringJobCheckBox.Checked && !useStandardSubfolder.Checked;
+            processingErrorsFolderTextBox.Enabled = useMonitoringJobCheckBox.Checked && !useStandardSubfolder.Checked;
+            processingErrorsFolderBrowserButton.Enabled = useMonitoringJobCheckBox.Checked && !useStandardSubfolder.Checked;
         }
 
         private void UseStandardSubfolder_CheckedChanged(object sender, EventArgs e)
@@ -627,322 +896,6 @@ namespace RecurringIntegrationsScheduler.Forms
             }
         }
 
-        private void CronmakerLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            cronmakerLinkLabel.LinkVisited = true;
-            Process.Start("http://www.cronmaker.com");
-        }
-
-        private void ImportJobCronTriggerRadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-            simpleTriggerImportJobGroupBox.Enabled = !importJobCronTriggerRadioButton.Checked;
-            cronTriggerImportJobGroupBox.Enabled = importJobCronTriggerRadioButton.Checked;
-        }
-
-        private void CronDocsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            cronmakerLinkLabel.LinkVisited = true;
-            Process.Start(
-                "https://www.quartz-scheduler.net/documentation/quartz-3.x/tutorial/crontrigger.html");
-        }
-
-        private void GetCronScheduleForUploadButton_Click(object sender, EventArgs e)
-        {
-            var scheduleTimes = new List<DateTimeOffset>();
-
-            var time = DateTimeOffset.Now;
-
-            if (!string.IsNullOrEmpty(importJobCronExpressionTextBox.Text))
-                for (var i = 0; i <= 99; i++)
-                {
-                    var date = GetScheduleForCron(importJobCronExpressionTextBox.Text, time);
-                    if (date == DateTimeOffset.MinValue)
-                        return;
-                    if (date == null) continue;
-                    scheduleTimes.Add(date.Value);
-                    time = date.Value;
-                }
-            calculatedRunsImportTextBox.Text = string.Empty;
-            foreach (var date in scheduleTimes)
-                calculatedRunsImportTextBox.Text = calculatedRunsImportTextBox.Text + $@"{date.ToLocalTime():yyyy-MM-dd HH:mm:ss}" + Environment.NewLine;
-        }
-
-        private void TopUploadFolder_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (useStandardSubfolder.Checked)
-                {
-                    inputFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.UploadInputFolder);
-                    uploadSuccessFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.UploadSuccessFolder);
-                    uploadErrorsFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.UploadErrorsFolder);
-                    processingSuccessFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.ProcessingSuccessFolder);
-                    processingErrorsFolderTextBox.Text = Path.Combine(topFolderTextBox.Text, Properties.Settings.Default.ProcessingErrorsFolder);
-                    openFileDialog.InitialDirectory = topFolderTextBox.Text;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(Resources.Check_if_path + Environment.NewLine + ex.Message, Resources.Warning);
-            }
-        }
-
-        private void MoreExamplesButton_Click(object sender, EventArgs e)
-        {
-            var form = new CronExamples();
-            form.ShowDialog();
-        }
-
-        private void UseMonitoringJobCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            monitoringJobGroupBox.Enabled = useMonitoringJobCheckBox.Checked;
-            
-            processingSuccessFolderTextBox.Enabled = useMonitoringJobCheckBox.Checked && !useStandardSubfolder.Checked;
-            processingSuccessFolderBrowserButton.Enabled = useMonitoringJobCheckBox.Checked && !useStandardSubfolder.Checked;
-            processingErrorsFolderTextBox.Enabled = useMonitoringJobCheckBox.Checked && !useStandardSubfolder.Checked;
-            processingErrorsFolderBrowserButton.Enabled = useMonitoringJobCheckBox.Checked && !useStandardSubfolder.Checked;
-        }
-
-        private void InputFolderButton_Click(object sender, EventArgs e)
-        {
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-                inputFolderTextBox.Text = folderBrowserDialog.SelectedPath;
-        }
-
-        private void UploadSuccessFolderButton_Click(object sender, EventArgs e)
-        {
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-                uploadSuccessFolderTextBox.Text = folderBrowserDialog.SelectedPath;
-        }
-
-        private void ProcessingSuccessFolderButton_Click(object sender, EventArgs e)
-        {
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-                processingSuccessFolderTextBox.Text = folderBrowserDialog.SelectedPath;
-        }
-
-        private void MonitoringJobCronTriggerRadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-            simpleTriggerMonitoringJobGroupBox.Enabled = !monitoringJobCronTriggerRadioButton.Checked;
-            cronTriggerMonitoringJobGroupBox.Enabled = monitoringJobCronTriggerRadioButton.Checked;
-        }
-
-        private void GetCronScheduleForProcButton_Click(object sender, EventArgs e)
-        {
-            var scheduleTimes = new List<DateTimeOffset>();
-
-            var time = DateTimeOffset.Now;
-
-            if (!string.IsNullOrEmpty(monitoringJobCronExpressionTextBox.Text))
-                for (var i = 0; i <= 99; i++)
-                {
-                    var date = GetScheduleForCron(monitoringJobCronExpressionTextBox.Text, time);
-                    if (date == DateTimeOffset.MinValue)
-                        return;
-                    if (date == null) continue;
-                    scheduleTimes.Add(date.Value);
-                    time = date.Value;
-                }
-            calculatedRunsImportTextBox.Text = string.Empty;
-            foreach (var date in scheduleTimes)
-                calculatedRunsImportTextBox.Text = calculatedRunsImportTextBox.Text + $@"{date.ToLocalTime():yyyy-MM-dd HH:mm:ss}" +
-                                             Environment.NewLine;
-        }
-
-        private void StatusFileExtensionTextBox_Leave(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(statusFileExtensionTextBox.Text))
-            {
-                if (statusFileExtensionTextBox.Text.Substring(0, 1) != ".")
-                    statusFileExtensionTextBox.Text = $@".{statusFileExtensionTextBox.Text}";
-            }
-            else
-            {
-                statusFileExtensionTextBox.Text = @".Status";
-            }
-        }
-
-        private void ProcessingErrorsFolderBrowserButton_Click(object sender, EventArgs e)
-        {
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-                processingErrorsFolderTextBox.Text = folderBrowserDialog.SelectedPath;
-        }
-
-        private void ServiceAuthRadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-            if(serviceAuthRadioButton.Checked)
-            {
-                appRegistrationComboBox.DataSource = Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.Service).ToList();
-            }
-            else
-            {
-                appRegistrationComboBox.DataSource = Properties.Settings.Default.AadApplications.Where(x => x.AuthenticationType == AuthenticationType.User).ToList();
-            }
-
-            userComboBox.Enabled = !serviceAuthRadioButton.Checked;
-        }
-
-        private void PackageTemplateFileBrowserButton_Click(object sender, EventArgs e)
-        {
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-                packageTemplateTextBox.Text = openFileDialog.FileName;
-        }
-
-        private void AddToolStripButton_Click(object sender, EventArgs e)
-        {
-            TrimTextBoxes(this);
-
-            if (ImportJobDetail == null)
-            {
-                var jobKey = new JobKey(jobName.Text, jobGroupComboBox.Text);
-                if (Scheduler.Instance.GetScheduler().CheckExists(jobKey).Result)
-                    if (
-                        MessageBox.Show(
-                            string.Format(Resources.Job_0_in_group_1_already_exists, jobKey.Name, jobKey.Group),
-                            Resources.Job_already_exists, MessageBoxButtons.YesNo) == DialogResult.No)
-                        return;
-            }
-
-            if (!ValidateJobSettings()) return;
-            ImportJobDetail = GetImportJobDetail();
-            ImportTrigger = GetImportTrigger(ImportJobDetail);
-            if (useMonitoringJobCheckBox.Checked)
-            {
-                ExecutionJobDetail = GetMonitorJobDetail();
-                ExecutionTrigger = GetExecutionTrigger(ExecutionJobDetail);
-            }
-            Close();
-        }
-
-        private void CancelToolStripButton_Click(object sender, EventArgs e)
-        {
-            Cancelled = true;
-            Close();
-        }
-
-        private void GetCronScheduleForMonitoringButton_Click(object sender, EventArgs e)
-        {
-            var scheduleTimes = new List<DateTimeOffset>();
-
-            var time = DateTimeOffset.Now;
-
-            if (!string.IsNullOrEmpty(monitoringJobCronExpressionTextBox.Text))
-                for (var i = 0; i <= 99; i++)
-                {
-                    var date = GetScheduleForCron(monitoringJobCronExpressionTextBox.Text, time);
-                    if (date == DateTimeOffset.MinValue)
-                        return;
-                    if (date == null) continue;
-                    scheduleTimes.Add(date.Value);
-                    time = date.Value;
-                }
-            calculatedRunsMonitoringTextBox.Text = string.Empty;
-            foreach (var date in scheduleTimes)
-                calculatedRunsMonitoringTextBox.Text = calculatedRunsMonitoringTextBox.Text + $@"{date.ToLocalTime():yyyy-MM-dd HH:mm:ss}" + Environment.NewLine;
-        }
-
-        private void MoreExamplesMonitoringButton_Click(object sender, EventArgs e)
-        {
-            var form = new CronExamples();
-            form.ShowDialog();
-        }
-
-        private void GetLegalEntityFromFilenameRadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-            getLegalEntityFromFilenameDetailsGroupBox.Enabled = getLegalEntityFromFilenameRadioButton.Checked;
-        }
-
-        private void LegalEntityTextBox_TextChanged(object sender, EventArgs e)
-        {
-            multicompanyCheckBox.Checked = legalEntityTextBox.Text.Length == 0;
-        }
-
-        private void MulticompanyCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            multiCompanyGetMethodPanel.Enabled = multicompanyCheckBox.Checked;
-            legalEntityTextBox.Enabled = !multicompanyCheckBox.Checked;
-            if(multicompanyCheckBox.Checked)
-            {
-                legalEntityTextBox.Text = string.Empty;
-            }
-        }
-
-        private void InputFilesArePackagesCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            packageTemplateFileBrowserButton.Enabled = !inputFilesArePackagesCheckBox.Checked;
-            packageTemplateTextBox.Enabled = !inputFilesArePackagesCheckBox.Checked;
-            searchPatternTextBox.Enabled = !inputFilesArePackagesCheckBox.Checked;
-            if(inputFilesArePackagesCheckBox.Checked)
-            {
-                searchPatternTextBox.Text = "*.zip";
-            }
-        }
-
-        private void FilenameSeparatorTextBox_TextChanged(object sender, EventArgs e)
-        {
-            separatorExampleButton.Enabled = !string.IsNullOrEmpty(filenameSeparatorTextBox.Text);
-            
-            if(!string.IsNullOrEmpty(filenameSeparatorTextBox.Text))
-            {
-                var invalidCharacter = new Regex("[" + Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars())) + "]");
-                if (invalidCharacter.IsMatch(filenameSeparatorTextBox.Text))
-                {
-                    MessageBox.Show($"{filenameSeparatorTextBox.Text} is invalid character in filename", "Invalid separator");
-                    filenameSeparatorTextBox.Text = string.Empty;
-                };
-            }
-        }
-
-        private void SeparatorExampleTextBox_TextChanged(object sender, EventArgs e)
-        {
-            separatorExampleLegalEntityTextBox.Text = string.Empty;
-        }
-
-        private void SeparatorExampleButton_Click(object sender, EventArgs e)
-        {
-            String[] separator = { filenameSeparatorTextBox.Text };
-            var tokenList = separatorExampleTextBox.Text.Split(separator, 10, StringSplitOptions.RemoveEmptyEntries);
-            separatorExampleLegalEntityTextBox.Text = tokenList[(int)legalEntityTokenPositionNumericUpDown.Value - 1];
-        }
-
-        private void TrimTextBoxes(Control parentCtrl)
-        {
-            parentCtrl.Controls //Trim all textboxes
-                .OfType<TextBox>()
-                .ToList()
-                .ForEach(t => t.Text = t.Text.Trim());
-
-            foreach (Control c in parentCtrl.Controls)
-            {
-                TrimTextBoxes(c);
-            }
-        }
-
-        private void SetDropDownsWidth(Control parentCtrl)
-        {
-            parentCtrl.Controls
-                .OfType<ComboBox>()
-                .ToList()
-                .ForEach(t => t.DropDownWidth = DropDownWidth(t));
-
-            foreach (Control c in parentCtrl.Controls)
-            {
-                SetDropDownsWidth(c);
-            }
-        }
-
-        private int DropDownWidth(ComboBox myCombo)
-        {
-            int maxWidth = 0;
-            foreach (var obj in myCombo.Items)
-            {
-                int temp = TextRenderer.MeasureText(obj.ToString(), myCombo.Font).Width;
-                if (temp > maxWidth)
-                {
-                    maxWidth = temp;
-                }
-            }
-            return maxWidth;
-        }
+        #endregion
     }
 }
