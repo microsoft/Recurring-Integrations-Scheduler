@@ -199,6 +199,7 @@ namespace RecurringIntegrationsScheduler.Forms
                     importJobSimpleTriggerRadioButton.Checked = true;
                     importJobHoursDateTimePicker.Value = DateTime.Now.Date + localTrigger.RepeatInterval;
                     importJobMinutesDateTimePicker.Value = DateTime.Now.Date + localTrigger.RepeatInterval;
+                    importJobStartAtDateTimePicker.Value = localTrigger.StartTimeUtc.UtcDateTime.ToLocalTime();
                 }
                 else if (ImportTrigger.GetType() == typeof(CronTriggerImpl))
                 {
@@ -237,6 +238,7 @@ namespace RecurringIntegrationsScheduler.Forms
                     monitoringJobSimpleTriggerRadioButton.Checked = true;
                     monitoringJobHoursDateTimePicker.Value = DateTime.Now.Date + localTrigger.RepeatInterval;
                     monitoringJobMinutesDateTimePicker.Value = DateTime.Now.Date + localTrigger.RepeatInterval;
+                    monitoringJobStartAtDateTimePicker.Value = localTrigger.StartTimeUtc.UtcDateTime.ToLocalTime();
                 }
                 else if (ExecutionTrigger.GetType() == typeof(CronTriggerImpl))
                 {
@@ -408,12 +410,12 @@ namespace RecurringIntegrationsScheduler.Forms
                 return builder.WithSimpleSchedule(x => x
                         .WithIntervalInMinutes(minutes)
                         .RepeatForever())
-                    .StartNow()
+                    .StartAt(importJobStartAtDateTimePicker.Value.ToUniversalTime())
                     .Build();
             }
             return
                 builder.WithSchedule(CronScheduleBuilder.CronSchedule(importJobCronExpressionTextBox.Text))
-                    .StartAt(importJobStartAtDateTimePicker.Value.ToUniversalTime())
+                    .StartNow()
                     .Build();
         }
 
@@ -438,12 +440,12 @@ namespace RecurringIntegrationsScheduler.Forms
                 return builder.WithSimpleSchedule(x => x
                         .WithIntervalInMinutes(minutes)
                         .RepeatForever())
-                    .StartNow()
+                    .StartAt(monitoringJobStartAtDateTimePicker.Value.ToUniversalTime())
                     .Build();
             }
             return
                 builder.WithSchedule(CronScheduleBuilder.CronSchedule(monitoringJobCronExpressionTextBox.Text))
-                    .StartAt(monitoringJobStartAtDateTimePicker.Value.ToUniversalTime())
+                    .StartNow()
                     .Build();
         }
 

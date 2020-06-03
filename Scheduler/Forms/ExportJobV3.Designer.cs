@@ -391,7 +391,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobTabControl.Margin = new System.Windows.Forms.Padding(6);
             this.jobTabControl.Name = "jobTabControl";
             this.jobTabControl.SelectedIndex = 0;
-            this.jobTabControl.Size = new System.Drawing.Size(1309, 922);
+            this.jobTabControl.Size = new System.Drawing.Size(1294, 876);
             this.jobTabControl.TabIndex = 12;
             // 
             // exportJobOverviewTabPage
@@ -404,7 +404,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.exportJobOverviewTabPage.Margin = new System.Windows.Forms.Padding(6);
             this.exportJobOverviewTabPage.Name = "exportJobOverviewTabPage";
             this.exportJobOverviewTabPage.Padding = new System.Windows.Forms.Padding(6);
-            this.exportJobOverviewTabPage.Size = new System.Drawing.Size(1301, 885);
+            this.exportJobOverviewTabPage.Size = new System.Drawing.Size(1286, 839);
             this.exportJobOverviewTabPage.TabIndex = 0;
             this.exportJobOverviewTabPage.Text = "Export job overview";
             // 
@@ -501,7 +501,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.exportJobDetailsTabPage.Margin = new System.Windows.Forms.Padding(6);
             this.exportJobDetailsTabPage.Name = "exportJobDetailsTabPage";
             this.exportJobDetailsTabPage.Padding = new System.Windows.Forms.Padding(6);
-            this.exportJobDetailsTabPage.Size = new System.Drawing.Size(1301, 885);
+            this.exportJobDetailsTabPage.Size = new System.Drawing.Size(1301, 789);
             this.exportJobDetailsTabPage.TabIndex = 1;
             this.exportJobDetailsTabPage.Text = "Export job details";
             // 
@@ -685,7 +685,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.exportJobRecurrenceTabPage.Margin = new System.Windows.Forms.Padding(6);
             this.exportJobRecurrenceTabPage.Name = "exportJobRecurrenceTabPage";
             this.exportJobRecurrenceTabPage.Padding = new System.Windows.Forms.Padding(6);
-            this.exportJobRecurrenceTabPage.Size = new System.Drawing.Size(1301, 885);
+            this.exportJobRecurrenceTabPage.Size = new System.Drawing.Size(1286, 839);
             this.exportJobRecurrenceTabPage.TabIndex = 2;
             this.exportJobRecurrenceTabPage.Text = "Export job recurrence";
             // 
@@ -821,13 +821,13 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             // startAtDateTimePicker
             // 
-            this.startAtDateTimePicker.CustomFormat = "HH:mm";
+            this.startAtDateTimePicker.CustomFormat = "HH:mm:ss";
             this.startAtDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.startAtDateTimePicker.Location = new System.Drawing.Point(160, 100);
             this.startAtDateTimePicker.Margin = new System.Windows.Forms.Padding(6);
             this.startAtDateTimePicker.Name = "startAtDateTimePicker";
             this.startAtDateTimePicker.ShowUpDown = true;
-            this.startAtDateTimePicker.Size = new System.Drawing.Size(92, 29);
+            this.startAtDateTimePicker.Size = new System.Drawing.Size(130, 29);
             this.startAtDateTimePicker.TabIndex = 21;
             this.startAtDateTimePicker.Value = new System.DateTime(2016, 6, 26, 0, 0, 0, 0);
             // 
@@ -959,7 +959,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.connectionTabPage.Margin = new System.Windows.Forms.Padding(6);
             this.connectionTabPage.Name = "connectionTabPage";
             this.connectionTabPage.Padding = new System.Windows.Forms.Padding(6);
-            this.connectionTabPage.Size = new System.Drawing.Size(1301, 885);
+            this.connectionTabPage.Size = new System.Drawing.Size(1301, 789);
             this.connectionTabPage.TabIndex = 3;
             this.connectionTabPage.Text = "Connection";
             // 
@@ -1084,7 +1084,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.customOdataTabPage.Margin = new System.Windows.Forms.Padding(6);
             this.customOdataTabPage.Name = "customOdataTabPage";
             this.customOdataTabPage.Padding = new System.Windows.Forms.Padding(6);
-            this.customOdataTabPage.Size = new System.Drawing.Size(1301, 885);
+            this.customOdataTabPage.Size = new System.Drawing.Size(1301, 789);
             this.customOdataTabPage.TabIndex = 4;
             this.customOdataTabPage.Text = "Custom OData actions";
             // 
@@ -1166,10 +1166,10 @@ namespace RecurringIntegrationsScheduler.Forms
             this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cancelToolStripButton,
             this.addToolStripButton});
-            this.mainToolStrip.Location = new System.Drawing.Point(0, 922);
+            this.mainToolStrip.Location = new System.Drawing.Point(0, 876);
             this.mainToolStrip.Name = "mainToolStrip";
             this.mainToolStrip.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.mainToolStrip.Size = new System.Drawing.Size(1309, 40);
+            this.mainToolStrip.Size = new System.Drawing.Size(1294, 40);
             this.mainToolStrip.TabIndex = 11;
             this.mainToolStrip.Text = "toolStrip1";
             // 
@@ -1201,7 +1201,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1309, 962);
+            this.ClientSize = new System.Drawing.Size(1294, 916);
             this.Controls.Add(this.jobTabControl);
             this.Controls.Add(this.mainToolStrip);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;

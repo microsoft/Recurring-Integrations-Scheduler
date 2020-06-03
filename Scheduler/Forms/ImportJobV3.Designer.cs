@@ -845,13 +845,13 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             // importJobStartAtDateTimePicker
             // 
-            this.importJobStartAtDateTimePicker.CustomFormat = "HH:mm";
+            this.importJobStartAtDateTimePicker.CustomFormat = "HH:mm:ss";
             this.importJobStartAtDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.importJobStartAtDateTimePicker.Location = new System.Drawing.Point(160, 100);
             this.importJobStartAtDateTimePicker.Margin = new System.Windows.Forms.Padding(6);
             this.importJobStartAtDateTimePicker.Name = "importJobStartAtDateTimePicker";
             this.importJobStartAtDateTimePicker.ShowUpDown = true;
-            this.importJobStartAtDateTimePicker.Size = new System.Drawing.Size(92, 29);
+            this.importJobStartAtDateTimePicker.Size = new System.Drawing.Size(130, 29);
             this.importJobStartAtDateTimePicker.TabIndex = 2;
             this.importJobStartAtDateTimePicker.Value = new System.DateTime(2016, 6, 26, 0, 0, 0, 0);
             // 
@@ -1123,13 +1123,13 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             // monitoringJobStartAtDateTimePicker
             // 
-            this.monitoringJobStartAtDateTimePicker.CustomFormat = "HH:mm";
+            this.monitoringJobStartAtDateTimePicker.CustomFormat = "HH:mm:ss";
             this.monitoringJobStartAtDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.monitoringJobStartAtDateTimePicker.Location = new System.Drawing.Point(169, 103);
             this.monitoringJobStartAtDateTimePicker.Margin = new System.Windows.Forms.Padding(6);
             this.monitoringJobStartAtDateTimePicker.Name = "monitoringJobStartAtDateTimePicker";
             this.monitoringJobStartAtDateTimePicker.ShowUpDown = true;
-            this.monitoringJobStartAtDateTimePicker.Size = new System.Drawing.Size(92, 29);
+            this.monitoringJobStartAtDateTimePicker.Size = new System.Drawing.Size(130, 29);
             this.monitoringJobStartAtDateTimePicker.TabIndex = 0;
             this.monitoringJobStartAtDateTimePicker.Value = new System.DateTime(2016, 6, 26, 0, 0, 0, 0);
             // 
@@ -2171,7 +2171,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.cancelToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("cancelToolStripButton.Image")));
             this.cancelToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.cancelToolStripButton.Name = "cancelToolStripButton";
-            this.cancelToolStripButton.Size = new System.Drawing.Size(79, 38);
+            this.cancelToolStripButton.Size = new System.Drawing.Size(79, 34);
             this.cancelToolStripButton.Text = "Cancel";
             this.cancelToolStripButton.Click += new System.EventHandler(this.CancelToolStripButton_Click);
             // 
@@ -2182,7 +2182,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.addToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("addToolStripButton.Image")));
             this.addToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.addToolStripButton.Name = "addToolStripButton";
-            this.addToolStripButton.Size = new System.Drawing.Size(90, 38);
+            this.addToolStripButton.Size = new System.Drawing.Size(90, 34);
             this.addToolStripButton.Text = "Add job";
             this.addToolStripButton.Click += new System.EventHandler(this.AddToolStripButton_Click);
             // 

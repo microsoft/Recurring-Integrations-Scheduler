@@ -184,6 +184,7 @@ namespace RecurringIntegrationsScheduler.Forms
                     simpleTriggerRadioButton.Checked = true;
                     hoursDateTimePicker.Value = DateTime.Now.Date + localTrigger.RepeatInterval;
                     minutesDateTimePicker.Value = DateTime.Now.Date + localTrigger.RepeatInterval;
+                    startAtDateTimePicker.Value = localTrigger.StartTimeUtc.UtcDateTime.ToLocalTime();
                 }
                 else if (Trigger.GetType() == typeof(CronTriggerImpl))
                 {
@@ -278,12 +279,12 @@ namespace RecurringIntegrationsScheduler.Forms
                 return builder.WithSimpleSchedule(x => x
                         .WithIntervalInMinutes(minutes)
                         .RepeatForever())
-                    .StartNow()
+                    .StartAt(startAtDateTimePicker.Value.ToUniversalTime())
                     .Build();
             }
             return
                 builder.WithSchedule(CronScheduleBuilder.CronSchedule(cronExpressionTextBox.Text))
-                    .StartAt(startAtDateTimePicker.Value.ToUniversalTime())
+                    .StartNow()
                     .Build();
         }
 

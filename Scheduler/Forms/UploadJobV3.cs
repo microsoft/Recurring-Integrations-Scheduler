@@ -206,6 +206,7 @@ namespace RecurringIntegrationsScheduler.Forms
                     upJobSimpleTriggerRadioButton.Checked = true;
                     upJobHoursDateTimePicker.Value = DateTime.Now.Date + localTrigger.RepeatInterval;
                     upJobMinutesDateTimePicker.Value = DateTime.Now.Date + localTrigger.RepeatInterval;
+                    upJobStartAtDateTimePicker.Value = localTrigger.StartTimeUtc.UtcDateTime.ToLocalTime();
                 }
                 else if (UploadTrigger.GetType() == typeof(CronTriggerImpl))
                 {
@@ -237,6 +238,7 @@ namespace RecurringIntegrationsScheduler.Forms
                     procJobSimpleTriggerRadioButton.Checked = true;
                     procJobHoursDateTimePicker.Value = DateTime.Now.Date + localTrigger.RepeatInterval;
                     procJobMinutesDateTimePicker.Value = DateTime.Now.Date + localTrigger.RepeatInterval;
+                    procJobStartAtDateTimePicker.Value = localTrigger.StartTimeUtc.UtcDateTime.ToLocalTime();
                 }
                 else if (ProcessingTrigger.GetType() == typeof(CronTriggerImpl))
                 {
@@ -385,12 +387,12 @@ namespace RecurringIntegrationsScheduler.Forms
                 return builder.WithSimpleSchedule(x => x
                         .WithIntervalInMinutes(minutes)
                         .RepeatForever())
-                    .StartNow()
+                    .StartAt(upJobStartAtDateTimePicker.Value.ToUniversalTime())
                     .Build();
             }
             return
                 builder.WithSchedule(CronScheduleBuilder.CronSchedule(upJobCronExpressionTextBox.Text))
-                    .StartAt(upJobStartAtDateTimePicker.Value.ToUniversalTime())
+                    .StartNow()
                     .Build();
         }
         
@@ -415,12 +417,12 @@ namespace RecurringIntegrationsScheduler.Forms
                 return builder.WithSimpleSchedule(x => x
                         .WithIntervalInMinutes(minutes)
                         .RepeatForever())
-                    .StartNow()
+                    .StartAt(procJobStartAtDateTimePicker.Value.ToUniversalTime())
                     .Build();
             }
             return
                 builder.WithSchedule(CronScheduleBuilder.CronSchedule(procJobCronExpressionTextBox.Text))
-                    .StartAt(procJobStartAtDateTimePicker.Value.ToUniversalTime())
+                    .StartNow()
                     .Build();
         }
 
