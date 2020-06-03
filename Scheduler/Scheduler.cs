@@ -321,7 +321,7 @@ namespace RecurringIntegrationsScheduler
             AddCommonTriggerData(ns, cron, trigger);
             cron.Add(
                 new XElement(ns + "cron-expression", trigger.CronExpressionString),
-                new XElement(ns + "time-zone", trigger.TimeZone.StandardName)
+                new XElement(ns + "time-zone", trigger.TimeZone.Id)
             );
             return cronTrigger;
         }

@@ -56,6 +56,8 @@ namespace RecurringIntegrationsScheduler.Forms
             this.exportJobOverviewTabPage = new System.Windows.Forms.TabPage();
             this.jobIdentificationGroupBox = new System.Windows.Forms.GroupBox();
             this.jobControlGroupBox = new System.Windows.Forms.GroupBox();
+            this.groupBoxLogging = new System.Windows.Forms.GroupBox();
+            this.verboseLoggingCheckBox = new System.Windows.Forms.CheckBox();
             this.pauseIndefinitelyCheckBox = new System.Windows.Forms.CheckBox();
             this.foldersGroupBox = new System.Windows.Forms.GroupBox();
             this.exportJobDetailsTabPage = new System.Windows.Forms.TabPage();
@@ -117,8 +119,6 @@ namespace RecurringIntegrationsScheduler.Forms
             this.mainToolStrip = new System.Windows.Forms.ToolStrip();
             this.cancelToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.addToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.groupBoxLogging = new System.Windows.Forms.GroupBox();
-            this.verboseLoggingCheckBox = new System.Windows.Forms.CheckBox();
             this.retryPolicyGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.retriesCountUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.retriesDelayUpDown)).BeginInit();
@@ -127,6 +127,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.exportJobOverviewTabPage.SuspendLayout();
             this.jobIdentificationGroupBox.SuspendLayout();
             this.jobControlGroupBox.SuspendLayout();
+            this.groupBoxLogging.SuspendLayout();
             this.foldersGroupBox.SuspendLayout();
             this.exportJobDetailsTabPage.SuspendLayout();
             this.exportDetailsGroupBox.SuspendLayout();
@@ -143,7 +144,6 @@ namespace RecurringIntegrationsScheduler.Forms
             this.customOdataTabPage.SuspendLayout();
             this.customODataGroupBox.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
-            this.groupBoxLogging.SuspendLayout();
             this.SuspendLayout();
             // 
             // useStandardSubfolder
@@ -152,7 +152,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.useStandardSubfolder.Checked = true;
             this.useStandardSubfolder.CheckState = System.Windows.Forms.CheckState.Checked;
             this.useStandardSubfolder.Location = new System.Drawing.Point(9, 137);
-            this.useStandardSubfolder.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.useStandardSubfolder.Margin = new System.Windows.Forms.Padding(6);
             this.useStandardSubfolder.Name = "useStandardSubfolder";
             this.useStandardSubfolder.Size = new System.Drawing.Size(253, 29);
             this.useStandardSubfolder.TabIndex = 6;
@@ -178,7 +178,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.errorsFolder.Enabled = false;
             this.errorsFolder.Location = new System.Drawing.Point(9, 209);
-            this.errorsFolder.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.errorsFolder.Margin = new System.Windows.Forms.Padding(6);
             this.errorsFolder.Name = "errorsFolder";
             this.errorsFolder.Size = new System.Drawing.Size(340, 29);
             this.errorsFolder.TabIndex = 7;
@@ -209,7 +209,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // downloadFolder
             // 
             this.downloadFolder.Location = new System.Drawing.Point(9, 96);
-            this.downloadFolder.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.downloadFolder.Margin = new System.Windows.Forms.Padding(6);
             this.downloadFolder.Name = "downloadFolder";
             this.downloadFolder.Size = new System.Drawing.Size(340, 29);
             this.downloadFolder.TabIndex = 4;
@@ -228,7 +228,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // jobDescription
             // 
             this.jobDescription.Location = new System.Drawing.Point(13, 198);
-            this.jobDescription.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.jobDescription.Margin = new System.Windows.Forms.Padding(6);
             this.jobDescription.Multiline = true;
             this.jobDescription.Name = "jobDescription";
             this.jobDescription.Size = new System.Drawing.Size(371, 161);
@@ -249,7 +249,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobGroupComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.jobGroupComboBox.FormattingEnabled = true;
             this.jobGroupComboBox.Location = new System.Drawing.Point(149, 105);
-            this.jobGroupComboBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.jobGroupComboBox.Margin = new System.Windows.Forms.Padding(6);
             this.jobGroupComboBox.Name = "jobGroupComboBox";
             this.jobGroupComboBox.Size = new System.Drawing.Size(235, 32);
             this.jobGroupComboBox.Sorted = true;
@@ -268,7 +268,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // jobName
             // 
             this.jobName.Location = new System.Drawing.Point(149, 57);
-            this.jobName.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.jobName.Margin = new System.Windows.Forms.Padding(6);
             this.jobName.Name = "jobName";
             this.jobName.Size = new System.Drawing.Size(235, 29);
             this.jobName.TabIndex = 1;
@@ -290,9 +290,9 @@ namespace RecurringIntegrationsScheduler.Forms
             this.retryPolicyGroupBox.Controls.Add(this.delayLabel);
             this.retryPolicyGroupBox.Controls.Add(this.retriesDelayUpDown);
             this.retryPolicyGroupBox.Location = new System.Drawing.Point(13, 41);
-            this.retryPolicyGroupBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.retryPolicyGroupBox.Margin = new System.Windows.Forms.Padding(6);
             this.retryPolicyGroupBox.Name = "retryPolicyGroupBox";
-            this.retryPolicyGroupBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.retryPolicyGroupBox.Padding = new System.Windows.Forms.Padding(6);
             this.retryPolicyGroupBox.Size = new System.Drawing.Size(370, 124);
             this.retryPolicyGroupBox.TabIndex = 7;
             this.retryPolicyGroupBox.TabStop = false;
@@ -311,7 +311,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // retriesCountUpDown
             // 
             this.retriesCountUpDown.Location = new System.Drawing.Point(191, 28);
-            this.retriesCountUpDown.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.retriesCountUpDown.Margin = new System.Windows.Forms.Padding(6);
             this.retriesCountUpDown.Maximum = new decimal(new int[] {
             9999,
             0,
@@ -339,7 +339,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // retriesDelayUpDown
             // 
             this.retriesDelayUpDown.Location = new System.Drawing.Point(191, 72);
-            this.retriesDelayUpDown.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.retriesDelayUpDown.Margin = new System.Windows.Forms.Padding(6);
             this.retriesDelayUpDown.Maximum = new decimal(new int[] {
             86400,
             0,
@@ -358,9 +358,9 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.groupBoxExceptions.Controls.Add(this.pauseOnExceptionsCheckBox);
             this.groupBoxExceptions.Location = new System.Drawing.Point(13, 175);
-            this.groupBoxExceptions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxExceptions.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxExceptions.Name = "groupBoxExceptions";
-            this.groupBoxExceptions.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxExceptions.Padding = new System.Windows.Forms.Padding(4);
             this.groupBoxExceptions.Size = new System.Drawing.Size(370, 74);
             this.groupBoxExceptions.TabIndex = 10;
             this.groupBoxExceptions.TabStop = false;
@@ -372,7 +372,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.pauseOnExceptionsCheckBox.Checked = true;
             this.pauseOnExceptionsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.pauseOnExceptionsCheckBox.Location = new System.Drawing.Point(17, 31);
-            this.pauseOnExceptionsCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pauseOnExceptionsCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.pauseOnExceptionsCheckBox.Name = "pauseOnExceptionsCheckBox";
             this.pauseOnExceptionsCheckBox.Size = new System.Drawing.Size(329, 29);
             this.pauseOnExceptionsCheckBox.TabIndex = 0;
@@ -388,7 +388,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobTabControl.Controls.Add(this.customOdataTabPage);
             this.jobTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.jobTabControl.Location = new System.Drawing.Point(0, 0);
-            this.jobTabControl.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.jobTabControl.Margin = new System.Windows.Forms.Padding(6);
             this.jobTabControl.Name = "jobTabControl";
             this.jobTabControl.SelectedIndex = 0;
             this.jobTabControl.Size = new System.Drawing.Size(1309, 922);
@@ -401,9 +401,9 @@ namespace RecurringIntegrationsScheduler.Forms
             this.exportJobOverviewTabPage.Controls.Add(this.jobControlGroupBox);
             this.exportJobOverviewTabPage.Controls.Add(this.foldersGroupBox);
             this.exportJobOverviewTabPage.Location = new System.Drawing.Point(4, 33);
-            this.exportJobOverviewTabPage.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.exportJobOverviewTabPage.Margin = new System.Windows.Forms.Padding(6);
             this.exportJobOverviewTabPage.Name = "exportJobOverviewTabPage";
-            this.exportJobOverviewTabPage.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.exportJobOverviewTabPage.Padding = new System.Windows.Forms.Padding(6);
             this.exportJobOverviewTabPage.Size = new System.Drawing.Size(1301, 885);
             this.exportJobOverviewTabPage.TabIndex = 0;
             this.exportJobOverviewTabPage.Text = "Export job overview";
@@ -417,9 +417,9 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobIdentificationGroupBox.Controls.Add(this.jobDescriptionLabel);
             this.jobIdentificationGroupBox.Controls.Add(this.jobDescription);
             this.jobIdentificationGroupBox.Location = new System.Drawing.Point(7, 7);
-            this.jobIdentificationGroupBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.jobIdentificationGroupBox.Margin = new System.Windows.Forms.Padding(6);
             this.jobIdentificationGroupBox.Name = "jobIdentificationGroupBox";
-            this.jobIdentificationGroupBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.jobIdentificationGroupBox.Padding = new System.Windows.Forms.Padding(6);
             this.jobIdentificationGroupBox.Size = new System.Drawing.Size(392, 375);
             this.jobIdentificationGroupBox.TabIndex = 11;
             this.jobIdentificationGroupBox.TabStop = false;
@@ -432,19 +432,42 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobControlGroupBox.Controls.Add(this.groupBoxExceptions);
             this.jobControlGroupBox.Controls.Add(this.pauseIndefinitelyCheckBox);
             this.jobControlGroupBox.Location = new System.Drawing.Point(7, 390);
-            this.jobControlGroupBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.jobControlGroupBox.Margin = new System.Windows.Forms.Padding(6);
             this.jobControlGroupBox.Name = "jobControlGroupBox";
-            this.jobControlGroupBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.jobControlGroupBox.Padding = new System.Windows.Forms.Padding(6);
             this.jobControlGroupBox.Size = new System.Drawing.Size(392, 382);
             this.jobControlGroupBox.TabIndex = 13;
             this.jobControlGroupBox.TabStop = false;
             this.jobControlGroupBox.Text = "Job control";
             // 
+            // groupBoxLogging
+            // 
+            this.groupBoxLogging.Controls.Add(this.verboseLoggingCheckBox);
+            this.groupBoxLogging.Location = new System.Drawing.Point(13, 257);
+            this.groupBoxLogging.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBoxLogging.Name = "groupBoxLogging";
+            this.groupBoxLogging.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBoxLogging.Size = new System.Drawing.Size(370, 74);
+            this.groupBoxLogging.TabIndex = 13;
+            this.groupBoxLogging.TabStop = false;
+            this.groupBoxLogging.Text = "Verbose logging";
+            // 
+            // verboseLoggingCheckBox
+            // 
+            this.verboseLoggingCheckBox.AutoSize = true;
+            this.verboseLoggingCheckBox.Location = new System.Drawing.Point(17, 31);
+            this.verboseLoggingCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.verboseLoggingCheckBox.Name = "verboseLoggingCheckBox";
+            this.verboseLoggingCheckBox.Size = new System.Drawing.Size(216, 29);
+            this.verboseLoggingCheckBox.TabIndex = 0;
+            this.verboseLoggingCheckBox.Text = "Use verbose logging";
+            this.verboseLoggingCheckBox.UseVisualStyleBackColor = true;
+            // 
             // pauseIndefinitelyCheckBox
             // 
             this.pauseIndefinitelyCheckBox.AutoSize = true;
             this.pauseIndefinitelyCheckBox.Location = new System.Drawing.Point(13, 345);
-            this.pauseIndefinitelyCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pauseIndefinitelyCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.pauseIndefinitelyCheckBox.Name = "pauseIndefinitelyCheckBox";
             this.pauseIndefinitelyCheckBox.Size = new System.Drawing.Size(357, 29);
             this.pauseIndefinitelyCheckBox.TabIndex = 14;
@@ -461,9 +484,9 @@ namespace RecurringIntegrationsScheduler.Forms
             this.foldersGroupBox.Controls.Add(this.errorsFolder);
             this.foldersGroupBox.Controls.Add(this.errorsFolderBrowserButton);
             this.foldersGroupBox.Location = new System.Drawing.Point(409, 7);
-            this.foldersGroupBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.foldersGroupBox.Margin = new System.Windows.Forms.Padding(6);
             this.foldersGroupBox.Name = "foldersGroupBox";
-            this.foldersGroupBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.foldersGroupBox.Padding = new System.Windows.Forms.Padding(6);
             this.foldersGroupBox.Size = new System.Drawing.Size(409, 266);
             this.foldersGroupBox.TabIndex = 12;
             this.foldersGroupBox.TabStop = false;
@@ -475,10 +498,10 @@ namespace RecurringIntegrationsScheduler.Forms
             this.exportJobDetailsTabPage.Controls.Add(this.exportDetailsGroupBox);
             this.exportJobDetailsTabPage.Controls.Add(this.sourceCompanyGroupBox);
             this.exportJobDetailsTabPage.Location = new System.Drawing.Point(4, 33);
-            this.exportJobDetailsTabPage.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.exportJobDetailsTabPage.Margin = new System.Windows.Forms.Padding(6);
             this.exportJobDetailsTabPage.Name = "exportJobDetailsTabPage";
-            this.exportJobDetailsTabPage.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.exportJobDetailsTabPage.Size = new System.Drawing.Size(1301, 879);
+            this.exportJobDetailsTabPage.Padding = new System.Windows.Forms.Padding(6);
+            this.exportJobDetailsTabPage.Size = new System.Drawing.Size(1301, 885);
             this.exportJobDetailsTabPage.TabIndex = 1;
             this.exportJobDetailsTabPage.Text = "Export job details";
             // 
@@ -494,9 +517,9 @@ namespace RecurringIntegrationsScheduler.Forms
             this.exportDetailsGroupBox.Controls.Add(this.delayBetweenAttemptsLabel);
             this.exportDetailsGroupBox.Controls.Add(this.delayBetweenAttemptsNumericUpDown);
             this.exportDetailsGroupBox.Location = new System.Drawing.Point(7, 7);
-            this.exportDetailsGroupBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.exportDetailsGroupBox.Margin = new System.Windows.Forms.Padding(6);
             this.exportDetailsGroupBox.Name = "exportDetailsGroupBox";
-            this.exportDetailsGroupBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.exportDetailsGroupBox.Padding = new System.Windows.Forms.Padding(6);
             this.exportDetailsGroupBox.Size = new System.Drawing.Size(422, 401);
             this.exportDetailsGroupBox.TabIndex = 1;
             this.exportDetailsGroupBox.TabStop = false;
@@ -515,7 +538,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // dataProject
             // 
             this.dataProject.Location = new System.Drawing.Point(13, 72);
-            this.dataProject.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.dataProject.Margin = new System.Windows.Forms.Padding(6);
             this.dataProject.Name = "dataProject";
             this.dataProject.Size = new System.Drawing.Size(387, 29);
             this.dataProject.TabIndex = 12;
@@ -569,7 +592,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // delayBetweenStatusCheckNumericUpDown
             // 
             this.delayBetweenStatusCheckNumericUpDown.Location = new System.Drawing.Point(328, 253);
-            this.delayBetweenStatusCheckNumericUpDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.delayBetweenStatusCheckNumericUpDown.Margin = new System.Windows.Forms.Padding(4);
             this.delayBetweenStatusCheckNumericUpDown.Maximum = new decimal(new int[] {
             3600,
             0,
@@ -601,7 +624,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // delayBetweenAttemptsNumericUpDown
             // 
             this.delayBetweenAttemptsNumericUpDown.Location = new System.Drawing.Point(328, 336);
-            this.delayBetweenAttemptsNumericUpDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.delayBetweenAttemptsNumericUpDown.Margin = new System.Windows.Forms.Padding(4);
             this.delayBetweenAttemptsNumericUpDown.Maximum = new decimal(new int[] {
             3600,
             0,
@@ -626,9 +649,9 @@ namespace RecurringIntegrationsScheduler.Forms
             this.sourceCompanyGroupBox.Controls.Add(this.legalEntityLabel);
             this.sourceCompanyGroupBox.Controls.Add(this.legalEntity);
             this.sourceCompanyGroupBox.Location = new System.Drawing.Point(7, 419);
-            this.sourceCompanyGroupBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.sourceCompanyGroupBox.Margin = new System.Windows.Forms.Padding(6);
             this.sourceCompanyGroupBox.Name = "sourceCompanyGroupBox";
-            this.sourceCompanyGroupBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.sourceCompanyGroupBox.Padding = new System.Windows.Forms.Padding(6);
             this.sourceCompanyGroupBox.Size = new System.Drawing.Size(422, 109);
             this.sourceCompanyGroupBox.TabIndex = 23;
             this.sourceCompanyGroupBox.TabStop = false;
@@ -647,7 +670,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // legalEntity
             // 
             this.legalEntity.Location = new System.Drawing.Point(237, 55);
-            this.legalEntity.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.legalEntity.Margin = new System.Windows.Forms.Padding(6);
             this.legalEntity.Name = "legalEntity";
             this.legalEntity.Size = new System.Drawing.Size(164, 29);
             this.legalEntity.TabIndex = 13;
@@ -659,10 +682,10 @@ namespace RecurringIntegrationsScheduler.Forms
             this.exportJobRecurrenceTabPage.Controls.Add(this.simpleTriggerJobGroupBox);
             this.exportJobRecurrenceTabPage.Controls.Add(this.cronTriggerGroupBox);
             this.exportJobRecurrenceTabPage.Location = new System.Drawing.Point(4, 33);
-            this.exportJobRecurrenceTabPage.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.exportJobRecurrenceTabPage.Margin = new System.Windows.Forms.Padding(6);
             this.exportJobRecurrenceTabPage.Name = "exportJobRecurrenceTabPage";
-            this.exportJobRecurrenceTabPage.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.exportJobRecurrenceTabPage.Size = new System.Drawing.Size(1301, 879);
+            this.exportJobRecurrenceTabPage.Padding = new System.Windows.Forms.Padding(6);
+            this.exportJobRecurrenceTabPage.Size = new System.Drawing.Size(1301, 885);
             this.exportJobRecurrenceTabPage.TabIndex = 2;
             this.exportJobRecurrenceTabPage.Text = "Export job recurrence";
             // 
@@ -671,7 +694,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.triggerTypePanel.Controls.Add(this.simpleTriggerRadioButton);
             this.triggerTypePanel.Controls.Add(this.cronTriggerRadioButton);
             this.triggerTypePanel.Location = new System.Drawing.Point(9, 9);
-            this.triggerTypePanel.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.triggerTypePanel.Margin = new System.Windows.Forms.Padding(6);
             this.triggerTypePanel.Name = "triggerTypePanel";
             this.triggerTypePanel.Size = new System.Drawing.Size(838, 46);
             this.triggerTypePanel.TabIndex = 29;
@@ -681,7 +704,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.simpleTriggerRadioButton.AutoSize = true;
             this.simpleTriggerRadioButton.Checked = true;
             this.simpleTriggerRadioButton.Location = new System.Drawing.Point(11, 6);
-            this.simpleTriggerRadioButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.simpleTriggerRadioButton.Margin = new System.Windows.Forms.Padding(6);
             this.simpleTriggerRadioButton.Name = "simpleTriggerRadioButton";
             this.simpleTriggerRadioButton.Size = new System.Drawing.Size(156, 29);
             this.simpleTriggerRadioButton.TabIndex = 22;
@@ -693,7 +716,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.cronTriggerRadioButton.AutoSize = true;
             this.cronTriggerRadioButton.Location = new System.Drawing.Point(425, 6);
-            this.cronTriggerRadioButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.cronTriggerRadioButton.Margin = new System.Windows.Forms.Padding(6);
             this.cronTriggerRadioButton.Name = "cronTriggerRadioButton";
             this.cronTriggerRadioButton.Size = new System.Drawing.Size(139, 29);
             this.cronTriggerRadioButton.TabIndex = 23;
@@ -712,9 +735,9 @@ namespace RecurringIntegrationsScheduler.Forms
             this.simpleTriggerJobGroupBox.Controls.Add(this.startAtLabel);
             this.simpleTriggerJobGroupBox.Controls.Add(this.startAtDateTimePicker);
             this.simpleTriggerJobGroupBox.Location = new System.Drawing.Point(9, 65);
-            this.simpleTriggerJobGroupBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.simpleTriggerJobGroupBox.Margin = new System.Windows.Forms.Padding(6);
             this.simpleTriggerJobGroupBox.Name = "simpleTriggerJobGroupBox";
-            this.simpleTriggerJobGroupBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.simpleTriggerJobGroupBox.Padding = new System.Windows.Forms.Padding(6);
             this.simpleTriggerJobGroupBox.Size = new System.Drawing.Size(403, 155);
             this.simpleTriggerJobGroupBox.TabIndex = 30;
             this.simpleTriggerJobGroupBox.TabStop = false;
@@ -734,7 +757,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.hoursDateTimePicker.CustomFormat = "HH";
             this.hoursDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.hoursDateTimePicker.Location = new System.Drawing.Point(160, 18);
-            this.hoursDateTimePicker.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.hoursDateTimePicker.Margin = new System.Windows.Forms.Padding(6);
             this.hoursDateTimePicker.Name = "hoursDateTimePicker";
             this.hoursDateTimePicker.ShowUpDown = true;
             this.hoursDateTimePicker.Size = new System.Drawing.Size(76, 29);
@@ -767,7 +790,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.minutesDateTimePicker.CustomFormat = "mm";
             this.minutesDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.minutesDateTimePicker.Location = new System.Drawing.Point(160, 59);
-            this.minutesDateTimePicker.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.minutesDateTimePicker.Margin = new System.Windows.Forms.Padding(6);
             this.minutesDateTimePicker.Name = "minutesDateTimePicker";
             this.minutesDateTimePicker.ShowUpDown = true;
             this.minutesDateTimePicker.Size = new System.Drawing.Size(76, 29);
@@ -801,7 +824,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.startAtDateTimePicker.CustomFormat = "HH:mm";
             this.startAtDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.startAtDateTimePicker.Location = new System.Drawing.Point(160, 100);
-            this.startAtDateTimePicker.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.startAtDateTimePicker.Margin = new System.Windows.Forms.Padding(6);
             this.startAtDateTimePicker.Name = "startAtDateTimePicker";
             this.startAtDateTimePicker.ShowUpDown = true;
             this.startAtDateTimePicker.Size = new System.Drawing.Size(92, 29);
@@ -821,9 +844,9 @@ namespace RecurringIntegrationsScheduler.Forms
             this.cronTriggerGroupBox.Controls.Add(this.moreExamplesButton);
             this.cronTriggerGroupBox.Enabled = false;
             this.cronTriggerGroupBox.Location = new System.Drawing.Point(420, 65);
-            this.cronTriggerGroupBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.cronTriggerGroupBox.Margin = new System.Windows.Forms.Padding(6);
             this.cronTriggerGroupBox.Name = "cronTriggerGroupBox";
-            this.cronTriggerGroupBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.cronTriggerGroupBox.Padding = new System.Windows.Forms.Padding(6);
             this.cronTriggerGroupBox.Size = new System.Drawing.Size(429, 633);
             this.cronTriggerGroupBox.TabIndex = 3;
             this.cronTriggerGroupBox.TabStop = false;
@@ -840,9 +863,8 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             // cronExpressionTextBox
             // 
-            this.cronExpressionTextBox.Enabled = false;
             this.cronExpressionTextBox.Location = new System.Drawing.Point(17, 54);
-            this.cronExpressionTextBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.cronExpressionTextBox.Margin = new System.Windows.Forms.Padding(6);
             this.cronExpressionTextBox.Name = "cronExpressionTextBox";
             this.cronExpressionTextBox.Size = new System.Drawing.Size(391, 29);
             this.cronExpressionTextBox.TabIndex = 24;
@@ -853,7 +875,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.cronTriggerInfoTextBox.BackColor = System.Drawing.SystemColors.Control;
             this.cronTriggerInfoTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.cronTriggerInfoTextBox.Location = new System.Drawing.Point(17, 94);
-            this.cronTriggerInfoTextBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.cronTriggerInfoTextBox.Margin = new System.Windows.Forms.Padding(6);
             this.cronTriggerInfoTextBox.Multiline = true;
             this.cronTriggerInfoTextBox.Name = "cronTriggerInfoTextBox";
             this.cronTriggerInfoTextBox.Size = new System.Drawing.Size(394, 271);
@@ -881,6 +903,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.cronmakerLinkLabel.TabIndex = 24;
             this.cronmakerLinkLabel.TabStop = true;
             this.cronmakerLinkLabel.Text = "cronmaker.com";
+            this.cronmakerLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.CronmakerLinkLabel_LinkClicked);
             // 
             // cronDocsLinkLabel
             // 
@@ -892,11 +915,12 @@ namespace RecurringIntegrationsScheduler.Forms
             this.cronDocsLinkLabel.TabIndex = 30;
             this.cronDocsLinkLabel.TabStop = true;
             this.cronDocsLinkLabel.Text = "Quartz cron triggers documentation";
+            this.cronDocsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.CronDocsLinkLabel_LinkClicked);
             // 
             // calculateNextRunsButton
             // 
             this.calculateNextRunsButton.Location = new System.Drawing.Point(17, 443);
-            this.calculateNextRunsButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.calculateNextRunsButton.Margin = new System.Windows.Forms.Padding(6);
             this.calculateNextRunsButton.Name = "calculateNextRunsButton";
             this.calculateNextRunsButton.Size = new System.Drawing.Size(193, 66);
             this.calculateNextRunsButton.TabIndex = 25;
@@ -908,7 +932,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.calculatedRunsTextBox.BackColor = System.Drawing.SystemColors.Control;
             this.calculatedRunsTextBox.Location = new System.Drawing.Point(17, 517);
-            this.calculatedRunsTextBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.calculatedRunsTextBox.Margin = new System.Windows.Forms.Padding(6);
             this.calculatedRunsTextBox.Multiline = true;
             this.calculatedRunsTextBox.Name = "calculatedRunsTextBox";
             this.calculatedRunsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -919,7 +943,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // moreExamplesButton
             // 
             this.moreExamplesButton.Location = new System.Drawing.Point(290, 517);
-            this.moreExamplesButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.moreExamplesButton.Margin = new System.Windows.Forms.Padding(6);
             this.moreExamplesButton.Name = "moreExamplesButton";
             this.moreExamplesButton.Size = new System.Drawing.Size(121, 102);
             this.moreExamplesButton.TabIndex = 27;
@@ -932,10 +956,10 @@ namespace RecurringIntegrationsScheduler.Forms
             this.connectionTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.connectionTabPage.Controls.Add(this.axDetailsGroupBox);
             this.connectionTabPage.Location = new System.Drawing.Point(4, 33);
-            this.connectionTabPage.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.connectionTabPage.Margin = new System.Windows.Forms.Padding(6);
             this.connectionTabPage.Name = "connectionTabPage";
-            this.connectionTabPage.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.connectionTabPage.Size = new System.Drawing.Size(1301, 879);
+            this.connectionTabPage.Padding = new System.Windows.Forms.Padding(6);
+            this.connectionTabPage.Size = new System.Drawing.Size(1301, 885);
             this.connectionTabPage.TabIndex = 3;
             this.connectionTabPage.Text = "Connection";
             // 
@@ -949,9 +973,9 @@ namespace RecurringIntegrationsScheduler.Forms
             this.axDetailsGroupBox.Controls.Add(this.userLabel);
             this.axDetailsGroupBox.Controls.Add(this.userComboBox);
             this.axDetailsGroupBox.Location = new System.Drawing.Point(7, 7);
-            this.axDetailsGroupBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.axDetailsGroupBox.Margin = new System.Windows.Forms.Padding(6);
             this.axDetailsGroupBox.Name = "axDetailsGroupBox";
-            this.axDetailsGroupBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.axDetailsGroupBox.Padding = new System.Windows.Forms.Padding(6);
             this.axDetailsGroupBox.Size = new System.Drawing.Size(484, 242);
             this.axDetailsGroupBox.TabIndex = 2;
             this.axDetailsGroupBox.TabStop = false;
@@ -972,7 +996,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.instanceComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.instanceComboBox.FormattingEnabled = true;
             this.instanceComboBox.Location = new System.Drawing.Point(108, 35);
-            this.instanceComboBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.instanceComboBox.Margin = new System.Windows.Forms.Padding(6);
             this.instanceComboBox.Name = "instanceComboBox";
             this.instanceComboBox.Size = new System.Drawing.Size(365, 32);
             this.instanceComboBox.TabIndex = 14;
@@ -982,7 +1006,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.authMethodPanel.Controls.Add(this.userAuthRadioButton);
             this.authMethodPanel.Controls.Add(this.serviceAuthRadioButton);
             this.authMethodPanel.Location = new System.Drawing.Point(13, 83);
-            this.authMethodPanel.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.authMethodPanel.Margin = new System.Windows.Forms.Padding(6);
             this.authMethodPanel.Name = "authMethodPanel";
             this.authMethodPanel.Size = new System.Drawing.Size(464, 46);
             this.authMethodPanel.TabIndex = 31;
@@ -992,7 +1016,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.userAuthRadioButton.AutoSize = true;
             this.userAuthRadioButton.Checked = true;
             this.userAuthRadioButton.Location = new System.Drawing.Point(6, 6);
-            this.userAuthRadioButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.userAuthRadioButton.Margin = new System.Windows.Forms.Padding(6);
             this.userAuthRadioButton.Name = "userAuthRadioButton";
             this.userAuthRadioButton.Size = new System.Drawing.Size(204, 29);
             this.userAuthRadioButton.TabIndex = 15;
@@ -1004,7 +1028,7 @@ namespace RecurringIntegrationsScheduler.Forms
             // 
             this.serviceAuthRadioButton.AutoSize = true;
             this.serviceAuthRadioButton.Location = new System.Drawing.Point(220, 6);
-            this.serviceAuthRadioButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.serviceAuthRadioButton.Margin = new System.Windows.Forms.Padding(6);
             this.serviceAuthRadioButton.Name = "serviceAuthRadioButton";
             this.serviceAuthRadioButton.Size = new System.Drawing.Size(229, 29);
             this.serviceAuthRadioButton.TabIndex = 16;
@@ -1022,13 +1046,13 @@ namespace RecurringIntegrationsScheduler.Forms
             this.aadApplicationLabel.TabIndex = 34;
             this.aadApplicationLabel.Text = "Azure app registration";
             // 
-            // aadApplicationComboBox
+            // appRegistrationComboBox
             // 
             this.appRegistrationComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.appRegistrationComboBox.FormattingEnabled = true;
             this.appRegistrationComboBox.Location = new System.Drawing.Point(226, 140);
-            this.appRegistrationComboBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.appRegistrationComboBox.Name = "aadApplicationComboBox";
+            this.appRegistrationComboBox.Margin = new System.Windows.Forms.Padding(6);
+            this.appRegistrationComboBox.Name = "appRegistrationComboBox";
             this.appRegistrationComboBox.Size = new System.Drawing.Size(248, 32);
             this.appRegistrationComboBox.TabIndex = 17;
             // 
@@ -1047,7 +1071,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.userComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.userComboBox.FormattingEnabled = true;
             this.userComboBox.Location = new System.Drawing.Point(226, 186);
-            this.userComboBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.userComboBox.Margin = new System.Windows.Forms.Padding(6);
             this.userComboBox.Name = "userComboBox";
             this.userComboBox.Size = new System.Drawing.Size(248, 32);
             this.userComboBox.TabIndex = 18;
@@ -1057,10 +1081,10 @@ namespace RecurringIntegrationsScheduler.Forms
             this.customOdataTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.customOdataTabPage.Controls.Add(this.customODataGroupBox);
             this.customOdataTabPage.Location = new System.Drawing.Point(4, 33);
-            this.customOdataTabPage.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.customOdataTabPage.Margin = new System.Windows.Forms.Padding(6);
             this.customOdataTabPage.Name = "customOdataTabPage";
-            this.customOdataTabPage.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.customOdataTabPage.Size = new System.Drawing.Size(1301, 879);
+            this.customOdataTabPage.Padding = new System.Windows.Forms.Padding(6);
+            this.customOdataTabPage.Size = new System.Drawing.Size(1301, 885);
             this.customOdataTabPage.TabIndex = 4;
             this.customOdataTabPage.Text = "Custom OData actions";
             // 
@@ -1073,9 +1097,9 @@ namespace RecurringIntegrationsScheduler.Forms
             this.customODataGroupBox.Controls.Add(this.getExportedPackageUrlLabel);
             this.customODataGroupBox.Controls.Add(this.getExportedPackageUrlTextBox);
             this.customODataGroupBox.Location = new System.Drawing.Point(7, 7);
-            this.customODataGroupBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.customODataGroupBox.Margin = new System.Windows.Forms.Padding(6);
             this.customODataGroupBox.Name = "customODataGroupBox";
-            this.customODataGroupBox.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.customODataGroupBox.Padding = new System.Windows.Forms.Padding(6);
             this.customODataGroupBox.Size = new System.Drawing.Size(1282, 188);
             this.customODataGroupBox.TabIndex = 22;
             this.customODataGroupBox.TabStop = false;
@@ -1171,29 +1195,6 @@ namespace RecurringIntegrationsScheduler.Forms
             this.addToolStripButton.Text = "Add job";
             this.addToolStripButton.Click += new System.EventHandler(this.AddToolStripButton_Click);
             // 
-            // groupBoxLogging
-            // 
-            this.groupBoxLogging.Controls.Add(this.verboseLoggingCheckBox);
-            this.groupBoxLogging.Location = new System.Drawing.Point(13, 257);
-            this.groupBoxLogging.Margin = new System.Windows.Forms.Padding(4);
-            this.groupBoxLogging.Name = "groupBoxLogging";
-            this.groupBoxLogging.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBoxLogging.Size = new System.Drawing.Size(370, 74);
-            this.groupBoxLogging.TabIndex = 13;
-            this.groupBoxLogging.TabStop = false;
-            this.groupBoxLogging.Text = "Verbose logging";
-            // 
-            // verboseLoggingCheckBox
-            // 
-            this.verboseLoggingCheckBox.AutoSize = true;
-            this.verboseLoggingCheckBox.Location = new System.Drawing.Point(17, 31);
-            this.verboseLoggingCheckBox.Margin = new System.Windows.Forms.Padding(4);
-            this.verboseLoggingCheckBox.Name = "verboseLoggingCheckBox";
-            this.verboseLoggingCheckBox.Size = new System.Drawing.Size(216, 29);
-            this.verboseLoggingCheckBox.TabIndex = 0;
-            this.verboseLoggingCheckBox.Text = "Use verbose logging";
-            this.verboseLoggingCheckBox.UseVisualStyleBackColor = true;
-            // 
             // ExportJobV3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
@@ -1204,7 +1205,7 @@ namespace RecurringIntegrationsScheduler.Forms
             this.Controls.Add(this.jobTabControl);
             this.Controls.Add(this.mainToolStrip);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(1318, 980);
@@ -1226,6 +1227,8 @@ namespace RecurringIntegrationsScheduler.Forms
             this.jobIdentificationGroupBox.PerformLayout();
             this.jobControlGroupBox.ResumeLayout(false);
             this.jobControlGroupBox.PerformLayout();
+            this.groupBoxLogging.ResumeLayout(false);
+            this.groupBoxLogging.PerformLayout();
             this.foldersGroupBox.ResumeLayout(false);
             this.foldersGroupBox.PerformLayout();
             this.exportJobDetailsTabPage.ResumeLayout(false);
@@ -1252,8 +1255,6 @@ namespace RecurringIntegrationsScheduler.Forms
             this.customODataGroupBox.PerformLayout();
             this.mainToolStrip.ResumeLayout(false);
             this.mainToolStrip.PerformLayout();
-            this.groupBoxLogging.ResumeLayout(false);
-            this.groupBoxLogging.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
