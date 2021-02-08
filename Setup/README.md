@@ -2,13 +2,9 @@ To create installation package you need few additional binary files which are no
 
 Please download the following Quartz.NET server binaries and copy those files to this folder.
 
-* Quartz.Server.exe
-* Quartz.Jobs.dll
-* Quartz.Plugins.dll
-* Quartz.Serialization.Json.dll
-* Topshelf.dll
+* bin\Release\Quartz.Server\net461\Quartz.Server.exe
 
-This version of Recurring Integrations Scheduler requires Quartz.NET 3.0.6
+This version of Recurring Integrations Scheduler requires Quartz.NET 3.2.4
 Download zip archive from https://github.com/quartznet/quartznet/releases
 
 
@@ -16,5 +12,5 @@ Download zip archive from https://github.com/quartznet/quartznet/releases
 
 Example command to create installation package (executed from root folder of the solution):
 ```
-"C:\Program Files (x86)\Inno Setup 5\Compil32.exe" /cc ".\Setup\Recurring Integrations Scheduler.iss"
+"C:\Program Files (x86)\Inno Setup 6\Compil32.exe" /cc ".\Setup\Recurring Integrations Scheduler.iss"
 ```
