@@ -11,6 +11,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Text;
+using System.Linq;
 
 namespace RecurringIntegrationsScheduler.Common.Helpers
 {
@@ -107,7 +108,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                     break;
             }
 
-            foreach (FileInfo fileName in dir.EnumerateFiles(searchPatterns, searchOption).Sort(sortByProperty, reverse)
+            foreach (FileInfo fileName in dir.EnumerateFiles(searchPatterns, searchOption).AsQueryable().Sort(sortByProperty, reverse)
             )
             {
                 var dataMessage = new DataMessage
@@ -155,7 +156,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                     break;
             }
 
-            foreach (FileInfo fileName in dir.EnumerateFiles(searchPatterns, searchOption).Sort(sortByProperty, reverse)
+            foreach (FileInfo fileName in dir.EnumerateFiles(searchPatterns, searchOption).AsQueryable().Sort(sortByProperty, reverse)
             )
             {
                 DataMessage dataMessage;

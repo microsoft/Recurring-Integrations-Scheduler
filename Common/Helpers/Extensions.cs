@@ -2,7 +2,8 @@
    Licensed under the MIT License. */
 
 using System.Collections;
-using System.Linq.Dynamic;
+using System.Linq;
+using System.Linq.Dynamic.Core;
 
 namespace RecurringIntegrationsScheduler.Common.Helpers
 {
@@ -15,7 +16,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
         /// <param name="sortBy">SortBy keyword</param>
         /// <param name="reverse">order</param>
         /// <returns></returns>
-        public static IEnumerable Sort(this IEnumerable collection, string sortBy, bool reverse = false)
+        public static IEnumerable Sort(this IQueryable collection, string sortBy, bool reverse = false)
         {
             return collection.OrderBy(sortBy + (reverse ? " descending" : ""));
         }
