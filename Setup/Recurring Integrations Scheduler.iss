@@ -90,5 +90,5 @@ Filename: "{app}\Quartz.Server.exe"; Parameters: "install"; Flags: runhidden; Co
 Filename: {sys}\sc.exe; Parameters: "start RecurringIntegrationsScheduler" ; Flags: runhidden
 
 [UninstallRun]
-Filename: {sys}\sc.exe; Parameters: "stop RecurringIntegrationsScheduler" ; Flags: runhidden
-Filename: "{app}\Quartz.Server.exe"; Parameters: "uninstall"; Flags: runhidden; Components: Scheduler
+Filename: {sys}\sc.exe; Parameters: "stop RecurringIntegrationsScheduler" ; Flags: runhidden ; RunOnceId: "DelService"
+Filename: "{app}\Quartz.Server.exe"; Parameters: "uninstall"; Flags: runhidden; Components: Scheduler ; RunOnceId: "DelServerExecutable"
