@@ -323,7 +323,12 @@ Message Id: {dataMessage.MessageId}");
 
             var logFilePath = Path.Combine(directoryName, Path.GetFileNameWithoutExtension(filePath) + ".url");
 
-            var linkUrl = await _httpClientHelper.GetExecutionSummaryPageUrl(messageId);
+            var linkUrlResponse = await _httpClientHelper.GetExecutionSummaryPageUrl(messageId);
+            var linkUrl = string.Empty;
+            if (linkUrlResponse.IsSuccessStatusCode)
+            {
+                linkUrl = HttpClientHelper.ReadResponseString(linkUrlResponse);
+            }
 
             using (_streamWriter = new StreamWriter(logFilePath))
             {

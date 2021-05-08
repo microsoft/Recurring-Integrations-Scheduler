@@ -5,6 +5,7 @@ Please download the following Quartz.NET server binaries and copy those files to
 * bin\Release\Quartz.Server\net461\Quartz.Server.exe
 
 This version of Recurring Integrations Scheduler requires Quartz.NET 3.2.4
+
 Download zip archive from https://github.com/quartznet/quartznet/releases
 
 
