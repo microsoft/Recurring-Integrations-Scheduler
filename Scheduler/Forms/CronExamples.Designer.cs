@@ -39,26 +39,27 @@ namespace RecurringIntegrationsScheduler.Forms
             this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox1.Font = new System.Drawing.Font("Courier New", 8.142858F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox1.Location = new System.Drawing.Point(0, 0);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(1417, 526);
+            this.textBox1.Size = new System.Drawing.Size(1544, 541);
             this.textBox1.TabIndex = 0;
             this.textBox1.Text = resources.GetString("textBox1.Text");
             // 
             // CronExamples
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1417, 526);
+            this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(1544, 541);
             this.Controls.Add(this.textBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(1441, 590);
+            this.MaximumSize = new System.Drawing.Size(1570, 612);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(1441, 590);
+            this.MinimumSize = new System.Drawing.Size(1570, 612);
             this.Name = "CronExamples";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
