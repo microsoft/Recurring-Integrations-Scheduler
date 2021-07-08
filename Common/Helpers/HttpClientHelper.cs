@@ -52,7 +52,7 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
 
-            _httpClient = new HttpClient(new HttpRetryHandler(httpClientHandler, _settings.RetryCount, _settings.RetryDelay))
+            _httpClient = new HttpClient(new HttpRetryHandler(httpClientHandler, _settings))
             {
                 Timeout = TimeSpan.FromMinutes(60) //Timeout for large uploads or downloads
             };
