@@ -47,23 +47,17 @@ namespace RecurringIntegrationsScheduler.Common.Helpers
                     if (response.Headers.Contains("Retry-After"))
                     {
                         _retryAfter = int.Parse(response.Headers.GetValues("Retry-After").FirstOrDefault());
-                        if (_settings.LogVerbose || Log.IsDebugEnabled)
-                        {
-                            Log.Debug($@"Job: {_settings.JobKey}. HttpRetryHandler.Task is being called.
+                        Log.Warn($@"Job: {_settings.JobKey}. HttpRetryHandler.Task is being called.
 ReqeuestUri: {request.RequestUri}
 Response Status Code: {response.StatusCode} 
 Priority-based throttling in action.
 Requested delay (in seconds) between next request: {_retryAfter}");
-                        }
                     }
                 }
                 if (_retryAfter > 0 && _settings.RetryCount > 1)
                 {
-                    if (_settings.LogVerbose || Log.IsDebugEnabled)
-                    {
-                        Log.Debug($@"Job: {_settings.JobKey}. HttpRetryHandler.Task is being called.
+                    Log.Warn($@"Job: {_settings.JobKey}. HttpRetryHandler.Task is being called.
 Delaying next request for {_retryAfter} seconds...");
-                    }
                     Thread.Sleep(TimeSpan.FromSeconds(_retryAfter));
                 }
             }
