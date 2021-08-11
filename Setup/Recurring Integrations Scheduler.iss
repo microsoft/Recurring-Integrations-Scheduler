@@ -41,7 +41,7 @@ Source: "..\Output\Release\Quartz.Plugins.dll"; DestDir: "{app}"; Flags: ignorev
 Source: "..\Output\Release\Quartz.Jobs.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
 Source: "..\Output\Release\Quartz.Serialization.Json.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
 Source: "..\Output\Release\Topshelf.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: Scheduler
-Source: ".\Quartz.Server.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: Scheduler
+Source: "..\Output\Release\RecurringIntegrationsScheduler.Server.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: Scheduler
 ; Common
 Source: "..\Output\Release\RecurringIntegrationsScheduler.Common.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
 ; Jobs
@@ -71,8 +71,8 @@ Source: "..\Output\Release\RecurringIntegrationsScheduler.exe"; DestDir: "{app}"
 Source: "..\Output\Release\RecurringIntegrationsScheduler.exe.config"; DestDir: "{app}"; Flags: ignoreversion; Components: App
 
 ; Configuration files
-Source: ".\Schedule.xml"; DestDir: "{app}"; Flags: onlyifdoesntexist uninsneveruninstall; Components: Scheduler
-Source: ".\Quartz.Server.exe.config"; DestDir: "{app}"; Flags: onlyifdoesntexist; Components: Scheduler
+Source: "..\Output\Release\Schedule.xml"; DestDir: "{app}"; Flags: onlyifdoesntexist uninsneveruninstall; Components: Scheduler
+Source: "..\Output\Release\RecurringIntegrationsScheduler.Server.exe.config"; DestDir: "{app}"; Flags: onlyifdoesntexist; Components: Scheduler
 ; ReadMe
 Source: "..\README.MD"; DestDir: "{app}"; Flags: ignoreversion; Components: App Scheduler
 ; License
@@ -86,9 +86,9 @@ Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 Name: "{group}\Recurring Integrations Scheduler App"; Filename: "{app}\RecurringIntegrationsScheduler.exe"; WorkingDir: "{app}"
 
 [Run]
-Filename: "{app}\Quartz.Server.exe"; Parameters: "install"; Flags: runhidden; Components: Scheduler
+Filename: "{app}\RecurringIntegrationsScheduler.Server.exe"; Parameters: "install"; Flags: runhidden; Components: Scheduler
 Filename: {sys}\sc.exe; Parameters: "start RecurringIntegrationsScheduler" ; Flags: runhidden
 
 [UninstallRun]
 Filename: {sys}\sc.exe; Parameters: "stop RecurringIntegrationsScheduler" ; Flags: runhidden ; RunOnceId: "DelService"
-Filename: "{app}\Quartz.Server.exe"; Parameters: "uninstall"; Flags: runhidden; Components: Scheduler ; RunOnceId: "DelServerExecutable"
+Filename: "{app}\RecurringIntegrationsScheduler.Server.exe"; Parameters: "uninstall"; Flags: runhidden; Components: Scheduler ; RunOnceId: "DelServerExecutable"
