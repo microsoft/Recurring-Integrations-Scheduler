@@ -95,6 +95,7 @@ namespace RecurringIntegrationsScheduler.Forms
             deleteJobButton.Enabled = true;
             editJobButton.Enabled = true;
             pauseResumeDropDownButton.Enabled = true;
+            runJobNowButton.Enabled = true;
             instanceFilter.Enabled = true;
             jobNameFilter.Enabled = true;
         }
@@ -634,6 +635,7 @@ namespace RecurringIntegrationsScheduler.Forms
                 deleteJobButton.Enabled = false;
                 editJobButton.Enabled = false;
                 pauseResumeDropDownButton.Enabled = false;
+                runJobNowButton.Enabled = false;
             }
         }
 
@@ -1006,6 +1008,29 @@ namespace RecurringIntegrationsScheduler.Forms
                 {
                     MessageBox.Show(ex.Message, Resources.Unexpected_error);
                 }
+            }
+        }
+
+        private void RunJobNowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var selectedRow = jobsDataGridView.Rows[jobsDataGridView.SelectedCells[0].RowIndex];
+                var jobKey = new JobKey(Convert.ToString(selectedRow.Cells["JobName"].Value),
+                                        Convert.ToString(selectedRow.Cells["JobGroup"].Value));
+
+                var scheduler = Scheduler.Instance.GetScheduler();
+                if (scheduler == null)
+                {
+                    MessageBox.Show(Resources.No_active_scheduler, Resources.Missing_scheduler);
+                    return;
+                }
+                scheduler.TriggerJob(jobKey);
+                RefreshGrid();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, Resources.Unexpected_error);
             }
         }
     }
